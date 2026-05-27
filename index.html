@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>財務數學 — 課程講義</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --cream: #faf8f3;
+    --warm: #f5f0e8;
+    --muted: #7a7060;
+    --border: #e0d8c8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 10%;
+    width: 200px; height: 200px;
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 50%;
+  }
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .course-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    border: 1px solid rgba(201,168,76,0.4);
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  h1 span { color: var(--gold); }
+  .subtitle {
+    font-size: 0.95rem;
+    color: rgba(250,248,243,0.6);
+    font-weight: 300;
+    max-width: 500px;
+    line-height: 1.7;
+  }
+
+  /* ── Main ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 50px 24px 80px;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── Chapter Cards ── */
+  .chapters {
+    display: grid;
+    gap: 16px;
+  }
+
+  .chapter-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 20px;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .chapter-card:hover {
+    border-color: var(--gold);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.12);
+    transform: translateY(-2px);
+  }
+
+  .ch-num {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--border);
+    line-height: 1;
+    min-width: 48px;
+    text-align: center;
+  }
+  .chapter-card:hover .ch-num { color: var(--gold-light); }
+
+  .ch-info { min-width: 0; }
+  .ch-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 5px;
+  }
+  .ch-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .ch-links {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 14px;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-lecture {
+    background: var(--ink);
+    color: var(--cream);
+  }
+  .btn-lecture:hover { background: #2d2d4a; }
+  .btn-practice {
+    background: var(--warm);
+    color: var(--ink);
+    border: 1px solid var(--border);
+  }
+  .btn-practice:hover {
+    background: var(--gold);
+    color: white;
+    border-color: var(--gold);
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 30px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .chapter-card {
+      grid-template-columns: auto 1fr;
+      grid-template-rows: auto auto;
+    }
+    .ch-links {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+    }
+    header { padding: 40px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="course-tag">Financial Mathematics</div>
+    <h1>財務<span>數學</span><br>課程講義</h1>
+    <p class="subtitle">每章包含完整講義與互動練習，搭配 AI 輔助說明，幫助深化理解。</p>
+  </div>
+</header>
+
+<main>
+  <div class="section-label">課程章節</div>
+
+  <div class="chapters">
+
+    <div class="chapter-card">
+      <div class="ch-num">01</div>
+      <div class="ch-info">
+        <div class="ch-title">貨幣的時間價值與利率基礎</div>
+        <div class="ch-desc">現值、終值、單利與複利、實質利率與名目利率</div>
+      </div>
+      <div class="ch-links">
+        <a href="CH1_lecture.html" class="btn btn-lecture">📖 講義</a>
+        <a href="CH1_interactive.html" class="btn btn-practice">⚡ 練習</a>
+      </div>
+    </div>
+
+    <div class="chapter-card">
+      <div class="ch-num">02</div>
+      <div class="ch-info">
+        <div class="ch-title">現金流量與年金</div>
+        <div class="ch-desc">普通年金、期初年金、永續年金、成長年金</div>
+      </div>
+      <div class="ch-links">
+        <a href="CH2_lecture.html" class="btn btn-lecture">📖 講義</a>
+        <a href="CH2_interactive.html" class="btn btn-practice">⚡ 練習</a>
+      </div>
+    </div>
+
+    <div class="chapter-card">
+      <div class="ch-num">03</div>
+      <div class="ch-info">
+        <div class="ch-title">債券與股權證券的評價</div>
+        <div class="ch-desc">債券定價、到期殖利率、股票評價、DDM 模型</div>
+      </div>
+      <div class="ch-links">
+        <a href="CH3_lecture.html" class="btn btn-lecture">📖 講義</a>
+        <a href="CH3_interactive.html" class="btn btn-practice">⚡ 練習</a>
+      </div>
+    </div>
+
+    <div class="chapter-card">
+      <div class="ch-num">04</div>
+      <div class="ch-info">
+        <div class="ch-title">分期償還與貸款攤銷</div>
+        <div class="ch-desc">攤銷表、房貸計算、提前還款、剩餘本金</div>
+      </div>
+      <div class="ch-links">
+        <a href="CH4_lecture.html" class="btn btn-lecture">📖 講義</a>
+        <a href="CH4_interactive.html" class="btn btn-practice">⚡ 練習</a>
+      </div>
+    </div>
+
+    <div class="chapter-card">
+      <div class="ch-num">05</div>
+      <div class="ch-info">
+        <div class="ch-title">資本預算與長期投資決策</div>
+        <div class="ch-desc">NPV、IRR、回收期法、資本預算決策準則</div>
+      </div>
+      <div class="ch-links">
+        <a href="CH5_lecture.html" class="btn btn-lecture">📖 講義</a>
+        <a href="CH5_interactive.html" class="btn btn-practice">⚡ 練習</a>
+      </div>
+    </div>
+
+    <div class="chapter-card">
+      <div class="ch-num">06</div>
+      <div class="ch-info">
+        <div class="ch-title">報酬、風險與投資組合量化分析</div>
+        <div class="ch-desc">期望報酬、標準差、相關係數、效率前緣</div>
+      </div>
+      <div class="ch-links">
+        <a href="CH6_lecture.html" class="btn btn-lecture">📖 講義</a>
+        <a href="CH6_interactive.html" class="btn btn-practice">⚡ 練習</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>財務數學課程講義 · chadhsu226</footer>
+
+</body>
+</html>
