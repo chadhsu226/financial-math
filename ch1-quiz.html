@@ -7,341 +7,91 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0c1120;
-  --bg2: #141d2e;
-  --bg3: #1a2540;
-  --blue: #3b82f6;
-  --blue2: #60a5fa;
-  --green: #22c55e;
-  --red: #ef4444;
-  --yellow: #fbbf24;
-  --text: #e2e8f0;
-  --muted: #64748b;
-  --border: #1e3050;
+  --bg:#0c1120; --bg2:#141d2e; --bg3:#1a2540;
+  --blue:#3b82f6; --blue2:#60a5fa;
+  --green:#22c55e; --red:#ef4444; --yellow:#fbbf24;
+  --text:#e2e8f0; --muted:#64748b; --border:#1e3050;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Noto Sans TC', sans-serif;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-body::before {
-  content:'';
-  position:fixed; inset:0;
-  background-image:
-    linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
-  background-size: 32px 32px;
-  pointer-events:none;
-}
-
-.card {
-  position: relative;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  width: 100%;
-  max-width: 560px;
-  padding: 36px;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.5);
-}
-
-/* ── Header ── */
-.quiz-header {
-  margin-bottom: 28px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border);
-}
-.quiz-tag {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.68rem;
-  color: var(--blue2);
-  letter-spacing: 0.15em;
-  margin-bottom: 8px;
-}
-.quiz-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--text);
-}
-
-/* ── Screens ── */
-.screen { display: none; }
-.screen.active { display: block; }
-
-/* ── Waiting screen ── */
-.waiting-icon {
-  font-size: 3rem;
-  text-align: center;
-  margin: 20px 0 16px;
-  animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-.waiting-text {
-  text-align: center;
-  color: var(--muted);
-  font-size: 0.9rem;
-  margin-bottom: 28px;
-}
-
-/* ── Form fields ── */
-.field { margin-bottom: 16px; }
-.field label {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin-bottom: 6px;
-  letter-spacing: 0.05em;
-}
-.field input {
-  width: 100%;
-  padding: 10px 14px;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-size: 0.95rem;
-  font-family: 'Noto Sans TC', sans-serif;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.field input:focus { border-color: var(--blue); }
-
-/* ── Teacher door ── */
-.teacher-link {
-  display: block;
-  text-align: center;
-  margin-top: 20px;
-  font-size: 0.72rem;
-  color: var(--border);
-  cursor: pointer;
-  transition: color 0.2s;
-}
-.teacher-link:hover { color: var(--muted); }
-
-/* ── Timer ── */
-.timer-bar-wrap {
-  background: var(--bg3);
-  border-radius: 4px;
-  height: 6px;
-  margin-bottom: 24px;
-  overflow: hidden;
-}
-.timer-bar {
-  height: 100%;
-  background: var(--blue);
-  border-radius: 4px;
-  transition: width 1s linear, background 0.5s;
-  width: 100%;
-}
-.timer-display {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.85rem;
-  color: var(--blue2);
-  text-align: right;
-  margin-bottom: 6px;
-}
-
-/* ── Question ── */
-.q-progress {
-  font-size: 0.75rem;
-  color: var(--muted);
-  margin-bottom: 8px;
-  font-family: 'IBM Plex Mono', monospace;
-}
-.q-text {
-  font-size: 1rem;
-  line-height: 1.7;
-  margin-bottom: 20px;
-  color: var(--text);
-  font-weight: 500;
-}
-
-/* ── Options ── */
-.options { display: grid; gap: 10px; margin-bottom: 24px; }
-.option {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-  font-size: 0.9rem;
-}
-.option:hover { border-color: var(--blue); background: rgba(59,130,246,0.06); }
-.option.selected { border-color: var(--blue); background: rgba(59,130,246,0.12); }
-.option-letter {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.78rem;
-  color: var(--muted);
-  background: var(--bg);
-  border-radius: 4px;
-  padding: 2px 7px;
-  flex-shrink: 0;
-}
-.option.selected .option-letter { background: var(--blue); color: white; }
-
-/* ── Buttons ── */
-.btn {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: 'Noto Sans TC', sans-serif;
-  transition: opacity 0.2s, transform 0.1s;
-}
-.btn:hover { opacity: 0.88; transform: translateY(-1px); }
-.btn:active { transform: translateY(0); }
-.btn-primary { background: var(--blue); color: white; }
-.btn-green { background: var(--green); color: white; }
-.btn-sm {
-  width: auto;
-  padding: 8px 20px;
-  font-size: 0.82rem;
-}
-
-/* ── Nav row ── */
-.nav-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-.dot-nav { display: flex; gap: 6px; }
-.dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--border);
-  transition: background 0.2s;
-}
-.dot.answered { background: var(--blue); }
-.dot.current { background: var(--blue2); }
-
-/* ── Result screen ── */
-.score-big {
-  text-align: center;
-  font-size: 3.5rem;
-  font-weight: 700;
-  font-family: 'IBM Plex Mono', monospace;
-  color: var(--yellow);
-  margin: 16px 0 4px;
-  line-height: 1;
-}
-.score-label { text-align: center; font-size: 0.8rem; color: var(--muted); margin-bottom: 24px; }
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 24px;
-}
-.stat-box {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px;
-  text-align: center;
-}
-.stat-box .num {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--blue2);
-  line-height: 1;
-  margin-bottom: 4px;
-}
-.stat-box .lbl { font-size: 0.72rem; color: var(--muted); }
-
-.review { display: grid; gap: 8px; margin-bottom: 24px; }
-.review-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 0.82rem;
-  line-height: 1.5;
-}
-.review-item.correct { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); }
-.review-item.wrong { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); }
-.review-icon { flex-shrink: 0; font-size: 1rem; }
-
-/* ── Teacher modal ── */
-.modal-overlay {
-  display: none;
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.7);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 28px;
-  width: 300px;
-}
-.modal h3 { font-size: 1rem; margin-bottom: 16px; color: var(--text); }
-.modal-btns { display: flex; gap: 10px; margin-top: 16px; }
-.btn-ghost {
-  flex: 1; padding: 9px; border-radius: 8px;
-  background: transparent; border: 1px solid var(--border);
-  color: var(--muted); font-size: 0.85rem; cursor: pointer;
-  font-family: 'Noto Sans TC', sans-serif;
-}
-.btn-ghost:hover { border-color: var(--blue); color: var(--blue2); }
-
-/* ── Closed screen ── */
-.closed-icon { font-size: 3rem; text-align: center; margin: 20px 0 12px; }
-.closed-text { text-align: center; color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
-
-/* ── Sending indicator ── */
-.sending {
-  text-align: center;
-  font-size: 0.75rem;
-  color: var(--muted);
-  margin-top: 12px;
-  font-family: 'IBM Plex Mono', monospace;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(59,130,246,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.03) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;}
+.card{position:relative;background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:560px;padding:36px;box-shadow:0 24px 80px rgba(0,0,0,0.5);}
+.quiz-header{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.quiz-tag{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--blue2);letter-spacing:0.15em;margin-bottom:8px;}
+.quiz-title{font-size:1.2rem;font-weight:700;color:var(--text);}
+.screen{display:none;} .screen.active{display:block;}
+.waiting-icon{font-size:3rem;text-align:center;margin:20px 0 16px;}
+.pulse{animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.waiting-text{text-align:center;color:var(--muted);font-size:0.9rem;margin-bottom:28px;line-height:1.7;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:6px;letter-spacing:0.05em;}
+.field input{width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.95rem;font-family:'Noto Sans TC',sans-serif;outline:none;transition:border-color 0.2s;}
+.field input:focus{border-color:var(--blue);}
+.teacher-link{display:block;text-align:center;margin-top:20px;font-size:0.72rem;color:var(--border);cursor:pointer;transition:color 0.2s;}
+.teacher-link:hover{color:var(--muted);}
+.timer-bar-wrap{background:var(--bg3);border-radius:4px;height:6px;margin-bottom:24px;overflow:hidden;}
+.timer-bar{height:100%;background:var(--blue);border-radius:4px;transition:width 1s linear,background 0.5s;width:100%;}
+.timer-display{font-family:'IBM Plex Mono',monospace;font-size:0.85rem;color:var(--blue2);text-align:right;margin-bottom:6px;}
+.q-progress{font-size:0.75rem;color:var(--muted);margin-bottom:8px;font-family:'IBM Plex Mono',monospace;}
+.q-text{font-size:1rem;line-height:1.7;margin-bottom:20px;color:var(--text);font-weight:500;}
+.options{display:grid;gap:10px;margin-bottom:24px;}
+.option{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color 0.15s,background 0.15s;font-size:0.9rem;}
+.option:hover{border-color:var(--blue);background:rgba(59,130,246,0.06);}
+.option.selected{border-color:var(--blue);background:rgba(59,130,246,0.12);}
+.option-letter{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--muted);background:var(--bg);border-radius:4px;padding:2px 7px;flex-shrink:0;}
+.option.selected .option-letter{background:var(--blue);color:white;}
+.btn{width:100%;padding:12px;border:none;border-radius:10px;font-size:0.95rem;font-weight:600;cursor:pointer;font-family:'Noto Sans TC',sans-serif;transition:opacity 0.2s,transform 0.1s;}
+.btn:hover{opacity:0.88;transform:translateY(-1px);}
+.btn-primary{background:var(--blue);color:white;}
+.btn-green{background:var(--green);color:white;}
+.btn-sm{width:auto;padding:8px 20px;font-size:0.82rem;}
+.nav-row{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.dot-nav{display:flex;gap:6px;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.2s;}
+.dot.answered{background:var(--blue);}
+.dot.current{background:var(--blue2);}
+.score-big{text-align:center;font-size:3.5rem;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--yellow);margin:16px 0 4px;line-height:1;}
+.score-label{text-align:center;font-size:0.8rem;color:var(--muted);margin-bottom:24px;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+.stat-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+.stat-box .num{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:600;color:var(--blue2);line-height:1;margin-bottom:4px;}
+.stat-box .lbl{font-size:0.72rem;color:var(--muted);}
+.review{display:grid;gap:8px;margin-bottom:24px;}
+.review-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:8px;font-size:0.82rem;line-height:1.5;}
+.review-item.correct{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);}
+.review-item.wrong{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);}
+.review-icon{flex-shrink:0;font-size:1rem;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px;width:300px;}
+.modal h3{font-size:1rem;margin-bottom:16px;color:var(--text);}
+.modal-btns{display:flex;gap:10px;margin-top:16px;}
+.btn-ghost{flex:1;padding:9px;border-radius:8px;background:transparent;border:1px solid var(--border);color:var(--muted);font-size:0.85rem;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue2);}
+.closed-icon{font-size:3rem;text-align:center;margin:20px 0 12px;}
+.closed-text{text-align:center;color:var(--muted);font-size:0.9rem;line-height:1.7;}
+.sending{text-align:center;font-size:0.75rem;color:var(--muted);margin-top:12px;font-family:'IBM Plex Mono',monospace;}
+.already-text{text-align:center;color:var(--muted);font-size:0.9rem;line-height:1.7;margin-top:16px;}
 </style>
 </head>
 <body>
-
 <div class="card">
   <div class="quiz-header">
     <div class="quiz-tag">FINANCIAL MATH · CH1 · QUIZ</div>
     <div class="quiz-title">第一章隨堂測驗：貨幣的時間價值</div>
   </div>
 
-  <!-- 狀態一：等待老師開放 -->
+  <!-- 等待 -->
   <div class="screen active" id="screen-waiting">
-    <div class="field">
-      <label>學號</label>
-      <input type="text" id="input-sid" placeholder="請輸入學號" maxlength="20" autocomplete="off"/>
-    </div>
-    <div class="field">
-      <label>姓名</label>
-      <input type="text" id="input-name" placeholder="請輸入姓名" maxlength="20" autocomplete="off"/>
-    </div>
-    <div class="waiting-icon">⏳</div>
-    <div class="waiting-text">請等待老師開放作答...</div>
+    <div class="field"><label>學號</label><input type="text" id="input-sid" placeholder="請輸入學號" maxlength="20" autocomplete="off"/></div>
+    <div class="field"><label>姓名</label><input type="text" id="input-name" placeholder="請輸入姓名" maxlength="20" autocomplete="off"/></div>
+    <div class="waiting-icon pulse" id="wait-icon">⏳</div>
+    <div class="waiting-text" id="wait-text">請等待老師開放作答...</div>
     <div class="teacher-link" onclick="openTeacherModal()">— 老師入口 —</div>
   </div>
 
-  <!-- 狀態二：作答中 -->
+  <!-- 作答 -->
   <div class="screen" id="screen-quiz">
     <div class="timer-display" id="timer-display">05:00</div>
     <div class="timer-bar-wrap"><div class="timer-bar" id="timer-bar"></div></div>
@@ -354,20 +104,23 @@ body::before {
     </div>
   </div>
 
-  <!-- 狀態三：時間截止 -->
+  <!-- 截止 -->
   <div class="screen" id="screen-closed">
     <div class="closed-icon">🔒</div>
-    <div class="closed-text">
-      作答時間已截止<br>
-      <span style="font-size:0.8rem;color:var(--border);margin-top:8px;display:block;">本次測驗得分為 0 分</span>
-    </div>
+    <div class="closed-text">作答時間已截止<br><span style="font-size:0.8rem;color:var(--border);margin-top:8px;display:block;">本次測驗得分為 0 分</span></div>
   </div>
 
-  <!-- 狀態四：結果 -->
+  <!-- 已作答 -->
+  <div class="screen" id="screen-already">
+    <div class="closed-icon">✅</div>
+    <div class="already-text">你已經作答過本次測驗了！<br><span style="font-size:0.8rem;margin-top:8px;display:block;">如有問題請聯絡老師。</span></div>
+  </div>
+
+  <!-- 結果 -->
   <div class="screen" id="screen-result">
     <div class="score-big" id="result-score">--</div>
     <div class="score-label">本次得分</div>
-    <div class="stats-grid" id="stats-grid">
+    <div class="stats-grid">
       <div class="stat-box"><div class="num" id="stat-count">--</div><div class="lbl">作答人數</div></div>
       <div class="stat-box"><div class="num" id="stat-avg">--</div><div class="lbl">班級平均</div></div>
       <div class="stat-box"><div class="num" id="stat-high">--</div><div class="lbl">最高分</div></div>
@@ -378,16 +131,12 @@ body::before {
   </div>
 </div>
 
-<!-- 老師密碼 Modal -->
+<!-- 老師 Modal -->
 <div class="modal-overlay" id="teacher-modal">
   <div class="modal">
     <h3>🔑 老師入口</h3>
-    <div class="field">
-      <label>請輸入密碼</label>
-      <input type="password" id="teacher-pw" placeholder="密碼" autocomplete="off"
-             onkeydown="if(event.key==='Enter')activateQuiz()"/>
-    </div>
-    <div id="pw-error" style="font-size:0.78rem;color:var(--red);margin-top:6px;display:none;">密碼錯誤</div>
+    <div class="field"><label>請輸入密碼</label><input type="password" id="teacher-pw" placeholder="密碼" autocomplete="off" onkeydown="if(event.key==='Enter')activateQuiz()"/></div>
+    <div id="pw-error" style="font-size:0.78rem;color:var(--red);margin-top:6px;display:none;"></div>
     <div class="modal-btns">
       <button class="btn-ghost" onclick="closeTeacherModal()">取消</button>
       <button class="btn btn-primary btn-sm" onclick="activateQuiz()">開放作答</button>
@@ -396,294 +145,244 @@ body::before {
 </div>
 
 <script>
-// ════════════════════════════════
-//  設定區
-// ════════════════════════════════
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycby_IpaD1nzRmZrlOscHjne7OhysSuiqS5KDJYxV3pKn_XMDJRjwISy2-_LvqxVl6hy4/exec';
-const TEACHER_PASSWORD = 'chad2026';
-const QUIZ_DURATION = 5 * 60; // 秒
-
-// ════════════════════════════════
-//  題庫
-// ════════════════════════════════
 const QUESTIONS = [
   {
-    text: '將 $50,000 元存入銀行，年利率 3%，以【單利】計算，10 年後的本利和為多少？',
-    options: ['$64,500', '$65,000', '$67,196', '$63,000'],
-    answer: 0,  // 索引 0 = A
-    explain: 'FV = 50000 × (1 + 0.03 × 10) = 50000 × 1.3 = $65,000'
+    text:'將 $50,000 元存入銀行，年利率 3%，以【單利】計算，10 年後的本利和為多少？',
+    options:['$64,500','$65,000','$67,196','$63,000'],
+    answer:1,
+    explain:'FV = 50000 × (1 + 0.03 × 10) = 50000 × 1.3 = $65,000'
   },
   {
-    text: '某投資以【每年複利】方式，本金 $8,000、年利率 5%，4 年後的未來價值最接近？',
-    options: ['$9,200', '$9,500', '$9,724', '$10,000'],
-    answer: 2,
-    explain: 'FV = 8000 × (1.05)⁴ ≈ 8000 × 1.2155 ≈ $9,724'
+    text:'某投資以【每年複利】方式，本金 $8,000、年利率 5%，4 年後的未來價值最接近？',
+    options:['$9,200','$9,500','$9,724','$10,000'],
+    answer:2,
+    explain:'FV = 8000 × (1.05)⁴ ≈ 8000 × 1.2155 ≈ $9,724'
   },
   {
-    text: '名目年利率 12%，每月複利（m=12），實質年利率 EAR 約為多少？',
-    options: ['12.00%', '12.36%', '12.68%', '13.00%'],
-    answer: 2,
-    explain: 'EAR = (1 + 0.12/12)¹² − 1 = (1.01)¹² − 1 ≈ 12.68%'
+    text:'名目年利率 12%，每月複利（m=12），實質年利率 EAR 約為多少？',
+    options:['12.00%','12.36%','12.68%','13.00%'],
+    answer:2,
+    explain:'EAR = (1 + 0.12/12)¹² − 1 = (1.01)¹² − 1 ≈ 12.68%'
   }
 ];
 
-// ════════════════════════════════
-//  狀態
-// ════════════════════════════════
-let currentQ = 0;
-let answers = Array(QUESTIONS.length).fill(null);
-let timerInterval = null;
-let timeLeft = QUIZ_DURATION;
-let quizStartTime = null;
-let studentId = '';
-let studentName = '';
+let currentQ=0, answers=Array(QUESTIONS.length).fill(null);
+let timerInterval=null, timeLeft=300, quizDuration=300;
+let studentId='', studentName='';
+let pollInterval=null;
 
-// ════════════════════════════════
-//  老師開放
-// ════════════════════════════════
+// ── 輪詢狀態（每3秒查一次）──
+function startPolling() {
+  pollStatus();
+  pollInterval = setInterval(pollStatus, 3000);
+}
+
+function pollStatus() {
+  fetch(SHEET_URL + '?action=status')
+    .then(r => r.json())
+    .then(data => {
+      if (data.state === 'OPEN') {
+        clearInterval(pollInterval);
+        quizDuration = data.timeLeft || 300;
+        timeLeft = data.timeLeft || 300;
+        if (timeLeft <= 0) { switchScreen('closed'); return; }
+        checkAlreadyAnswered();
+      } else if (data.state === 'CLOSED') {
+        document.getElementById('wait-icon').textContent = '🔒';
+        document.getElementById('wait-icon').classList.remove('pulse');
+        document.getElementById('wait-text').textContent = '本次測驗已截止。';
+      }
+    })
+    .catch(() => {});
+}
+
+function checkAlreadyAnswered() {
+  const sid = document.getElementById('input-sid').value.trim();
+  const name = document.getElementById('input-name').value.trim();
+  if (!sid || !name) {
+    document.getElementById('wait-icon').textContent = '✏️';
+    document.getElementById('wait-icon').classList.remove('pulse');
+    document.getElementById('wait-text').textContent = '⚠️ 老師已開放！請填寫學號和姓名後進入作答。';
+    const existing = document.getElementById('enter-btn');
+    if (!existing) {
+      const btn = document.createElement('button');
+      btn.id = 'enter-btn';
+      btn.className = 'btn btn-primary';
+      btn.style.marginTop = '8px';
+      btn.textContent = '進入作答 →';
+      btn.onclick = tryEnter;
+      document.getElementById('wait-text').after(btn);
+    }
+    return;
+  }
+  fetch(`${SHEET_URL}?action=check&sid=${encodeURIComponent(sid)}&name=${encodeURIComponent(name)}`)
+    .then(r => r.json())
+    .then(data => {
+      if (data.exists) { switchScreen('already'); }
+      else { enterQuiz(); }
+    })
+    .catch(() => { enterQuiz(); });
+}
+
+function tryEnter() {
+  const sid = document.getElementById('input-sid').value.trim();
+  const name = document.getElementById('input-name').value.trim();
+  if (!sid) { document.getElementById('input-sid').focus(); return; }
+  if (!name) { document.getElementById('input-name').focus(); return; }
+  checkAlreadyAnswered();
+}
+
+// ── 老師開放 ──
 function openTeacherModal() {
   document.getElementById('teacher-modal').classList.add('open');
-  document.getElementById('teacher-pw').value = '';
-  document.getElementById('pw-error').style.display = 'none';
-  setTimeout(() => document.getElementById('teacher-pw').focus(), 100);
+  document.getElementById('teacher-pw').value='';
+  document.getElementById('pw-error').style.display='none';
+  setTimeout(()=>document.getElementById('teacher-pw').focus(),100);
 }
 function closeTeacherModal() {
   document.getElementById('teacher-modal').classList.remove('open');
 }
 function activateQuiz() {
   const pw = document.getElementById('teacher-pw').value;
-  if (pw !== TEACHER_PASSWORD) {
-    document.getElementById('pw-error').style.display = 'block';
-    return;
-  }
-  closeTeacherModal();
-  quizStartTime = Date.now();
-  showQuiz();
+  const errEl = document.getElementById('pw-error');
+  errEl.style.display='none';
+  fetch(`${SHEET_URL}?action=open&pw=${encodeURIComponent(pw)}`)
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'ok') {
+        closeTeacherModal();
+        quizDuration = 300; timeLeft = 300;
+        checkAlreadyAnswered();
+      } else {
+        errEl.textContent = data.msg || '密碼錯誤';
+        errEl.style.display='block';
+      }
+    })
+    .catch(()=>{
+      errEl.textContent='網路錯誤，請再試一次';
+      errEl.style.display='block';
+    });
 }
 
-// ════════════════════════════════
-//  開始作答
-// ════════════════════════════════
-function showQuiz() {
-  const sid = document.getElementById('input-sid').value.trim();
-  const name = document.getElementById('input-name').value.trim();
-  if (!sid || !name) {
-    // 如果學生還沒填，先跳回等待畫面讓他們知道已開放
-    switchScreen('waiting');
-    document.getElementById('input-sid').style.borderColor = sid ? '' : 'var(--red)';
-    document.getElementById('input-name').style.borderColor = name ? '' : 'var(--red)';
-    document.getElementById('input-sid').focus();
-    // 把等待文字改成提示
-    document.querySelector('.waiting-text').textContent = '⚠️ 請先填寫學號和姓名再送出！';
-    document.querySelector('.waiting-icon').textContent = '✏️';
-    // 讓學生填完後按Enter或點擊後進入
-    document.getElementById('input-name').onkeydown = e => { if(e.key==='Enter') enterQuiz(); };
-    document.getElementById('input-sid').onkeydown = e => { if(e.key==='Enter') document.getElementById('input-name').focus(); };
-    // 把等待區改成可進入按鈕
-    const btn = document.createElement('button');
-    btn.className = 'btn btn-primary';
-    btn.textContent = '開始作答 →';
-    btn.style.marginTop = '8px';
-    btn.onclick = enterQuiz;
-    document.querySelector('.waiting-text').after(btn);
-    return;
-  }
-  enterQuiz();
-}
-
+// ── 進入作答 ──
 function enterQuiz() {
   studentId = document.getElementById('input-sid').value.trim();
   studentName = document.getElementById('input-name').value.trim();
-  if (!studentId || !studentName) return;
-
-  // 檢查時間是否還在
-  if (quizStartTime && (Date.now() - quizStartTime) >= QUIZ_DURATION * 1000) {
-    switchScreen('closed');
-    return;
-  }
-
   switchScreen('quiz');
   renderQuestion();
   startTimer();
 }
 
-// ════════════════════════════════
-//  題目渲染
-// ════════════════════════════════
+// ── 題目 ──
 function renderQuestion() {
   const q = QUESTIONS[currentQ];
   document.getElementById('q-progress').textContent = `第 ${currentQ+1} 題 / 共 ${QUESTIONS.length} 題`;
   document.getElementById('q-text').textContent = q.text;
-
-  const optContainer = document.getElementById('options');
-  optContainer.innerHTML = '';
-  const letters = ['A','B','C','D'];
-  q.options.forEach((opt, i) => {
-    const div = document.createElement('div');
-    div.className = 'option' + (answers[currentQ] === i ? ' selected' : '');
-    div.innerHTML = `<span class="option-letter">${letters[i]}</span>${opt}`;
-    div.onclick = () => selectOption(i);
+  const letters=['A','B','C','D'];
+  const optContainer=document.getElementById('options');
+  optContainer.innerHTML='';
+  q.options.forEach((opt,i)=>{
+    const div=document.createElement('div');
+    div.className='option'+(answers[currentQ]===i?' selected':'');
+    div.innerHTML=`<span class="option-letter">${letters[i]}</span>${opt}`;
+    div.onclick=()=>selectOption(i);
     optContainer.appendChild(div);
   });
-
-  // 點點導航
-  const dotNav = document.getElementById('dot-nav');
-  dotNav.innerHTML = '';
-  QUESTIONS.forEach((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'dot' + (answers[i] !== null ? ' answered' : '') + (i === currentQ ? ' current' : '');
+  const dotNav=document.getElementById('dot-nav');
+  dotNav.innerHTML='';
+  QUESTIONS.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot'+(answers[i]!==null?' answered':'')+(i===currentQ?' current':'');
     dotNav.appendChild(d);
   });
-
-  // 最後一題改成送出
-  const btn = document.getElementById('btn-next');
-  if (currentQ === QUESTIONS.length - 1) {
-    btn.textContent = '送出答案 ✓';
-    btn.className = 'btn btn-green btn-sm';
-    btn.onclick = submitQuiz;
+  const btn=document.getElementById('btn-next');
+  if(currentQ===QUESTIONS.length-1){
+    btn.textContent='送出答案 ✓';
+    btn.className='btn btn-green btn-sm';
+    btn.onclick=submitQuiz;
   } else {
-    btn.textContent = '下一題 →';
-    btn.className = 'btn btn-primary btn-sm';
-    btn.onclick = nextQuestion;
+    btn.textContent='下一題 →';
+    btn.className='btn btn-primary btn-sm';
+    btn.onclick=nextQuestion;
   }
 }
 
-function selectOption(i) {
-  answers[currentQ] = i;
-  renderQuestion();
-}
+function selectOption(i){answers[currentQ]=i;renderQuestion();}
+function nextQuestion(){if(currentQ<QUESTIONS.length-1){currentQ++;renderQuestion();}}
 
-function nextQuestion() {
-  if (currentQ < QUESTIONS.length - 1) {
-    currentQ++;
-    renderQuestion();
-  }
-}
-
-// ════════════════════════════════
-//  計時器
-// ════════════════════════════════
-function startTimer() {
-  if (quizStartTime) {
-    const elapsed = Math.floor((Date.now() - quizStartTime) / 1000);
-    timeLeft = Math.max(0, QUIZ_DURATION - elapsed);
-  } else {
-    timeLeft = QUIZ_DURATION;
-  }
+// ── 計時器 ──
+function startTimer(){
   updateTimerDisplay();
-  timerInterval = setInterval(() => {
+  timerInterval=setInterval(()=>{
     timeLeft--;
     updateTimerDisplay();
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      forceSubmit();
-    }
-  }, 1000);
+    if(timeLeft<=0){clearInterval(timerInterval);submitQuiz(true);}
+  },1000);
+}
+function updateTimerDisplay(){
+  const m=Math.floor(timeLeft/60).toString().padStart(2,'0');
+  const s=(timeLeft%60).toString().padStart(2,'0');
+  document.getElementById('timer-display').textContent=`${m}:${s}`;
+  const pct=(timeLeft/quizDuration)*100;
+  const bar=document.getElementById('timer-bar');
+  bar.style.width=pct+'%';
+  bar.style.background=pct<20?'var(--red)':pct<50?'var(--yellow)':'var(--blue)';
+  document.getElementById('timer-display').style.color=pct<20?'var(--red)':pct<50?'var(--yellow)':'var(--blue2)';
 }
 
-function updateTimerDisplay() {
-  const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-  const s = (timeLeft % 60).toString().padStart(2, '0');
-  document.getElementById('timer-display').textContent = `${m}:${s}`;
-  const pct = (timeLeft / QUIZ_DURATION) * 100;
-  const bar = document.getElementById('timer-bar');
-  bar.style.width = pct + '%';
-  if (pct < 20) bar.style.background = 'var(--red)';
-  else if (pct < 50) bar.style.background = 'var(--yellow)';
-  else bar.style.background = 'var(--blue)';
-  document.getElementById('timer-display').style.color =
-    pct < 20 ? 'var(--red)' : pct < 50 ? 'var(--yellow)' : 'var(--blue2)';
-}
-
-function forceSubmit() {
-  submitQuiz(true);
-}
-
-// ════════════════════════════════
-//  送出
-// ════════════════════════════════
-function submitQuiz(forced = false) {
+// ── 送出 ──
+function submitQuiz(forced=false){
   clearInterval(timerInterval);
-
-  // 計算分數
-  const perQ = Math.floor(100 / QUESTIONS.length);
-  let score = 0;
-  QUESTIONS.forEach((q, i) => {
-    if (answers[i] === q.answer) score += perQ;
-  });
-
+  const perQ=Math.floor(100/QUESTIONS.length);
+  let score=0;
+  QUESTIONS.forEach((q,i)=>{if(answers[i]===q.answer)score+=perQ;});
   switchScreen('result');
-
-  // 顯示本人分數
-  document.getElementById('result-score').textContent = score + ' 分';
-
-  // 解析每題
-  const reviewEl = document.getElementById('review');
-  reviewEl.innerHTML = '';
-  const letters = ['A','B','C','D'];
-  QUESTIONS.forEach((q, i) => {
-    const correct = answers[i] === q.answer;
-    const div = document.createElement('div');
-    div.className = 'review-item ' + (correct ? 'correct' : 'wrong');
-    div.innerHTML = `
-      <span class="review-icon">${correct ? '✅' : '❌'}</span>
-      <div>
-        <div style="font-weight:500;margin-bottom:2px;">第${i+1}題：${correct ? '答對' : `你答 ${answers[i]!==null ? letters[answers[i]] : '未作答'}，正確答案 ${letters[q.answer]}`}</div>
-        <div style="color:var(--muted);font-size:0.78rem;">${q.explain}</div>
-      </div>`;
+  document.getElementById('result-score').textContent=score+' 分';
+  const letters=['A','B','C','D'];
+  const reviewEl=document.getElementById('review');
+  reviewEl.innerHTML='';
+  QUESTIONS.forEach((q,i)=>{
+    const correct=answers[i]===q.answer;
+    const div=document.createElement('div');
+    div.className='review-item '+(correct?'correct':'wrong');
+    div.innerHTML=`<span class="review-icon">${correct?'✅':'❌'}</span>
+      <div><div style="font-weight:500;margin-bottom:2px;">第${i+1}題：${correct?'答對':`你答 ${answers[i]!==null?letters[answers[i]]:'未作答'}，正確答案 ${letters[q.answer]}`}</div>
+      <div style="color:var(--muted);font-size:0.78rem;">${q.explain}</div></div>`;
     reviewEl.appendChild(div);
   });
-
-  // 送資料到 Sheets，回來後顯示統計
-  document.getElementById('sending-status').textContent = '正在送出成績...';
-  fetch(SHEET_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      sid: studentId,
-      name: studentName,
-      score: score,
-      ans: answers.map(a => a !== null ? ['A','B','C','D'][a] : '—').join(','),
-      chapter: 'CH1'
-    })
-  }).then(() => {
-    document.getElementById('sending-status').textContent = '✅ 成績已記錄';
-    // 嘗試取得統計（需要 Apps Script 支援 GET）
+  document.getElementById('sending-status').textContent='正在送出成績...';
+  fetch(SHEET_URL,{
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({sid:studentId,name:studentName,score:score,ans:answers.map(a=>a!==null?['A','B','C','D'][a]:'—').join(','),chapter:'CH1'})
+  }).then(()=>{
+    document.getElementById('sending-status').textContent='✅ 成績已記錄';
     fetchStats(score);
-  }).catch(() => {
-    document.getElementById('sending-status').textContent = '⚠️ 網路問題，成績未記錄';
+  }).catch(()=>{
+    document.getElementById('sending-status').textContent='⚠️ 網路問題，成績未記錄';
   });
 }
 
-function fetchStats(myScore) {
-  // 簡單模擬（實際需要 Apps Script doGet 支援）
-  // 先顯示佔位符，實際部署後可串接
-  document.getElementById('stat-count').textContent = '--';
-  document.getElementById('stat-avg').textContent = '--';
-  document.getElementById('stat-high').textContent = '--';
-  document.getElementById('stat-rank').textContent = '--';
+function fetchStats(myScore){
+  fetch(`${SHEET_URL}?action=status`)
+    .then(r=>r.json())
+    .then(()=>{
+      document.getElementById('stat-count').textContent='--';
+      document.getElementById('stat-avg').textContent='--';
+      document.getElementById('stat-high').textContent='--';
+      document.getElementById('stat-rank').textContent='--';
+    }).catch(()=>{});
 }
 
-// ════════════════════════════════
-//  工具
-// ════════════════════════════════
-function switchScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
+function switchScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
 }
 
-// 讓學生在等待時填好資料後，老師開放即可直接進入
-setInterval(() => {
-  if (quizStartTime) {
-    const el = document.querySelector('#screen-waiting .waiting-text');
-    if (el && el.textContent.includes('等待老師')) {
-      const sid = document.getElementById('input-sid').value.trim();
-      const name = document.getElementById('input-name').value.trim();
-      if (sid && name) enterQuiz();
-    }
-  }
-}, 1000);
+// 啟動輪詢
+startPolling();
 </script>
 </body>
 </html>
