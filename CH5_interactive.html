@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CH5 資本預算互動儀表板</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Noto Sans TC', sans-serif; background-color: #F5F5F4; color: #292524; }
+    .btn-primary { background-color: #C026D3; color: #FFFFFF; transition: background-color 0.3s; }
+    .btn-primary:hover { background-color: #A21CAF; }
+    .btn-secondary { background-color: #A8A29E; color: #292524; transition: background-color 0.3s; }
+    .btn-secondary:hover { background-color: #78716C; }
+    .btn-step { background-color: #0D9488; color: #FFFFFF; transition: background-color 0.3s; }
+    .btn-step:hover { background-color: #0F766E; }
+    .card { background-color: #FFFFFF; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); border: 1px solid #E7E5E4; }
+    .input-field { border-color: #D6D3D1; border-width:1px; border-style:solid; border-radius:0.375rem; transition: border-color 0.3s, box-shadow 0.3s; }
+    .input-field:focus { border-color: #C026D3; box-shadow: 0 0 0 2px rgba(192,38,211,0.2); outline: none; }
+    .nav-link { transition: color 0.3s, border-color 0.3s; }
+    .nav-link.active { color: #C026D3; border-bottom-color: #C026D3; }
+    .nav-link:not(.active):hover { color: #A21CAF; }
+    .chart-container { position: relative; width: 100%; max-width: 700px; height: 350px; margin: 0 auto; max-height: 40vh; }
+    .npv-positive { background-color: #F0F9FF; color: #075985; border: 1px solid #BAE6FD; }
+    .npv-negative { background-color: #FFF1F2; color: #9F1239; border: 1px solid #FECACA; }
+    .npv-neutral  { background-color: #F3F4F6; color: #4B5563; border: 1px solid #D1D5DB; }
+    /* AI 功能區塊 */
+    .ai-section { border-top: 2px dashed #F0ABFC; margin-top: 1.5rem; padding-top: 1.5rem; }
+    .ai-tab-btn { padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; transition: all 0.2s; cursor: pointer; border: 2px solid transparent; }
+    .ai-tab-btn.active-scenario { background-color: #C026D3; color: white; }
+    .ai-tab-btn.active-steps   { background-color: #0D9488; color: white; }
+    .ai-tab-btn:not(.active-scenario):not(.active-steps) { background-color: #FDF4FF; color: #86198F; border-color: #F0ABFC; }
+    .ai-tab-btn:not(.active-scenario):not(.active-steps):hover { background-color: #FAE8FF; }
+    .step-block { background: linear-gradient(135deg,#F0FDFA 0%,#CCFBF1 100%); border-left: 4px solid #0D9488; border-radius: 0.5rem; padding: 0.75rem 1rem; margin-bottom: 0.5rem; }
+    .step-number { display:inline-flex; align-items:center; justify-content:center; width:1.75rem; height:1.75rem; background-color:#0D9488; color:white; border-radius:9999px; font-size:0.75rem; font-weight:700; margin-right:0.5rem; flex-shrink:0; }
+    /* 問答框 */
+    .chat-bubble-user { background-color: #FAE8FF; border-radius: 1rem 1rem 0.25rem 1rem; padding: 0.75rem 1rem; margin-left: 2rem; }
+    .chat-bubble-ai   { background-color: #FDF4FF; border: 1px solid #F0ABFC; border-radius: 1rem 1rem 1rem 0.25rem; padding: 0.75rem 1rem; margin-right: 2rem; }
+    .chat-input { border: 2px solid #F0ABFC; border-radius: 0.75rem; padding: 0.6rem 1rem; width: 100%; outline: none; transition: border-color 0.2s; font-size: 0.9rem; }
+    .chat-input:focus { border-color: #C026D3; }
+    .typing-dot { display:inline-block; width:0.5rem; height:0.5rem; background-color:#C026D3; border-radius:50%; animation:typingBounce 1.2s infinite ease-in-out; }
+    .typing-dot:nth-child(2){animation-delay:0.2s} .typing-dot:nth-child(3){animation-delay:0.4s}
+    @keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+    /* 測驗卷樣式 */
+    .quiz-radio:checked + span { font-weight: bold; color: #C026D3; }
+    .quiz-option-container { transition: all 0.2s; }
+    .quiz-option-container:hover { background-color: #FDF4FF; }
+  </style>
+</head>
+<body class="antialiased">
+  <header class="bg-white shadow-sm sticky top-0 z-10">
+    <div class="container mx-auto px-4 py-3">
+      <h1 class="text-2xl md:text-3xl font-bold text-fuchsia-700">CH5 資本預算與長期投資決策</h1>
+      <p class="text-stone-500 mt-1">應用 NPV, IRR 與回收期評估專案可行性</p>
+    </div>
+  </header>
+  <nav class="bg-white/70 backdrop-blur-md sticky top-[80px] z-10 shadow-sm">
+    <div class="container mx-auto px-4">
+      <ul class="flex space-x-4 sm:space-x-8 border-b border-stone-200 overflow-x-auto">
+        <li><a href="#analyzer"  class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent active">NPV & IRR 分析器</a></li>
+        <li><a href="#payback"   class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">回收期計算機</a></li>
+        <li><a href="#conflict"  class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">決策衝突模擬</a></li>
+        <li><a href="#concepts"  class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">核心概念</a></li>
+        <li><a href="#ai-chatbox" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">💬 AI 問答</a></li>
+        <li><a href="#quiz-generator" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">📝 動態測驗卷</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container mx-auto p-4 md:p-8 space-y-12">
+
+    <!-- 1. NPV & IRR 分析器 -->
+    <section id="analyzer" class="scroll-mt-36">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-stone-800">淨現值 (NPV) 與內部報酬率 (IRR) 分析器</h2>
+        <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">評估單一專案財務可行性。$NPV=\sum_{t=0}^{n}\tfrac{CF_{t}}{(1+r)^{t}}$</p>
+      </div>
+      <div class="card p-6 md:p-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          <div>
+            <h3 class="text-xl font-bold mb-4">專案參數輸入</h3>
+            <div class="space-y-4">
+              <div>
+                <label for="initial-investment" class="block text-sm font-medium text-stone-700">初始投資成本 ($\text{CF}_0$)</label>
+                <input type="number" id="initial-investment" value="100000" class="mt-1 block w-full input-field p-2" />
+              </div>
+              <div>
+                <label for="discount-rate" class="block text-sm font-medium text-stone-700">資本成本 / 折現率 ($\text{r}$) %</label>
+                <input type="number" id="discount-rate" value="10" class="mt-1 block w-full input-field p-2" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-stone-700">預期年度淨現金流入 ($\text{CF}_1 - \text{CF}_n$)</label>
+                <div id="cashflow-inputs" class="mt-1 space-y-2">
+                  <input type="number" placeholder="第 1 年現金流入" value="40000" class="cashflow-input block w-full input-field p-2" />
+                  <input type="number" placeholder="第 2 年現金流入" value="40000" class="cashflow-input block w-full input-field p-2" />
+                  <input type="number" placeholder="第 3 年現金流入" value="40000" class="cashflow-input block w-full input-field p-2" />
+                </div>
+                <button id="add-cashflow" class="mt-2 text-sm text-fuchsia-600 hover:text-fuchsia-800 font-medium">+ 新增年度</button>
+              </div>
+              <div class="flex space-x-2 pt-2">
+                <button id="load-example-1" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">載入範例 5.1</button>
+                <button id="clear-analyzer" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">清除</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold mb-4">分析結果</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="card p-4 bg-fuchsia-50 border border-fuchsia-200">
+                <h4 class="font-semibold text-stone-600">淨現值 ($\text{NPV}$)</h4>
+                <p id="npv-result" class="text-3xl font-bold text-fuchsia-700 mt-1">NT$ 0.00</p>
+              </div>
+              <div class="card p-4 bg-fuchsia-50 border border-fuchsia-200">
+                <h4 class="font-semibold text-stone-600">內部報酬率 ($\text{IRR}$)</h4>
+                <p id="irr-result" class="text-3xl font-bold text-fuchsia-700 mt-1">0.00 %</p>
+              </div>
+            </div>
+            <div id="decision-card" class="card p-4 text-center transition-colors duration-300 mt-4 npv-neutral">
+              <h4 class="text-lg font-bold">決策建議</h4>
+              <p id="decision-text" class="text-base mt-1"></p>
+            </div>
+
+            <!-- AI 功能區：NPV/IRR -->
+            <div class="ai-section">
+              <p class="text-xs font-bold text-fuchsia-400 uppercase tracking-widest mb-3">✦ AI 輔助學習</p>
+              <div class="flex gap-2 mb-3">
+                <button id="npv-tab-scenario" class="ai-tab-btn active-scenario" onclick="switchAITab('npv','scenario')">✨ 決策情境分析</button>
+                <button id="npv-tab-steps"    class="ai-tab-btn"                onclick="switchAITab('npv','steps')">📖 逐步解題</button>
+              </div>
+              <button id="npv-ai-btn" class="btn-primary py-2 px-4 rounded-md font-semibold w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50" disabled onclick="triggerAI('npv')">
+                <span>✨</span><span id="npv-ai-btn-label">決策解讀與情境分析 (Gemini AI)</span>
+              </button>
+              <div id="npv-ai-loading" class="hidden mt-3 text-center text-fuchsia-600 font-medium text-sm">
+                <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+                <span class="ml-2">AI 分析中...</span>
+              </div>
+              <div id="npv-ai-result" class="mt-3 hidden"></div>
+            </div>
+
+            <div class="mt-8">
+              <h3 class="text-xl font-bold mb-4 text-center">折現現金流量視覺化</h3>
+              <div class="chart-container"><canvas id="npvChart"></canvas></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 回收期計算機 -->
+    <section id="payback" class="scroll-mt-36">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-stone-800">投資回收期計算機</h2>
+        <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">計算普通回收期與折現回收期。</p>
+      </div>
+      <div class="card p-6 md:p-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div>
+            <h3 class="text-xl font-bold mb-4">回收期參數輸入</h3>
+            <div class="space-y-4">
+              <div>
+                <label for="payback-investment" class="block text-sm font-medium text-stone-700">初始投資成本</label>
+                <input type="number" id="payback-investment" value="250000" class="mt-1 block w-full input-field p-2" />
+              </div>
+              <div>
+                <label for="payback-rate" class="block text-sm font-medium text-stone-700">折現率 (%)</label>
+                <input type="number" id="payback-rate" value="12" class="mt-1 block w-full input-field p-2" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-stone-700">預期年度淨現金流入</label>
+                <div id="payback-cashflow-inputs" class="mt-1 space-y-2">
+                  <input type="number" placeholder="第 1 年現金流入" value="100000" class="payback-cashflow-input block w-full input-field p-2" />
+                  <input type="number" placeholder="第 2 年現金流入" value="120000" class="payback-cashflow-input block w-full input-field p-2" />
+                  <input type="number" placeholder="第 3 年現金流入" value="80000"  class="payback-cashflow-input block w-full input-field p-2" />
+                  <input type="number" placeholder="第 4 年現金流入" value="50000"  class="payback-cashflow-input block w-full input-field p-2" />
+                </div>
+                <button id="add-payback-cashflow" class="mt-2 text-sm text-fuchsia-600 hover:text-fuchsia-800 font-medium">+ 新增年度</button>
+              </div>
+              <div class="flex space-x-2 pt-2">
+                <button id="load-example-3" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">載入範例 5.3</button>
+                <button id="clear-payback" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">清除</button>
+              </div>
+            </div>
+            <div class="mt-6 grid grid-cols-2 gap-4">
+              <div class="card p-4 bg-fuchsia-50 border border-fuchsia-200"><h4 class="font-semibold text-stone-600">投資回收期</h4><p id="payback-result" class="text-2xl font-bold text-fuchsia-700 mt-1">0.000 年</p></div>
+              <div class="card p-4 bg-fuchsia-50 border border-fuchsia-200"><h4 class="font-semibold text-stone-600">折現回收期</h4><p id="discounted-payback-result" class="text-2xl font-bold text-fuchsia-700 mt-1">0.000 年</p></div>
+            </div>
+
+            <!-- AI 功能區：回收期 -->
+            <div class="ai-section">
+              <p class="text-xs font-bold text-fuchsia-400 uppercase tracking-widest mb-3">✦ AI 輔助學習</p>
+              <div class="flex gap-2 mb-3">
+                <button id="payback-tab-scenario" class="ai-tab-btn active-scenario" onclick="switchAITab('payback','scenario')">✨ 回收期解讀</button>
+                <button id="payback-tab-steps"    class="ai-tab-btn"                onclick="switchAITab('payback','steps')">📖 逐步解題</button>
+              </div>
+              <button id="payback-ai-btn" class="btn-primary py-2 px-4 rounded-md font-semibold w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50" disabled onclick="triggerAI('payback')">
+                <span>✨</span><span id="payback-ai-btn-label">回收期解讀 (Gemini AI)</span>
+              </button>
+              <div id="payback-ai-loading" class="hidden mt-3 text-center text-fuchsia-600 font-medium text-sm">
+                <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+                <span class="ml-2">AI 分析中...</span>
+              </div>
+              <div id="payback-ai-result" class="mt-3 hidden"></div>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold mb-4">回收過程分析表</h3>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-stone-200">
+                <thead class="bg-stone-50">
+                  <tr>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-stone-500 uppercase">年度</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-stone-500 uppercase">現金流</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-stone-500 uppercase">累積現金流</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-stone-500 uppercase">折現現金流</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-stone-500 uppercase">累積折現流</th>
+                  </tr>
+                </thead>
+                <tbody id="payback-table-body" class="bg-white divide-y divide-stone-200"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. NPV vs. IRR 衝突模擬 -->
+    <section id="conflict" class="scroll-mt-36">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-stone-800">NPV vs. IRR 決策衝突模擬</h2>
+        <div class="flex justify-center mb-4"><button id="load-example-4" class="btn-secondary py-2 px-6 rounded-md font-semibold">載入範例 5.4 衝突情境</button></div>
+        <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">當互斥專案的 $\text{NPV}$ 和 $\text{IRR}$ 衝突時，應優先遵循 $\text{NPV}$ 準則。</p>
+      </div>
+      <div class="card p-6 md:p-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          <div>
+            <label for="conflict-rate" class="block text-sm font-medium text-stone-700 text-center">共同資本成本 ($\text{r}$) %</label>
+            <input type="number" id="conflict-rate" value="10" min="0" step="0.01" class="mt-1 mx-auto max-w-[150px] block text-center input-field p-2" />
+          </div>
+          <div class="project-input-group border-r-0 lg:border-r lg:pr-8 border-stone-200">
+            <h3 class="text-xl font-bold mb-4">專案 A (小專案)</h3>
+            <div class="space-y-4">
+              <div><label class="block text-sm font-medium text-stone-700">初始投資</label><input type="number" data-project="a" name="investment" placeholder="100" class="mt-1 block w-full input-field p-2" /></div>
+              <div><label class="block text-sm font-medium text-stone-700">第一年現金流入</label><input type="number" data-project="a" name="cashflow" placeholder="120" class="mt-1 block w-full input-field p-2" /></div>
+              <div class="card p-3 mt-4 bg-fuchsia-50 border border-fuchsia-200"><p class="text-sm font-medium text-stone-600">NPV: <span id="npv-a" class="font-bold text-lg text-fuchsia-700">NT$ 0.00</span></p><p class="text-sm font-medium text-stone-600 mt-1">IRR: <span id="irr-a" class="font-bold text-lg text-fuchsia-700">0.00 %</span></p></div>
+            </div>
+          </div>
+          <div class="project-input-group">
+            <h3 class="text-xl font-bold mb-4">專案 B (大專案)</h3>
+            <div class="space-y-4">
+              <div><label class="block text-sm font-medium text-stone-700">初始投資</label><input type="number" data-project="b" name="investment" placeholder="1000" class="mt-1 block w-full input-field p-2" /></div>
+              <div><label class="block text-sm font-medium text-stone-700">第一年現金流入</label><input type="number" data-project="b" name="cashflow" placeholder="1150" class="mt-1 block w-full input-field p-2" /></div>
+              <div class="card p-3 mt-4 bg-fuchsia-50 border border-fuchsia-200"><p class="text-sm font-medium text-stone-600">NPV: <span id="npv-b" class="font-bold text-lg text-fuchsia-700">NT$ 0.00</span></p><p class="text-sm font-medium text-stone-600 mt-1">IRR: <span id="irr-b" class="font-bold text-lg text-fuchsia-700">0.00 %</span></p></div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-8 border-t border-stone-200 pt-6">
+          <div id="conflict-decision-card" class="card p-4 transition-colors duration-300 bg-fuchsia-100 text-fuchsia-800 max-w-2xl mx-auto">
+            <h4 class="text-lg font-bold text-center">最終決策建議 ($\text{NPV}$ 準則)</h4>
+            <p id="conflict-decision-text" class="text-xl font-bold mt-2 text-center text-fuchsia-700"></p>
+            <p id="conflict-reasoning" class="text-sm mt-2 text-center text-stone-600"></p>
+          </div>
+        </div>
+
+        <!-- AI 功能區：衝突模擬 -->
+        <div class="ai-section max-w-2xl mx-auto mt-6">
+          <p class="text-xs font-bold text-fuchsia-400 uppercase tracking-widest mb-3">✦ AI 輔助學習</p>
+          <div class="flex gap-2 mb-3">
+            <button id="conflict-tab-scenario" class="ai-tab-btn active-scenario" onclick="switchAITab('conflict','scenario')">✨ 衝突原因解析</button>
+            <button id="conflict-tab-steps"    class="ai-tab-btn"                onclick="switchAITab('conflict','steps')">📖 逐步解題</button>
+          </div>
+          <button id="conflict-ai-btn" class="btn-primary py-2 px-4 rounded-md font-semibold w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50" disabled onclick="triggerAI('conflict')">
+            <span>✨</span><span id="conflict-ai-btn-label">NPV vs. IRR 衝突解析 (Gemini AI)</span>
+          </button>
+          <div id="conflict-ai-loading" class="hidden mt-3 text-center text-fuchsia-600 font-medium text-sm">
+            <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+            <span class="ml-2">AI 分析中...</span>
+          </div>
+          <div id="conflict-ai-result" class="mt-3 hidden"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 核心概念 -->
+    <section id="concepts" class="scroll-mt-36">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-stone-800">核心概念速覽</h2>
+        <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">資本預算方法的定義、優缺點及決策準則。</p>
+      </div>
+      <div class="space-y-4 max-w-4xl mx-auto">
+        <div class="concept-card card overflow-hidden">
+          <button class="w-full text-left p-4 bg-white hover:bg-stone-50 transition flex justify-between items-center">
+            <h3 class="text-lg font-bold">淨現值法 (NPV)</h3>
+            <span class="text-fuchsia-600 text-2xl font-light">+</span>
+          </button>
+          <div class="concept-content p-4 pt-0 text-stone-700 hidden">
+            <p><strong>核心：</strong>專案未來現金流折現後在今天的淨價值，衡量對股東財富的絕對增加值。</p>
+            <p class="mt-2"><strong>公式：</strong> $NPV=\sum_{t=0}^{n}\tfrac{CF_{t}}{(1+r)^{t}}$</p>
+            <p class="mt-2"><strong>準則：</strong> $\text{NPV} > 0$ 則接受。</p>
+          </div>
+        </div>
+        <div class="concept-card card overflow-hidden">
+          <button class="w-full text-left p-4 bg-white hover:bg-stone-50 transition flex justify-between items-center">
+            <h3 class="text-lg font-bold">內部報酬率法 (IRR)</h3>
+            <span class="text-fuchsia-600 text-2xl font-light">+</span>
+          </button>
+          <div class="concept-content p-4 pt-0 text-stone-700 hidden">
+            <p><strong>核心：</strong>使 $\text{NPV}$ 等於零的折現率，代表專案預期可實現的年化回報率。</p>
+            <p class="mt-2"><strong>準則：</strong> $\text{IRR} > \text{r}$ (資本成本) 則接受。</p>
+            <p class="mt-2 text-sm text-red-600">注意：與 $\text{NPV}$ 衝突時（如互斥專案），應優先 $\text{NPV}$。</p>
+          </div>
+        </div>
+        <div class="concept-card card overflow-hidden">
+          <button class="w-full text-left p-4 bg-white hover:bg-stone-50 transition flex justify-between items-center">
+            <h3 class="text-lg font-bold">投資回收期法 (Payback Period)</h3>
+            <span class="text-fuchsia-600 text-2xl font-light">+</span>
+          </button>
+          <div class="concept-content p-4 pt-0 text-stone-700 hidden">
+            <p><strong>核心：</strong>衡量收回初始投資所需的時間，是一種流動性指標。</p>
+            <p class="mt-2"><strong>缺點：</strong>忽略貨幣時間價值（折現回收期可彌補），並忽略回收期之後的現金流。</p>
+            <p class="mt-2"><strong>準則：</strong>回收期越短越好，且需小於設定的門檻。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. AI 問答框 -->
+    <section id="ai-chatbox" class="scroll-mt-36">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-stone-800">💬 CH5 概念問答</h2>
+        <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">針對本章的資本預算概念提問，AI 將限定在 CH5 範圍內回答。</p>
+      </div>
+      <div class="card p-6 md:p-8 max-w-3xl mx-auto">
+        <div class="mb-4">
+          <p class="text-sm font-semibold text-stone-500 mb-2">快速提問：</p>
+          <div class="flex flex-wrap gap-2">
+            <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">NPV > 0 為什麼就應接受專案？</button>
+            <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">IRR 的侷限性是什麼？</button>
+            <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">普通回收期和折現回收期差在哪？</button>
+            <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">互斥專案為什麼要用 NPV 而非 IRR？</button>
+          </div>
+        </div>
+        <div id="chat-history" class="space-y-3 mb-4 max-h-80 overflow-y-auto p-2 bg-stone-50 rounded-xl min-h-[80px]">
+          <p class="text-sm text-stone-400 text-center pt-4">請輸入問題，AI 將針對本章概念回答 👆</p>
+        </div>
+        <div class="flex gap-2 items-center">
+          <input type="text" id="chat-input" class="chat-input" placeholder="輸入關於 CH5 的問題..." maxlength="200">
+          <button onclick="sendChatMessage()" class="btn-primary py-2 px-4 rounded-lg font-semibold text-sm whitespace-nowrap flex-shrink-0">送出 →</button>
+        </div>
+        <p class="text-xs text-stone-400 mt-2 text-center">AI 僅回答 NPV、IRR、回收期、資本預算相關問題</p>
+      </div>
+    </section>
+
+    <!-- 6. 動態測驗卷 -->
+    <section id="quiz-generator" class="scroll-mt-36">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-stone-800">📝 CH5 動態測驗卷</h2>
+            <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">點擊下方按鈕，AI 將為您即時生成 10 題專屬隨堂測驗，驗證您的學習成果。</p>
+        </div>
+        <div class="card p-6 md:p-8 max-w-3xl mx-auto">
+            <div id="quiz-setup" class="text-center">
+                <button id="generate-quiz-btn" onclick="generateDynamicQuiz()" class="btn-primary py-3 px-8 rounded-lg font-bold text-lg inline-flex items-center justify-center gap-2 transition hover:scale-105">
+                    <span class="text-xl">✨</span> 立即生成 CH5 隨堂測驗 (Gemini AI)
+                </button>
+                <div id="quiz-loading" class="hidden mt-4 font-medium flex items-center justify-center gap-2" style="color:#C026D3">
+                    <svg class="animate-spin h-5 w-5" style="color:#C026D3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    AI 正在根據本章重點用心出題中，請稍候...
+                </div>
+            </div>
+            <div id="quiz-container" class="hidden mt-6 space-y-6 text-left">
+                <!-- 動態生成的測驗題目將插入於此 -->
+            </div>
+            <div id="quiz-result" class="hidden mt-8 p-6 bg-stone-50 border-2 rounded-xl text-center shadow-inner" style="border-color:#F5D0FE">
+                <!-- 測驗結果與分數將顯示於此 -->
+            </div>
+        </div>
+    </section>
+
+  </main>
+  <footer class="bg-stone-200 mt-12"><div class="container mx-auto px-4 py-6 text-center text-stone-600">&copy; 銘傳大學財金系財務數學教材，僅供教學與展示用途。</div></footer>
+
+  <script>
+    const API_MODEL = 'gemini-2.5-flash-preview-05-20';
+    const apiKey = ""; // API key is provided by the environment
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${API_MODEL}:generateContent?key=${apiKey}`;
+
+    const aiMode = { npv:'scenario', payback:'scenario', conflict:'scenario' };
+    const state  = { npv:{}, payback:{}, conflict:{} };
+
+    function renderAllMath(root=document.body){
+      if(typeof renderMathInElement!=='function') return;
+      renderMathInElement(root,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false});
+    }
+    const formatCurrency=(v,d=2)=>isNaN(v)?'NT$ 0.00':`NT$ ${v.toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d})}`;
+    const formatPercent=v=>isNaN(v)?'N/A %':`${(v*100).toFixed(2)} %`;
+
+    async function exponentialBackoffFetch(url,options,maxRetries=5,delay=1000){
+      for(let i=0;i<maxRetries;i++){try{const r=await fetch(url,options);if(r.status!==429)return r;}catch(e){if(i===maxRetries-1)throw e;}await new Promise(r=>setTimeout(r,delay*Math.pow(2,i)));}throw new Error('API failed');
+    }
+    
+    // ★ 修改：加入 isJson 參數以支援原生 JSON 模式
+    async function callGemini(sys,usr,isJson=false){
+      const payload={contents:[{parts:[{text:usr}]}],systemInstruction:{parts:[{text:sys}]}};
+      if(isJson){
+          payload.generationConfig = { responseMimeType: "application/json" };
+      }
+      const r=await exponentialBackoffFetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      const d=await r.json(); return d.candidates?.[0]?.content?.parts?.[0]?.text||null;
+    }
+
+    // ── Tab 切換 ──
+    const tabLabels={
+      npv:     {scenario:'決策解讀與情境分析 (Gemini AI)', steps:'📖 顯示逐步解題過程'},
+      payback: {scenario:'回收期解讀 (Gemini AI)',         steps:'📖 顯示逐步解題過程'},
+      conflict:{scenario:'NPV vs. IRR 衝突解析 (Gemini AI)',steps:'📖 顯示逐步解題過程'},
+    };
+    function switchAITab(tool,mode){
+      aiMode[tool]=mode;
+      const sBtn=document.getElementById(`${tool}-tab-scenario`);
+      const tBtn=document.getElementById(`${tool}-tab-steps`);
+      const btn =document.getElementById(`${tool}-ai-btn`);
+      const lbl =document.getElementById(`${tool}-ai-btn-label`);
+      sBtn.classList.remove('active-scenario','active-steps');
+      tBtn.classList.remove('active-scenario','active-steps');
+      if(mode==='scenario'){sBtn.classList.add('active-scenario');btn.className=btn.className.replace('btn-step','btn-primary');}
+      else                  {tBtn.classList.add('active-steps');   btn.className=btn.className.replace('btn-primary','btn-step');}
+      lbl.textContent=tabLabels[tool][mode];
+      document.getElementById(`${tool}-ai-result`).classList.add('hidden');
+    }
+
+    function renderAIResult(id,text,mode){
+      const c=document.getElementById(id);
+      if(mode==='scenario'){
+        c.innerHTML=`<div class="card p-4 bg-fuchsia-50 border border-fuchsia-200 text-stone-800"><h4 class="font-bold text-fuchsia-800 mb-2 flex items-center gap-1"><span>✨</span> AI 分析師報告</h4><p class="text-sm leading-relaxed">${text.replace(/\n/g,'<br>')}</p></div>`;
+      } else {
+        const lines=text.split('\n').filter(l=>l.trim());
+        let html=`<div class="space-y-2"><h4 class="font-bold text-teal-800 mb-3 flex items-center gap-1"><span>📖</span> 逐步解題過程</h4>`;
+        lines.forEach(line=>{
+          const m=line.match(/^(步驟\s*\d+|Step\s*\d+|\d+\.|第\s*\d+\s*步)/i);
+          if(m){const num=m[0].replace(/[^0-9]/g,'')||'•';html+=`<div class="step-block flex items-start"><span class="step-number">${num}</span><span class="text-sm text-teal-900"><strong>${m[0]}</strong> ${line.replace(m[0],'').trim()}</span></div>`;}
+          else{html+=`<p class="text-sm text-stone-700 px-2">${line}</p>`;}
+        });
+        html+='</div>'; c.innerHTML=html;
+      }
+      c.classList.remove('hidden'); renderAllMath(c);
+    }
+
+    function showLoading(tool,show){
+      document.getElementById(`${tool}-ai-loading`).classList.toggle('hidden',!show);
+      document.getElementById(`${tool}-ai-btn`).disabled=show;
+    }
+
+    // ── 統一 AI 觸發 ──
+    async function triggerAI(tool){
+      const mode=aiMode[tool]; const s=state[tool];
+      showLoading(tool,true);
+      document.getElementById(`${tool}-ai-result`).classList.add('hidden');
+      let sys='',usr='';
+
+      if(tool==='npv'){
+        const cfStr=s.CFs?s.CFs.map((cf,i)=>`CF${i+1}:${cf.toLocaleString()}`).join(', '):'';
+        if(mode==='scenario'){
+          sys="你是資本預算分析師，專精於 NPV/IRR 教學。根據專案結果，提供約100-150字的分析，包含：1.根據 NPV 和 IRR 判斷財務可行性；2.IRR 與資本成本的關係；3.對股東財富的影響。僅限 CH5 NPV/IRR 範圍。";
+          usr=`初始投資: ${formatCurrency(s.C0)}, 資本成本: ${s.rPct}%, NPV: ${formatCurrency(s.npv)}, IRR: ${formatPercent(s.irr)}, 決策: ${s.decision}, 現金流: [${cfStr}]。請分析。`;
+        } else {
+          sys="你是財務數學教師，請用步驟格式（步驟1:、步驟2:...）說明 NPV 的計算過程：每年現金流折現後加總，再減去初始投資。代入實際數字，並解釋每個步驟的財務意義。僅限 CH5 NPV 計算範圍。";
+          usr=`請逐步示範：初始投資=${formatCurrency(s.C0)}, 折現率r=${s.rPct}%, 現金流=[${cfStr}], NPV=${formatCurrency(s.npv)} 的完整計算過程。`;
+        }
+      } else if(tool==='payback'){
+        if(mode==='scenario'){
+          sys="你是資本預算分析師，專精於回收期教學。根據計算結果，提供約100-150字的分析，包含：1.普通回收期與折現回收期的差異及財務意義；2.此回收期代表的流動性風險；3.回收期法的侷限性說明。僅限 CH5 回收期範圍。";
+          usr=`初始投資: ${formatCurrency(s.investment)}, 折現率: ${s.rate}%, 普通回收期: ${s.payback?.toFixed(3)}年, 折現回收期: ${s.discPayback?.toFixed(3)}年。請分析。`;
+        } else {
+          sys="你是財務數學教師，請用步驟格式（步驟1:、步驟2:...）說明普通回收期的計算邏輯：累積現金流何時轉正，並用插值法計算精確年數。再說明折現回收期與普通回收期的差異。代入實際數字。僅限 CH5 回收期範圍。";
+          usr=`請逐步示範：初始投資=${formatCurrency(s.investment)}, 各年現金流=[${s.CFs?.join(', ')}], 普通回收期=${s.payback?.toFixed(3)}年, 折現回收期(r=${s.rate}%)=${s.discPayback?.toFixed(3)}年 的計算過程。`;
+        }
+      } else if(tool==='conflict'){
+        if(mode==='scenario'){
+          sys="你是資本預算分析師，專精於 NPV vs. IRR 衝突教學。根據兩個互斥專案的結果，提供約100-150字的分析，包含：1.解釋衝突發生的原因（規模差異）；2.為何 NPV 準則比 IRR 更合適；3.總結應選哪個專案及理由。僅限 CH5 NPV/IRR 衝突範圍。";
+          usr=`資本成本: ${s.rate}%, 專案A: 投資=${s.iA}, NPV=${formatCurrency(s.npvA)}, IRR=${formatPercent(s.irrA)}; 專案B: 投資=${s.iB}, NPV=${formatCurrency(s.npvB)}, IRR=${formatPercent(s.irrB)}; 最終決策: ${s.decision}。請分析衝突原因。`;
+        } else {
+          sys="你是財務數學教師，請用步驟格式（步驟1:、步驟2:...）說明NPV和IRR在互斥專案中如何計算，以及當NPV和IRR衝突時，為何應以NPV準則為主的邏輯推理。代入實際數字。僅限 CH5 衝突分析範圍。";
+          usr=`請逐步說明：r=${s.rate}%, 專案A投資=${s.iA}、現金流=${s.cfA}、NPV=${formatCurrency(s.npvA)}、IRR=${formatPercent(s.irrA)}; 專案B投資=${s.iB}、現金流=${s.cfB}、NPV=${formatCurrency(s.npvB)}、IRR=${formatPercent(s.irrB)} 的計算步驟，以及決策衝突的財務邏輯。`;
+        }
+      }
+
+      try{
+        const text=await callGemini(sys,usr);
+        if(text) renderAIResult(`${tool}-ai-result`,text,mode);
+        else{document.getElementById(`${tool}-ai-result`).innerHTML='<p class="text-sm text-red-500">無法取得回應，請稍後再試。</p>';document.getElementById(`${tool}-ai-result`).classList.remove('hidden');}
+      }catch(e){
+        document.getElementById(`${tool}-ai-result`).innerHTML='<p class="text-sm text-red-500">連線失敗，請檢查網路。</p>';
+        document.getElementById(`${tool}-ai-result`).classList.remove('hidden');
+      }finally{showLoading(tool,false);}
+    }
+
+    // ── 問答框 ──
+    const chatHistory=[];
+    const CHAT_SYSTEM_PROMPT=`你是「財務數學 CH5」的 AI 學習助理，專門回答資本預算相關問題，包含：淨現值(NPV)、內部報酬率(IRR)、投資回收期(Payback Period)、折現回收期(Discounted Payback)、NPV vs. IRR 衝突、資本成本等概念。
+規則：
+1. 只回答 CH5 資本預算相關問題。
+2. 若超出範圍，禮貌說明「這超出 CH5 範圍，建議參考其他章節」。
+3. 以繁體中文回答，簡潔清楚，適合大學財金系一年級學生。
+4. 若學生問作業題，提供觀念方向而非直接給答案。
+5. 回答控制在 150 字以內。`;
+
+    async function sendChatMessage(){
+      const input=document.getElementById('chat-input'); const q=input.value.trim(); if(!q) return;
+      input.value=''; const hDiv=document.getElementById('chat-history');
+      if(hDiv.querySelector('p.text-stone-400')) hDiv.innerHTML='';
+      hDiv.innerHTML+=`<div class="chat-bubble-user text-sm">${q}</div>`;
+      const tid='typing-'+Date.now();
+      hDiv.innerHTML+=`<div id="${tid}" class="chat-bubble-ai text-sm flex items-center gap-1"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
+      hDiv.scrollTop=hDiv.scrollHeight;
+      chatHistory.push({role:'user',parts:[{text:q}]});
+      try{
+        const payload={contents:chatHistory,systemInstruction:{parts:[{text:CHAT_SYSTEM_PROMPT}]}};
+        const r=await exponentialBackoffFetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        const data=await r.json(); const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'抱歉，無法取得回應。';
+        chatHistory.push({role:'model',parts:[{text}]});
+        document.getElementById(tid).outerHTML=`<div class="chat-bubble-ai text-sm leading-relaxed">${text.replace(/\n/g,'<br>')}</div>`;
+      }catch(e){document.getElementById(tid).outerHTML=`<div class="chat-bubble-ai text-sm text-red-500">連線失敗，請稍後再試。</div>`;}
+      hDiv.scrollTop=hDiv.scrollHeight;
+    }
+
+    // =============================================
+    // 動態測驗卷 (Quiz Generator) 功能
+    // =============================================
+    let currentQuizData = [];
+
+    const QUIZ_SYSTEM_PROMPT = `你是大學財務管理教授。請根據「資本預算與長期投資決策（包含淨現值 NPV、內部報酬率 IRR、普通與折現回收期、互斥專案與 NPV/IRR 決策衝突）」出 10 題單選題。
+    請嚴格以 JSON 陣列格式回傳，絕對不要有任何其他文字說明或 Markdown 標記，格式如下：
+    [
+      {
+        "question": "題目內容(可用 $ 寫數學公式，若包含 LaTeX 指令請使用雙反斜線跳脫，例如 \\\\frac{A}{B})",
+        "options": ["選項1", "選項2", "選項3", "選項4"],
+        "answer": 0,
+        "explanation": "詳解說明(可用 $ 寫數學公式，若包含 LaTeX 指令請使用雙反斜線跳脫)"
+      }
+    ]
+    注意：answer 欄位是正確選項的整數索引 (0, 1, 2, 或 3)。`;
+
+    async function generateDynamicQuiz() {
+        const btn = document.getElementById('generate-quiz-btn');
+        const loading = document.getElementById('quiz-loading');
+        const container = document.getElementById('quiz-container');
+        const resultDiv = document.getElementById('quiz-result');
+
+        btn.disabled = true;
+        loading.classList.remove('hidden');
+        container.classList.add('hidden');
+        resultDiv.classList.add('hidden');
+        container.innerHTML = '';
+
+        try {
+            // ★ 使用 isJson = true 確保產出合法 JSON
+            let jsonStr = await callGemini(QUIZ_SYSTEM_PROMPT, "請出 10 題關於 CH5 資本預算的測驗題。", true);
+
+            // 防呆：清理可能包含的 Markdown 格式
+            jsonStr = jsonStr.replace(/```json/g, '').replace(/```/g, '').trim();
+            const startIndex = jsonStr.indexOf('[');
+            const endIndex = jsonStr.lastIndexOf(']');
+            if (startIndex !== -1 && endIndex !== -1) {
+                jsonStr = jsonStr.substring(startIndex, endIndex + 1);
+            }
+
+            currentQuizData = JSON.parse(jsonStr);
+            renderQuiz(currentQuizData);
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<p class="text-red-500 text-center py-4">題目生成失敗，請稍後再試。</p>';
+            container.classList.remove('hidden');
+        } finally {
+            btn.disabled = false;
+            loading.classList.add('hidden');
+        }
+    }
+
+    function renderQuiz(quizData) {
+        const container = document.getElementById('quiz-container');
+        let html = '';
+
+        quizData.forEach((q, qIndex) => {
+            html += `
+            <div class="card p-5 bg-white border-stone-200 transition-colors" id="question-card-${qIndex}">
+                <p class="font-bold text-lg text-stone-800 mb-4 text-justify">${qIndex + 1}. ${q.question}</p>
+                <div class="space-y-3">
+            `;
+            q.options.forEach((opt, oIndex) => {
+                html += `
+                    <label class="quiz-option-container flex items-center p-3 border border-stone-200 rounded-lg cursor-pointer">
+                        <input type="radio" name="q${qIndex}" value="${oIndex}" class="quiz-radio text-fuchsia-600 focus:ring-fuchsia-500 w-4 h-4 mr-3 flex-shrink-0">
+                        <span class="text-stone-700 font-medium">${opt}</span>
+                    </label>
+                `;
+            });
+            html += `
+                </div>
+                <div id="explanation-${qIndex}" class="hidden mt-4 p-4 rounded-lg text-sm bg-fuchsia-50 border border-fuchsia-200 text-fuchsia-900">
+                    <span class="font-bold flex items-center gap-1 mb-1 text-fuchsia-700">💡 詳解：</span>
+                    ${q.explanation}
+                </div>
+            </div>`;
+        });
+
+        html += `
+            <div class="text-center mt-8">
+                <button onclick="submitQuiz()" class="btn-primary py-3 px-8 rounded-lg font-bold text-lg shadow-sm transition hover:-translate-y-0.5">送出答案與看分數</button>
+            </div>
+        `;
+
+        container.innerHTML = html;
+        container.classList.remove('hidden');
+
+        // 重新渲染題目與選項中的 LaTeX 數學公式
+        if (typeof renderAllMath === 'function') renderAllMath(container);
+    }
+
+    function submitQuiz() {
+        if (!currentQuizData || currentQuizData.length === 0) return;
+
+        let score = 0;
+        const total = currentQuizData.length;
+
+        currentQuizData.forEach((q, qIndex) => {
+            const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+            const explanationDiv = document.getElementById(`explanation-${qIndex}`);
+            const card = document.getElementById(`question-card-${qIndex}`);
+
+            explanationDiv.classList.remove('hidden');
+
+            if (selected && parseInt(selected.value) === q.answer) {
+                score += 1;
+                card.classList.remove('border-stone-200');
+                card.classList.add('border-green-300', 'bg-green-50/30');
+            } else {
+                card.classList.remove('border-stone-200');
+                card.classList.add('border-rose-300', 'bg-rose-50/30');
+                const correctInput = document.querySelector(`input[name="q${qIndex}"][value="${q.answer}"]`);
+                if (correctInput) {
+                    correctInput.closest('label').classList.add('bg-green-100', 'border-green-400', 'shadow-inner');
+                }
+            }
+            document.querySelectorAll(`input[name="q${qIndex}"]`).forEach(input => input.disabled = true);
+        });
+
+        const resultDiv = document.getElementById('quiz-result');
+        const scorePercent = Math.round((score / total) * 100);
+        let feedback = '';
+        if (scorePercent === 100) feedback = '太棒了！您完全掌握了本章節的核心概念 🏆';
+        else if (scorePercent >= 60) feedback = '表現不錯！可以再複習一下錯題的詳解 💪';
+        else feedback = '看來還需要多加練習，別氣餒，回到上方重新看一次核心概念吧 📖';
+
+        resultDiv.innerHTML = `
+            <h3 class="text-2xl font-bold text-stone-800 mb-2">測驗結果：${score} / ${total} 題</h3>
+            <p class="text-5xl font-bold mb-3 ${scorePercent >= 60 ? 'text-fuchsia-600' : 'text-rose-500'}">${scorePercent} 分</p>
+            <p class="text-stone-600">${feedback}</p>
+            <div class="mt-6">
+                <button onclick="document.getElementById('quiz-generator').scrollIntoView({behavior:'smooth'})" class="underline text-sm font-medium text-fuchsia-600 hover:text-fuchsia-800">往上查看各題詳解</button>
+            </div>
+        `;
+        resultDiv.classList.remove('hidden');
+        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // ── 財金計算 ──
+    const calculateNPV=(C0,CFs,r)=>CFs.reduce((acc,cf,i)=>acc+cf/Math.pow(1+r,i+1),-C0);
+    const calculateIRR=(C0,CFs,guess=0.1,maxIter=1000,tol=1e-7)=>{
+      if(C0<=0) return NaN; let rate=guess;
+      for(let i=0;i<maxIter;i++){let npv=-C0,d=0; CFs.forEach((cf,t)=>{npv+=cf/Math.pow(1+rate,t+1);d-=(t+1)*cf/Math.pow(1+rate,t+2);}); if(Math.abs(npv)<tol) return rate; if(d===0) break; rate=rate-npv/d;}
+      return NaN;
+    };
+    const calculatePayback=(I,CFs,ratePct=0)=>{
+      if(I<=0) return{paybackPeriod:0,discountedPaybackPeriod:0,table:[]};
+      let cum=-I,dcum=-I,p=Infinity,dp=Infinity; const r=ratePct/100;
+      const table=[{year:0,cashFlow:-I,cumulative:-I,discounted:-I,discountedCumulative:-I}];
+      for(let i=0;i<CFs.length;i++){const cf=CFs[i];const prev=cum;cum+=cf;if(cum>=0&&p===Infinity)p=i+(-prev/cf);const dcf=cf/Math.pow(1+r,i+1);const prevd=dcum;dcum+=dcf;if(dcum>=0&&dp===Infinity)dp=i+(-prevd/dcf);table.push({year:i+1,cashFlow:cf,cumulative:cum,discounted:dcf,discountedCumulative:dcum});}
+      return{paybackPeriod:isFinite(p)?p:0,discountedPaybackPeriod:isFinite(dp)?dp:0,table};
+    };
+
+    // ── 圖表 ──
+    let npvChart;
+    function updateNPVChart(C0,CFs,r){
+      const canvas=document.getElementById('npvChart'); if(!canvas) return;
+      const ctx=canvas.getContext('2d'); if(npvChart) npvChart.destroy();
+      const labels=['初始投資']; const data=[-C0];
+      CFs.forEach((cf,i)=>{labels.push(`第 ${i+1} 年`);data.push(cf/Math.pow(1+r,i+1));});
+      const npvLine=data.reduce((acc,v,i)=>{acc.push((i>0?acc[i-1]:0)+v);return acc;},[]);
+      npvChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'各期折現現金流',data,borderWidth:1,backgroundColor:'rgba(192,38,211,0.6)',borderColor:'rgba(192,38,211,1)'},{label:'累積淨現值',data:npvLine,type:'line',fill:false,tension:0.1,pointRadius:4,yAxisID:'y',borderColor:'rgba(255,99,132,1)',backgroundColor:'rgba(255,99,132,0.2)'}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,ticks:{callback:(v)=>formatCurrency(v).replace('NT$ ','')}}},plugins:{tooltip:{callbacks:{label:(c)=>`${c.dataset.label}: ${formatCurrency(c.raw)}`}}}}});
+    }
+
+    function wireCashflowAddButton(containerId,buttonId,calcFn){
+      const container=document.getElementById(containerId); const addBtn=document.getElementById(buttonId);
+      const cls=containerId.includes('payback')?'payback-cashflow-input':'cashflow-input';
+      addBtn.addEventListener('click',()=>{
+        if(container.children.length<15){
+          const inp=document.createElement('input'); inp.type='number'; inp.placeholder=`第 ${container.children.length+1} 年現金流入`;
+          inp.className=`${cls} block w-full input-field p-2`; inp.addEventListener('input',calcFn); container.appendChild(inp); calcFn();
+        }
+      });
+    }
+
+    // ── 計算邏輯 ──
+    function runAnalyzer(){
+      const C0=parseFloat(document.getElementById('initial-investment').value)||0;
+      const rPct=parseFloat(document.getElementById('discount-rate').value)||0; const r=rPct/100;
+      const CFs=Array.from(document.querySelectorAll('#analyzer .cashflow-input')).map(i=>parseFloat(i.value)||0);
+      const npv=calculateNPV(C0,CFs,r); const irr=calculateIRR(C0,CFs);
+      document.getElementById('npv-result').textContent=formatCurrency(npv);
+      document.getElementById('irr-result').textContent=formatPercent(irr);
+      const decisionCard=document.getElementById('decision-card'); const decisionText=document.getElementById('decision-text');
+      decisionCard.classList.remove('npv-positive','npv-negative','npv-neutral');
+      const valid=C0>0&&rPct>=0&&CFs.some(cf=>cf>0);
+      let decision='';
+      if(valid){
+        if(npv>0){decisionText.textContent=`專案可行，建議接受。(NPV > 0，IRR ${formatPercent(irr)} > ${rPct}%)`;decisionCard.classList.add('npv-positive');decision='接受';}
+        else if(npv<0){decisionText.textContent=`專案不可行，建議拒絕。(NPV < 0，IRR ${formatPercent(irr)} < ${rPct}%)`;decisionCard.classList.add('npv-negative');decision='拒絕';}
+        else{decisionText.textContent='專案損益兩平。(NPV = 0)';decisionCard.classList.add('npv-neutral');decision='損益兩平';}
+        updateNPVChart(C0,CFs,r);
+        state.npv={C0,rPct,CFs,npv,irr,decision};
+        document.getElementById('npv-ai-btn').disabled=false;
+      } else {
+        decisionText.textContent='請輸入有效的初始投資和現金流入。'; decisionCard.classList.add('npv-neutral');
+        if(npvChart) npvChart.destroy();
+        document.getElementById('npv-ai-btn').disabled=true;
+        document.getElementById('npv-ai-result').classList.add('hidden');
+      }
+      renderAllMath(decisionCard);
+    }
+
+    function runPaybackCalculator(){
+      const investment=parseFloat(document.getElementById('payback-investment').value)||0;
+      const rate=parseFloat(document.getElementById('payback-rate').value)||0;
+      const CFs=Array.from(document.querySelectorAll('#payback .payback-cashflow-input')).map(i=>parseFloat(i.value)||0);
+      const res=calculatePayback(investment,CFs,rate);
+      document.getElementById('payback-result').textContent=`${res.paybackPeriod.toFixed(3)} 年`;
+      document.getElementById('discounted-payback-result').textContent=`${res.discountedPaybackPeriod.toFixed(3)} 年`;
+      const tbody=document.getElementById('payback-table-body'); tbody.innerHTML='';
+      if(investment>0){
+        const r0=res.table[0]; const tr=document.createElement('tr');
+        tr.innerHTML=`<td class='px-3 py-2 text-sm font-bold'>0</td><td class='px-3 py-2 text-sm text-red-600'>${r0.cashFlow.toLocaleString()}</td><td class='px-3 py-2 text-sm font-medium text-red-600'>${r0.cumulative.toLocaleString()}</td><td class='px-3 py-2 text-sm text-red-600'>${r0.discounted.toLocaleString()}</td><td class='px-3 py-2 text-sm font-medium text-red-600'>${r0.discountedCumulative.toLocaleString()}</td>`;
+        tbody.appendChild(tr);
+      }
+      res.table.slice(1).forEach(row=>{
+        const tr=document.createElement('tr');
+        const cumClass=row.cumulative>=0?'text-green-600':'text-red-600'; const dcumClass=row.discountedCumulative>=0?'text-green-600':'text-red-600';
+        tr.innerHTML=`<td class='px-3 py-2 text-sm'>${row.year}</td><td class='px-3 py-2 text-sm ${row.cashFlow>0?'text-fuchsia-600':'text-red-600'}'>${row.cashFlow.toLocaleString()}</td><td class='px-3 py-2 text-sm font-medium ${cumClass}'>${row.cumulative.toLocaleString()}</td><td class='px-3 py-2 text-sm'>${row.discounted.toLocaleString()}</td><td class='px-3 py-2 text-sm font-medium ${dcumClass}'>${row.discountedCumulative.toLocaleString()}</td>`;
+        tbody.appendChild(tr);
+      });
+      state.payback={investment,rate,CFs,payback:res.paybackPeriod,discPayback:res.discountedPaybackPeriod};
+      document.getElementById('payback-ai-btn').disabled=investment<=0;
+      document.getElementById('payback-ai-result').classList.add('hidden');
+    }
+
+    function runConflictSimulator(){
+      const rate=(parseFloat(document.getElementById('conflict-rate').value)||0)/100;
+      const projects={a:{},b:{}};
+      document.querySelectorAll('#conflict .project-input-group input').forEach(inp=>{projects[inp.dataset.project][inp.name]=parseFloat(inp.value)||0;});
+      const npvA=calculateNPV(projects.a.investment,[projects.a.cashflow],rate); const irrA=calculateIRR(projects.a.investment,[projects.a.cashflow]);
+      const npvB=calculateNPV(projects.b.investment,[projects.b.cashflow],rate); const irrB=calculateIRR(projects.b.investment,[projects.b.cashflow]);
+      document.getElementById('npv-a').textContent=formatCurrency(npvA); document.getElementById('irr-a').textContent=formatPercent(irrA);
+      document.getElementById('npv-b').textContent=formatCurrency(npvB); document.getElementById('irr-b').textContent=formatPercent(irrB);
+      const card=document.getElementById('conflict-decision-card'); const text=document.getElementById('conflict-decision-text'); const reason=document.getElementById('conflict-reasoning');
+      card.classList.remove('bg-red-100','bg-green-100','text-red-800','text-green-800');
+      text.textContent='請輸入專案參數並設定資本成本'; reason.textContent='';
+      let decision='';
+      if(npvA>0&&npvB>0){
+        const higherNPV=npvA>npvB?'A':(npvB>npvA?'B':'None');
+        const higherIRR=irrA>irrB?'A':(irrB>irrA?'B':'None');
+        if(npvA>npvB){text.textContent='應選擇專案 A (NPV 較大)';decision='選A';}
+        else if(npvB>npvA){text.textContent='應選擇專案 B (NPV 較大)';decision='選B';}
+        else{text.textContent='兩專案價值相等 (擇一)';decision='平局';}
+        card.classList.add('bg-green-100','text-green-800');
+        if(higherNPV!=='None'&&higherNPV!==higherIRR&&higherIRR!=='None'){
+          reason.textContent=`發生衝突：專案 ${higherIRR} 的 IRR 較高 (${formatPercent(irrA>irrB?irrA:irrB)})，但專案 ${higherNPV} 的 NPV 較大。應依循 NPV 準則，選擇 ${higherNPV} 以最大化絕對財富。`;
+        } else if(higherNPV!=='None'){reason.textContent=`兩準則建議一致，選擇 ${higherNPV}。`;}
+      } else if(npvA<0&&npvB<0){text.textContent='兩專案均不可行，應拒絕。';card.classList.add('bg-red-100','text-red-800');reason.textContent='兩個專案的 NPV 均小於零，無法創造價值。';decision='皆拒絕';}
+      state.conflict={rate:(parseFloat(document.getElementById('conflict-rate').value)||0),iA:projects.a.investment,cfA:projects.a.cashflow,iB:projects.b.investment,cfB:projects.b.cashflow,npvA,irrA,npvB,irrB,decision};
+      document.getElementById('conflict-ai-btn').disabled=!(projects.a.investment>0&&projects.b.investment>0);
+      document.getElementById('conflict-ai-result').classList.add('hidden');
+    }
+
+    // ── 初始化 ──
+    document.addEventListener('DOMContentLoaded',()=>{
+      renderAllMath(document.body);
+      document.querySelectorAll('#analyzer input').forEach(el=>el.addEventListener('input',runAnalyzer));
+      document.querySelectorAll('#payback input,.payback-cashflow-input').forEach(el=>el.addEventListener('input',runPaybackCalculator));
+      document.querySelectorAll('#conflict input').forEach(el=>el.addEventListener('input',runConflictSimulator));
+      wireCashflowAddButton('cashflow-inputs','add-cashflow',runAnalyzer);
+      wireCashflowAddButton('payback-cashflow-inputs','add-payback-cashflow',runPaybackCalculator);
+
+      document.getElementById('load-example-1').addEventListener('click',()=>{
+        document.getElementById('initial-investment').value=100000; document.getElementById('discount-rate').value=10;
+        const cfs=[40000,40000,40000]; document.querySelectorAll('#analyzer .cashflow-input').forEach((inp,i)=>inp.value=cfs[i]??''); runAnalyzer();
+      });
+      document.getElementById('clear-analyzer').addEventListener('click',()=>{
+        document.getElementById('initial-investment').value=''; document.getElementById('discount-rate').value='';
+        document.querySelectorAll('#analyzer .cashflow-input').forEach(i=>i.value=''); runAnalyzer();
+      });
+      document.getElementById('load-example-3').addEventListener('click',()=>{
+        document.getElementById('payback-investment').value=250000; document.getElementById('payback-rate').value=12;
+        const cfs=[100000,120000,80000,50000]; document.querySelectorAll('#payback .payback-cashflow-input').forEach((inp,i)=>inp.value=cfs[i]??''); runPaybackCalculator();
+      });
+      document.getElementById('clear-payback').addEventListener('click',()=>{
+        document.getElementById('payback-investment').value=''; document.getElementById('payback-rate').value='';
+        document.querySelectorAll('#payback .payback-cashflow-input').forEach(i=>i.value=''); runPaybackCalculator();
+      });
+      document.getElementById('load-example-4').addEventListener('click',()=>{
+        const inputs=document.querySelectorAll('#conflict .project-input-group input');
+        document.getElementById('conflict-rate').value=10; inputs[0].value=100; inputs[1].value=120; inputs[2].value=1000; inputs[3].value=1150; runConflictSimulator();
+      });
+
+      document.querySelectorAll('.concept-card button').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          const c=btn.nextElementSibling; const icon=btn.querySelector('span'); const isOpen=!c.classList.contains('hidden');
+          document.querySelectorAll('.concept-content').forEach(x=>x.classList.add('hidden'));
+          document.querySelectorAll('.concept-card button span').forEach(i=>i.textContent='+');
+          c.classList.toggle('hidden',isOpen); icon.textContent=isOpen?'+':'-';
+          if(!c.classList.contains('hidden')) renderAllMath(c);
+        });
+      });
+
+      document.querySelectorAll('.quick-q').forEach(btn=>{btn.addEventListener('click',()=>{document.getElementById('chat-input').value=btn.textContent;sendChatMessage();});});
+      document.getElementById('chat-input').addEventListener('keydown',e=>{if(e.key==='Enter')sendChatMessage();});
+
+      const sections=document.querySelectorAll('section'); const navLinks=document.querySelectorAll('nav a');
+      const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){navLinks.forEach(link=>{link.classList.remove('active');if(link.getAttribute('href').substring(1)===entry.target.id)link.classList.add('active');});}});},{rootMargin:'-50% 0px -50% 0px'});
+      sections.forEach(s=>observer.observe(s));
+      navLinks.forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();document.querySelector(this.getAttribute('href')).scrollIntoView({behavior:'smooth'});});});
+
+      runAnalyzer(); runPaybackCalculator(); runConflictSimulator();
+    });
+  </script>
+</body>
+</html>

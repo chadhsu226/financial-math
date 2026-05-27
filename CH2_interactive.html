@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CH2 現金流量與年金互動儀表板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #F5F5F4; color: #292524; }
+        .btn-primary { background-color: #2563EB; color: #FFFFFF; transition: background-color 0.3s; }
+        .btn-primary:hover { background-color: #1D4ED8; }
+        .btn-secondary { background-color: #A8A29E; color: #292524; transition: background-color 0.3s; }
+        .btn-secondary:hover { background-color: #78716C; }
+        .btn-step { background-color: #7C3AED; color: #FFFFFF; transition: background-color 0.3s; }
+        .btn-step:hover { background-color: #6D28D9; }
+        .card { background-color: #FFFFFF; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); border: 1px solid #E7E5E4; }
+        .input-field { border-color: #D6D3D1; border-width: 1px; border-style: solid; border-radius: 0.375rem; transition: border-color 0.3s, box-shadow 0.3s; }
+        .input-field:focus { border-color: #2563EB; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); outline: none; }
+        .nav-link { transition: color 0.3s, border-color 0.3s; }
+        .nav-link.active { color: #2563EB; border-bottom-color: #2563EB; }
+        .nav-link:not(.active):hover { color: #1D4ED8; }
+        /* AI 功能區塊 */
+        .ai-section { border-top: 2px dashed #BFDBFE; margin-top: 1.5rem; padding-top: 1.5rem; }
+        .ai-tab-btn { padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; transition: all 0.2s; cursor: pointer; border: 2px solid transparent; }
+        .ai-tab-btn.active-scenario { background-color: #2563EB; color: white; }
+        .ai-tab-btn.active-steps { background-color: #7C3AED; color: white; }
+        .ai-tab-btn:not(.active-scenario):not(.active-steps) { background-color: #EFF6FF; color: #1E40AF; border-color: #BFDBFE; }
+        .ai-tab-btn:not(.active-scenario):not(.active-steps):hover { background-color: #DBEAFE; }
+        .step-block { background: linear-gradient(135deg, #F3F0FF 0%, #EDE9FE 100%); border-left: 4px solid #7C3AED; border-radius: 0.5rem; padding: 0.75rem 1rem; margin-bottom: 0.5rem; }
+        .step-number { display: inline-flex; align-items: center; justify-content: center; width: 1.75rem; height: 1.75rem; background-color: #7C3AED; color: white; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; margin-right: 0.5rem; flex-shrink: 0; }
+        /* 問答框 */
+        .chat-bubble-user { background-color: #DBEAFE; border-radius: 1rem 1rem 0.25rem 1rem; padding: 0.75rem 1rem; margin-left: 2rem; }
+        .chat-bubble-ai { background-color: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 1rem 1rem 1rem 0.25rem; padding: 0.75rem 1rem; margin-right: 2rem; }
+        .chat-input { border: 2px solid #BFDBFE; border-radius: 0.75rem; padding: 0.6rem 1rem; width: 100%; outline: none; transition: border-color 0.2s; font-size: 0.9rem; }
+        .chat-input:focus { border-color: #2563EB; }
+        .typing-dot { display: inline-block; width: 0.5rem; height: 0.5rem; background-color: #2563EB; border-radius: 50%; animation: typingBounce 1.2s infinite ease-in-out; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+        /* 測驗卷樣式 */
+        .quiz-radio:checked + span { font-weight: bold; color: #2563EB; }
+        .quiz-option-container { transition: all 0.2s; }
+        .quiz-option-container:hover { background-color: #EFF6FF; }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="container mx-auto px-4 py-3">
+            <h1 class="text-2xl md:text-3xl font-bold text-blue-700">CH2 現金流量與年金</h1>
+            <p class="text-stone-500 mt-1">年金現值、終值與還款金額互動計算工具</p>
+        </div>
+    </header>
+    <nav class="bg-white/70 backdrop-blur-md sticky top-[80px] z-10 shadow-sm">
+        <div class="container mx-auto px-4">
+            <ul class="flex space-x-4 sm:space-x-8 border-b border-stone-200 overflow-x-auto">
+                <li><a href="#fva-calculator" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent active">年金終值 (FV)</a></li>
+                <li><a href="#pva-calculator" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">年金現值 (PV)</a></li>
+                <li><a href="#loan-payment" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">還款金額 (C)</a></li>
+                <li><a href="#perpetuity" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">永續年金</a></li>
+                <li><a href="#concepts" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">核心概念</a></li>
+                <li><a href="#ai-chatbox" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">💬 AI 問答</a></li>
+                <li><a href="#quiz-generator" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">📝 動態測驗卷</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 md:p-8 space-y-12">
+
+        <!-- 1. 年金終值 FVA/FVAD -->
+        <section id="fva-calculator" class="scroll-mt-36">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-stone-800">年金終值 (FVA/FVAD) 計算與分析</h2>
+                <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">計算定期定額儲蓄或投資的累積終值。這是退休金、教育基金等長期目標的基礎。</p>
+            </div>
+            <div class="card p-6 md:p-8 max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">參數輸入</h3>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="fva-payment" class="block text-sm font-medium text-stone-700">每期現金流 (C)</label>
+                                    <input type="number" id="fva-payment" value="10000" min="0" class="mt-1 block w-full input-field p-2">
+                                </div>
+                                <div>
+                                    <label for="fva-rate" class="block text-sm font-medium text-stone-700">每期利率 (r) %</label>
+                                    <input type="number" id="fva-rate" value="4" min="0" step="0.01" class="mt-1 block w-full input-field p-2">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="fva-periods" class="block text-sm font-medium text-stone-700">總期數 (n)</label>
+                                    <input type="number" id="fva-periods" value="8" min="1" class="mt-1 block w-full input-field p-2">
+                                </div>
+                                <div>
+                                    <label for="fva-type" class="block text-sm font-medium text-stone-700">年金類型</label>
+                                    <select id="fva-type" class="mt-1 block w-full input-field p-2">
+                                        <option value="0">普通年金 (期末)</option>
+                                        <option value="1" selected>期初年金 (期初) - 範例 2.2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2 pt-4">
+                            <button id="load-example-2-2" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">載入範例 2.2</button>
+                            <button id="clear-fva" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">清除</button>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">累積結果</h3>
+                        <div class="card p-4 bg-stone-50 border-stone-200">
+                            <h4 class="font-semibold text-stone-600">最終累積金額 (FV)</h4>
+                            <p id="fva-result" class="text-3xl font-bold text-blue-700 mt-1">NT$ 0.00</p>
+                        </div>
+                        <div id="fva-formula" class="text-sm mt-3 text-stone-700 overflow-x-auto p-2 bg-stone-50 rounded-lg">$$FVAD=C[\frac{(1+r)^{n}-1}{r}](1+r)$$</div>
+                        <div id="fva-note" class="text-sm mt-3 text-stone-600"></div>
+
+                        <!-- AI 功能區：FVA -->
+                        <div class="ai-section">
+                            <p class="text-xs font-bold text-indigo-500 uppercase tracking-widest mb-3">✦ AI 輔助學習</p>
+                            <div class="flex gap-2 mb-3">
+                                <button id="fva-tab-scenario" class="ai-tab-btn active-scenario" onclick="switchAITab('fva','scenario')">✨ 儲蓄情境分析</button>
+                                <button id="fva-tab-steps" class="ai-tab-btn" onclick="switchAITab('fva','steps')">📖 逐步解題</button>
+                            </div>
+                            <button id="fva-ai-btn" class="btn-primary py-2 px-4 rounded-md font-semibold w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50" disabled onclick="triggerAI('fva')">
+                                <span>✨</span><span id="fva-ai-btn-label">儲蓄目標解讀 (Gemini AI)</span>
+                            </button>
+                            <div id="fva-ai-loading" class="hidden mt-3 text-center text-blue-600 font-medium text-sm">
+                                <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+                                <span class="ml-2">AI 分析中...</span>
+                            </div>
+                            <div id="fva-ai-result" class="mt-3 hidden"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 年金現值 PVA/PVAD -->
+        <section id="pva-calculator" class="scroll-mt-36">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-stone-800">年金現值 (PVA/PVAD) 計算與分析</h2>
+                <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">計算未來一連串現金流的今日價值（如貸款本金、保險理賠一次性領取金額）。</p>
+            </div>
+            <div class="card p-6 md:p-8 max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">參數輸入</h3>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="pva-payment" class="block text-sm font-medium text-stone-700">每期現金流 (C)</label>
+                                    <input type="number" id="pva-payment" value="25000" min="0" class="mt-1 block w-full input-field p-2">
+                                </div>
+                                <div>
+                                    <label for="pva-rate" class="block text-sm font-medium text-stone-700">每期利率 (r) %</label>
+                                    <input type="number" id="pva-rate" value="0.15" min="0" step="0.0001" class="mt-1 block w-full input-field p-2">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="pva-periods" class="block text-sm font-medium text-stone-700">總期數 (n)</label>
+                                    <input type="number" id="pva-periods" value="240" min="1" class="mt-1 block w-full input-field p-2">
+                                </div>
+                                <div>
+                                    <label for="pva-type" class="block text-sm font-medium text-stone-700">年金類型</label>
+                                    <select id="pva-type" class="mt-1 block w-full input-field p-2">
+                                        <option value="0" selected>普通年金 (期末) - 範例 2.3</option>
+                                        <option value="1">期初年金 (期初)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2 pt-4">
+                            <button id="load-example-2-3" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">載入範例 2.3</button>
+                            <button id="clear-pva" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">清除</button>
+                        </div>
+                        <div class="mt-4 text-sm text-stone-600 p-3 bg-stone-50 rounded-md" id="pva-hint-container">
+                            <p class="font-semibold">年金轉換提示 (範例 2.3 房貸情境):</p>
+                            <p>年利率 $1.8\%$ (每月複利) $\rightarrow$ 每月利率 $r = 1.8\% / 12 = 0.15\%$</p>
+                            <p>還款期限 $20$ 年 $\rightarrow$ 總期數 $n = 20 \times 12 = 240$ 期</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">現值結果</h3>
+                        <div class="card p-4 bg-stone-50 border-stone-200">
+                            <h4 class="font-semibold text-stone-600">現值 (PV) / 貸款主額</h4>
+                            <p id="pva-result" class="text-3xl font-bold text-blue-700 mt-1">NT$ 0.00</p>
+                        </div>
+                        <div id="pva-formula" class="text-sm mt-3 text-stone-700 overflow-x-auto p-2 bg-stone-50 rounded-lg">$$PVA=C[\frac{1-\frac{1}{(1+r)^{n}}}{r}]$$</div>
+                        <div id="pva-note" class="text-sm mt-3 text-stone-600"></div>
+
+                        <!-- AI 功能區：PVA -->
+                        <div class="ai-section">
+                            <p class="text-xs font-bold text-indigo-500 uppercase tracking-widest mb-3">✦ AI 輔助學習</p>
+                            <div class="flex gap-2 mb-3">
+                                <button id="pva-tab-scenario" class="ai-tab-btn active-scenario" onclick="switchAITab('pva','scenario')">✨ 貸款情境解讀</button>
+                                <button id="pva-tab-steps" class="ai-tab-btn" onclick="switchAITab('pva','steps')">📖 逐步解題</button>
+                            </div>
+                            <button id="pva-ai-btn" class="btn-primary py-2 px-4 rounded-md font-semibold w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50" disabled onclick="triggerAI('pva')">
+                                <span>✨</span><span id="pva-ai-btn-label">貸款情境解讀 (Gemini AI)</span>
+                            </button>
+                            <div id="pva-ai-loading" class="hidden mt-3 text-center text-blue-600 font-medium text-sm">
+                                <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+                                <span class="ml-2">AI 分析中...</span>
+                            </div>
+                            <div id="pva-ai-result" class="mt-3 hidden"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 還款金額 C -->
+        <section id="loan-payment" class="scroll-mt-36">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-stone-800">還款金額 (C) 計算與分析</h2>
+                <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">根據貸款總額、利率和期限，反推每期應償還的等額金額。</p>
+            </div>
+            <div class="card p-6 md:p-8 max-w-2xl mx-auto">
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="c-principal" class="block text-sm font-medium text-stone-700">貸款本金 (PV)</label>
+                            <input type="number" id="c-principal" value="500000" min="0" class="mt-1 block w-full input-field p-2">
+                        </div>
+                        <div>
+                            <label for="c-rate" class="block text-sm font-medium text-stone-700">每期利率 (r) %</label>
+                            <input type="number" id="c-rate" value="0.5" min="0" step="0.001" class="mt-1 block w-full input-field p-2">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="c-periods" class="block text-sm font-medium text-stone-700">總期數 (n)</label>
+                        <input type="number" id="c-periods" value="60" min="1" class="mt-1 block w-full input-field p-2">
+                    </div>
+                </div>
+                <div class="pt-4 text-center">
+                    <button id="load-example-C" class="btn-secondary py-2 px-6 rounded-md font-semibold">載入練習題 3 (房貸 C)</button>
+                </div>
+                <div class="card p-4 bg-blue-50 border-blue-200 text-center mt-4">
+                    <h4 class="font-semibold text-blue-800">每期等額還款金額 (C)</h4>
+                    <p id="c-result" class="text-3xl font-bold text-blue-700 mt-1">NT$ 0.00</p>
+                    <p id="c-note" class="text-sm mt-1 text-stone-600">此結果假設為<strong>普通年金 (期末)</strong> 還款。</p>
+                </div>
+
+                <!-- AI 功能區：C -->
+                <div class="ai-section">
+                    <p class="text-xs font-bold text-indigo-500 uppercase tracking-widest mb-3">✦ AI 輔助學習</p>
+                    <div class="flex gap-2 mb-3">
+                        <button id="c-tab-scenario" class="ai-tab-btn active-scenario" onclick="switchAITab('c','scenario')">✨ 還款壓力分析</button>
+                        <button id="c-tab-steps" class="ai-tab-btn" onclick="switchAITab('c','steps')">📖 逐步解題</button>
+                    </div>
+                    <button id="c-ai-btn" class="btn-primary py-2 px-4 rounded-md font-semibold w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50" disabled onclick="triggerAI('c')">
+                        <span>✨</span><span id="c-ai-btn-label">還款壓力分析 (Gemini AI)</span>
+                    </button>
+                    <div id="c-ai-loading" class="hidden mt-3 text-center text-blue-600 font-medium text-sm">
+                        <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+                        <span class="ml-2">AI 分析中...</span>
+                    </div>
+                    <div id="c-ai-result" class="mt-3 hidden"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 永續年金 -->
+        <section id="perpetuity" class="scroll-mt-36">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-stone-800">永續年金 (Perpetuity) 現值計算機</h2>
+                <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto" id="pvp-description">計算無限期且等額現金流的今日價值。 $PVP=\frac{C}{r}$</p>
+            </div>
+            <div class="card p-6 md:p-8 max-w-xl mx-auto">
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="pvp-payment" class="block text-sm font-medium text-stone-700">每年現金流 (C)</label>
+                            <input type="number" id="pvp-payment" value="50000" min="0" class="mt-1 block w-full input-field p-2">
+                        </div>
+                        <div>
+                            <label for="pvp-rate" class="block text-sm font-medium text-stone-700">折現率 (r) %</label>
+                            <input type="number" id="pvp-rate" value="5" min="0" step="0.01" class="mt-1 block w-full input-field p-2">
+                        </div>
+                    </div>
+                </div>
+                <div class="card p-4 bg-blue-50 border-blue-200 text-center mt-4">
+                    <h4 class="font-semibold text-blue-800">永續年金現值 (PVP)</h4>
+                    <p id="pvp-result" class="text-3xl font-bold text-blue-700 mt-1">NT$ 0.00</p>
+                    <p id="pvp-note" class="text-sm mt-1 text-stone-600"></p>
+                </div>
+
+                <!-- AI 功能區：永續年金（新增） -->
+                <div class="ai-section">
+                    <p class="text-xs font-bold text-indigo-500 uppercase tracking-widest mb-3">✦ AI 輔助學習</p>
+                    <div class="flex gap-2 mb-3">
+                        <button id="pvp-tab-scenario" class="ai-tab-btn active-scenario" onclick="switchAITab('pvp','scenario')">✨ 永續年金情境解讀</button>
+                        <button id="pvp-tab-steps" class="ai-tab-btn" onclick="switchAITab('pvp','steps')">📖 逐步解題</button>
+                    </div>
+                    <button id="pvp-ai-btn" class="btn-primary py-2 px-4 rounded-md font-semibold w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50" disabled onclick="triggerAI('pvp')">
+                        <span>✨</span><span id="pvp-ai-btn-label">永續年金情境解讀 (Gemini AI)</span>
+                    </button>
+                    <div id="pvp-ai-loading" class="hidden mt-3 text-center text-blue-600 font-medium text-sm">
+                        <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+                        <span class="ml-2">AI 分析中...</span>
+                    </div>
+                    <div id="pvp-ai-result" class="mt-3 hidden"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 核心概念 -->
+        <section id="concepts" class="scroll-mt-36">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-stone-800">核心概念速覽：年金的分類</h2>
+                <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">準確區分不同年金類型是計算的關鍵。現金流的時間點決定了價值差異。</p>
+            </div>
+            <div class="space-y-4 max-w-4xl mx-auto">
+                <div class="concept-card card overflow-hidden">
+                    <button class="w-full text-left p-4 bg-white hover:bg-stone-50 transition flex justify-between items-center">
+                        <h3 class="text-lg font-bold">普通年金 (Ordinary Annuity)</h3>
+                        <span class="text-blue-600 text-2xl font-light">+</span>
+                    </button>
+                    <div class="concept-content p-4 pt-0 text-stone-700 hidden">
+                        <p><strong>核心概念：</strong>現金流發生在每期的<strong>期末</strong>。</p>
+                        <p class="mt-1"><strong>實際案例：</strong>房貸或車貸的每月還款、債券的票息支付。</p>
+                        <p class="mt-2"><strong>現值公式：</strong> $PVA=C[\frac{1-\frac{1}{(1+r)^{n}}}{r}]$</p>
+                    </div>
+                </div>
+                <div class="concept-card card overflow-hidden">
+                    <button class="w-full text-left p-4 bg-white hover:bg-stone-50 transition flex justify-between items-center">
+                        <h3 class="text-lg font-bold">期初年金 (Annuity Due)</h3>
+                        <span class="text-blue-600 text-2xl font-light">+</span>
+                    </button>
+                    <div class="concept-content p-4 pt-0 text-stone-700 hidden">
+                        <p><strong>核心概念：</strong>現金流發生在每期的<strong>期初</strong>。由於錢早進來一期，價值比普通年金多乘上 $(1+r)$。</p>
+                        <p class="mt-1"><strong>實際案例：</strong>租金繳納、每月月初開始的定期儲蓄計畫。</p>
+                        <p class="mt-2"><strong>現值公式：</strong> $PVAD = PVA \times (1+r)$</p>
+                    </div>
+                </div>
+                <div class="concept-card card overflow-hidden">
+                    <button class="w-full text-left p-4 bg-white hover:bg-stone-50 transition flex justify-between items-center">
+                        <h3 class="text-lg font-bold">永續年金 (Perpetuity)</h3>
+                        <span class="text-blue-600 text-2xl font-light">+</span>
+                    </button>
+                    <div class="concept-content p-4 pt-0 text-stone-700 hidden">
+                        <p><strong>核心概念：</strong>等額現金流將<strong>無限期</strong>持續，是零成長股利模型的基礎。</p>
+                        <p class="mt-2"><strong>公式：</strong> $PVP=\frac{C}{r}$</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. AI 問答框 -->
+        <section id="ai-chatbox" class="scroll-mt-36">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-stone-800">💬 CH2 概念問答</h2>
+                <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">針對本章的年金與現金流概念提問，AI 將限定在 CH2 範圍內回答。</p>
+            </div>
+            <div class="card p-6 md:p-8 max-w-3xl mx-auto">
+                <div class="mb-4">
+                    <p class="text-sm font-semibold text-stone-500 mb-2">快速提問：</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="quick-q text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-full px-3 py-1 transition">普通年金和期初年金差在哪？</button>
+                        <button class="quick-q text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-full px-3 py-1 transition">為什麼永續年金有限的現值？</button>
+                        <button class="quick-q text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-full px-3 py-1 transition">利率上升對 PVA 有什麼影響？</button>
+                        <button class="quick-q text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-full px-3 py-1 transition">還款金額 C 怎麼從 PVA 反推？</button>
+                    </div>
+                </div>
+                <div id="chat-history" class="space-y-3 mb-4 max-h-80 overflow-y-auto p-2 bg-stone-50 rounded-xl min-h-[80px]">
+                    <p class="text-sm text-stone-400 text-center pt-4">請輸入問題，AI 將針對本章概念回答 👆</p>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <input type="text" id="chat-input" class="chat-input" placeholder="輸入關於 CH2 的問題..." maxlength="200">
+                    <button id="chat-send-btn" onclick="sendChatMessage()" class="btn-primary py-2 px-4 rounded-lg font-semibold text-sm whitespace-nowrap flex-shrink-0">送出 →</button>
+                </div>
+                <p class="text-xs text-stone-400 mt-2 text-center">AI 僅回答年金、FVA、PVA、還款金額、永續年金相關問題</p>
+            </div>
+        </section>
+
+
+        <!-- 2. 動態測驗卷 -->
+        <section id="quiz-generator" class="scroll-mt-36">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-stone-800">📝 CH2 動態測驗卷</h2>
+                <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">點擊下方按鈕，AI 將為您即時生成 10 題專屬隨堂測驗，驗證您的學習成果。</p>
+            </div>
+            <div class="card p-6 md:p-8 max-w-3xl mx-auto">
+                <div id="quiz-setup" class="text-center">
+                    <button id="generate-quiz-btn" onclick="generateDynamicQuiz()" class="btn-primary py-3 px-8 rounded-lg font-bold text-lg inline-flex items-center justify-center gap-2 transition hover:scale-105">
+                        <span class="text-xl">✨</span> 立即生成 CH2 隨堂測驗 (Gemini AI)
+                    </button>
+                    <div id="quiz-loading" class="hidden mt-4 font-medium flex items-center justify-center gap-2" style="color:#2563EB">
+                        <svg class="animate-spin h-5 w-5" style="color:#2563EB" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        AI 正在根據本章重點用心出題中，請稍候...
+                    </div>
+                </div>
+                <div id="quiz-container" class="hidden mt-6 space-y-6 text-left">
+                    <!-- 動態生成的測驗題目將插入於此 -->
+                </div>
+                <div id="quiz-result" class="hidden mt-8 p-6 bg-stone-50 border-2 rounded-xl text-center shadow-inner" style="border-color:#BFDBFE">
+                    <!-- 測驗結果與分數將顯示於此 -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-200 mt-12">
+        <div class="container mx-auto px-4 py-6 text-center text-stone-600">
+            <p>&copy; 銘傳大學財金系財務數學教材，僅供教學與展示用途。</p>
+        </div>
+    </footer>
+
+<script>
+    // =============================================
+    // 共用設定
+    // =============================================
+    const API_MODEL = 'gemini-2.5-flash-preview-05-20';
+    const apiKey = ""; // API key is provided by the environment
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${API_MODEL}:generateContent?key=${apiKey}`;
+
+    const aiMode = { fva: 'scenario', pva: 'scenario', c: 'scenario', pvp: 'scenario' };
+
+    // 各計算機的當前狀態
+    const state = { fva: {}, pva: {}, c: {}, pvp: {} };
+
+    // =============================================
+    // 工具函式
+    // =============================================
+    const formatCurrency = (v) => isNaN(v) ? 'NT$ 0.00' : `NT$ ${v.toLocaleString('zh-TW', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+    async function exponentialBackoffFetch(url, options, maxRetries = 5, delay = 1000) {
+        for (let attempt = 0; attempt < maxRetries; attempt++) {
+            try {
+                const response = await fetch(url, options);
+                if (response.status !== 429) return response;
+            } catch (error) {
+                if (attempt === maxRetries - 1) throw error;
+            }
+            await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, attempt)));
+        }
+        throw new Error('API failed after retries');
+    }
+
+    async function callGemini(systemPrompt, userQuery, isJson = false) {
+        const payload = {
+            contents: [{ parts: [{ text: userQuery }] }],
+            systemInstruction: { parts: [{ text: systemPrompt }] }
+        };
+        if (isJson) {
+            payload.generationConfig = { responseMimeType: "application/json" };
+        }
+        const response = await exponentialBackoffFetch(API_URL, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        return result.candidates?.[0]?.content?.parts?.[0]?.text || null;
+    }
+
+    // =============================================
+    // AI Tab 切換
+    // =============================================
+    const tabLabels = {
+        fva: { scenario: '儲蓄目標解讀 (Gemini AI)', steps: '📖 顯示逐步解題過程' },
+        pva: { scenario: '貸款情境解讀 (Gemini AI)', steps: '📖 顯示逐步解題過程' },
+        c:   { scenario: '還款壓力分析 (Gemini AI)', steps: '📖 顯示逐步解題過程' },
+        pvp: { scenario: '永續年金情境解讀 (Gemini AI)', steps: '📖 顯示逐步解題過程' },
+    };
+
+    function switchAITab(tool, mode) {
+        aiMode[tool] = mode;
+        const sBtn = document.getElementById(`${tool}-tab-scenario`);
+        const tBtn = document.getElementById(`${tool}-tab-steps`);
+        const mainBtn = document.getElementById(`${tool}-ai-btn`);
+        const label = document.getElementById(`${tool}-ai-btn-label`);
+        sBtn.classList.remove('active-scenario', 'active-steps');
+        tBtn.classList.remove('active-scenario', 'active-steps');
+        if (mode === 'scenario') {
+            sBtn.classList.add('active-scenario');
+            mainBtn.className = mainBtn.className.replace('btn-step', 'btn-primary');
+        } else {
+            tBtn.classList.add('active-steps');
+            mainBtn.className = mainBtn.className.replace('btn-primary', 'btn-step');
+        }
+        label.textContent = tabLabels[tool][mode];
+        document.getElementById(`${tool}-ai-result`).classList.add('hidden');
+    }
+
+    // =============================================
+    // AI 結果渲染
+    // =============================================
+    function renderAIResult(containerId, text, mode, accentColor = 'blue') {
+        const container = document.getElementById(containerId);
+        if (mode === 'scenario') {
+            container.innerHTML = `
+                <div class="card p-4 bg-blue-50 border-blue-200 text-stone-800">
+                    <h4 class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>✨</span> 財務教練分析</h4>
+                    <p class="text-sm leading-relaxed">${text.replace(/\n/g, '<br>')}</p>
+                </div>`;
+        } else {
+            const lines = text.split('\n').filter(l => l.trim());
+            let html = `<div class="space-y-2"><h4 class="font-bold text-purple-800 mb-3 flex items-center gap-1"><span>📖</span> 逐步解題過程</h4>`;
+            lines.forEach(line => {
+                const m = line.match(/^(步驟\s*\d+|Step\s*\d+|\d+\.|第\s*\d+\s*步)/i);
+                if (m) {
+                    const num = m[0].replace(/[^0-9]/g, '') || '•';
+                    const rest = line.replace(m[0], '').trim();
+                    html += `<div class="step-block flex items-start"><span class="step-number">${num}</span><span class="text-sm text-purple-900"><strong>${m[0]}</strong> ${rest}</span></div>`;
+                } else {
+                    html += `<p class="text-sm text-stone-700 px-2">${line}</p>`;
+                }
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        container.classList.remove('hidden');
+        if (window.renderMathInElement) {
+            renderMathInElement(container, { delimiters: [{ left:'$', right:'$', display:false }, { left:'$$', right:'$$', display:true }], throwOnError: false });
+        }
+    }
+
+    function showLoading(tool, show) {
+        document.getElementById(`${tool}-ai-loading`).classList.toggle('hidden', !show);
+        document.getElementById(`${tool}-ai-btn`).disabled = show;
+    }
+
+    // =============================================
+    // 統一 AI 觸發函式
+    // =============================================
+    async function triggerAI(tool) {
+        const mode = aiMode[tool];
+        const s = state[tool];
+        showLoading(tool, true);
+        document.getElementById(`${tool}-ai-result`).classList.add('hidden');
+
+        let systemPrompt = '', userQuery = '';
+
+        if (tool === 'fva') {
+            const typeLabel = s.type === 1 ? '期初年金(Annuity Due)' : '普通年金(Ordinary Annuity)';
+            if (mode === 'scenario') {
+                systemPrompt = "你是退休金和儲蓄規劃師，專精於年金終值教學。根據使用者的 FVA 計算結果，提供約100-150字的情境分析，包含：1.累積金額的財務意義；2.普通年金與期初年金的差異（若為期初年金）；3.一個具體儲蓄目標情境（如退休金、教育基金）。僅限 CH2 年金終值範圍。";
+                userQuery = `每期現金流(C): ${formatCurrency(s.C)}, 每期利率(r): ${s.r_percent}%, 總期數(n): ${s.n}期, 年金類型: ${typeLabel}, 最終累積(FV): ${formatCurrency(s.FV)}。請分析。`;
+            } else {
+                systemPrompt = "你是財務數學教師，請用步驟格式（步驟1:、步驟2:...）說明年金終值 FVA 的計算過程，代入實際數字，說明期初年金與普通年金公式的差異。僅限 CH2 FVA 範圍。";
+                userQuery = `請逐步示範：C=${formatCurrency(s.C)}, r=${s.r_percent}%, n=${s.n}期, ${typeLabel}, FV=${formatCurrency(s.FV)} 的計算步驟。`;
+            }
+        } else if (tool === 'pva') {
+            const typeLabel = s.type === 0 ? '普通年金' : '期初年金';
+            if (mode === 'scenario') {
+                systemPrompt = "你是貸款和資產折現分析師，專精於年金現值教學。根據 PVA 計算結果，提供約100-150字的情境分析，包含：1.PV 的財務意義（可承受貸款上限）；2.利息折現對 PV 的影響；3.一個具體貸款或投資情境（如房貸、彩票領取）。僅限 CH2 年金現值範圍。";
+                userQuery = `每期現金流(C): ${formatCurrency(s.C)}, 每期利率(r): ${s.r_percent}%, 總期數(n): ${s.n}期, 年金類型: ${typeLabel}, 現值(PV): ${formatCurrency(s.PV)}。請分析。`;
+            } else {
+                systemPrompt = "你是財務數學教師，請用步驟格式（步驟1:、步驟2:...）說明年金現值 PVA 的計算過程，代入實際數字。僅限 CH2 PVA 範圍。";
+                userQuery = `請逐步示範：C=${formatCurrency(s.C)}, r=${s.r_percent}%, n=${s.n}期, ${typeLabel}, PV=${formatCurrency(s.PV)} 的計算步驟。`;
+            }
+        } else if (tool === 'c') {
+            if (mode === 'scenario') {
+                systemPrompt = "你是家庭預算和債務管理顧問，專精於等額還款分析。根據計算結果，提供約100-150字的情境分析，包含：1.每期還款金額在預算中的意義；2.總還款金額與總利息負擔；3.一個具體的還款建議（如雙週繳、提早還款）。僅限 CH2 還款金額範圍。";
+                userQuery = `貸款本金(PV): ${formatCurrency(s.PV)}, 每期利率(r): ${s.r_percent}%, 總期數(n): ${s.n}期, 每期還款(C): ${formatCurrency(s.C)}。請分析。`;
+            } else {
+                systemPrompt = "你是財務數學教師，請用步驟格式（步驟1:、步驟2:...）說明從 PVA 反推每期還款金額 C 的計算過程，代入實際數字。僅限 CH2 還款金額範圍。";
+                userQuery = `請逐步示範：PV=${formatCurrency(s.PV)}, r=${s.r_percent}%, n=${s.n}期, C=${formatCurrency(s.C)} 的反推計算步驟。`;
+            }
+        } else if (tool === 'pvp') {
+            if (mode === 'scenario') {
+                systemPrompt = "你是財務教練，專精於永續年金概念教學。根據 PVP 計算結果，提供約100-150字的情境分析，包含：1.永續年金現值的直覺解釋；2.為何無限現金流卻有有限現值；3.一個生活化情境（如股票估值、捐款基金）。僅限 CH2 永續年金範圍。";
+                userQuery = `每年現金流(C): ${formatCurrency(s.C)}, 折現率(r): ${s.r_percent}%, 永續年金現值(PVP): ${formatCurrency(s.PVP)}。請分析。`;
+            } else {
+                systemPrompt = "你是財務數學教師，請用步驟格式（步驟1:、步驟2:...）說明永續年金現值 PVP 的計算邏輯，說明為何公式簡化為 C/r。僅限 CH2 永續年金範圍。";
+                userQuery = `請逐步說明：C=${formatCurrency(s.C)}, r=${s.r_percent}%, PVP=${formatCurrency(s.PVP)} 的計算原理，以及公式 PVP=C/r 的推導邏輯。`;
+            }
+        }
+
+        try {
+            const text = await callGemini(systemPrompt, userQuery);
+            if (text) renderAIResult(`${tool}-ai-result`, text, mode);
+            else {
+                document.getElementById(`${tool}-ai-result`).innerHTML = '<p class="text-sm text-red-500">無法取得 AI 回應，請稍後再試。</p>';
+                document.getElementById(`${tool}-ai-result`).classList.remove('hidden');
+            }
+        } catch(e) {
+            document.getElementById(`${tool}-ai-result`).innerHTML = '<p class="text-sm text-red-500">連線失敗，請檢查網路。</p>';
+            document.getElementById(`${tool}-ai-result`).classList.remove('hidden');
+        } finally {
+            showLoading(tool, false);
+        }
+    }
+
+    // =============================================
+    // 問答框
+    // =============================================
+    const chatHistory = [];
+    const CHAT_SYSTEM_PROMPT = `你是「財務數學 CH2」的 AI 學習助理，專門回答年金與現金流相關問題，包含：普通年金(Ordinary Annuity)、期初年金(Annuity Due)、年金終值(FVA/FVAD)、年金現值(PVA/PVAD)、等額還款金額(C)、永續年金(Perpetuity)等概念。
+規則：
+1. 只回答 CH2 年金與現金流相關問題。
+2. 若超出範圍，禮貌說明「這超出 CH2 範圍，建議參考其他章節」。
+3. 以繁體中文回答，簡潔清楚，適合大學財金系一年級學生。
+4. 若學生問作業題，提供方向與觀念提示，而非直接給答案。
+5. 回答控制在 150 字以內。`;
+
+    async function sendChatMessage() {
+        const input = document.getElementById('chat-input');
+        const question = input.value.trim();
+        if (!question) return;
+        input.value = '';
+        const historyDiv = document.getElementById('chat-history');
+        if (historyDiv.querySelector('p.text-stone-400')) historyDiv.innerHTML = '';
+        historyDiv.innerHTML += `<div class="chat-bubble-user text-sm">${question}</div>`;
+        const typingId = 'typing-' + Date.now();
+        historyDiv.innerHTML += `<div id="${typingId}" class="chat-bubble-ai text-sm flex items-center gap-1"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
+        historyDiv.scrollTop = historyDiv.scrollHeight;
+        chatHistory.push({ role: 'user', parts: [{ text: question }] });
+        try {
+            const payload = { contents: chatHistory, systemInstruction: { parts: [{ text: CHAT_SYSTEM_PROMPT }] } };
+            const response = await exponentialBackoffFetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const result = await response.json();
+            const text = result.candidates?.[0]?.content?.parts?.[0]?.text || '抱歉，無法取得回應。';
+            chatHistory.push({ role: 'model', parts: [{ text }] });
+            document.getElementById(typingId).outerHTML = `<div class="chat-bubble-ai text-sm leading-relaxed">${text.replace(/\n/g, '<br>')}</div>`;
+        } catch(e) {
+            document.getElementById(typingId).outerHTML = `<div class="chat-bubble-ai text-sm text-red-500">連線失敗，請稍後再試。</div>`;
+        }
+        historyDiv.scrollTop = historyDiv.scrollHeight;
+    }
+
+    // =============================================
+    // 動態測驗卷 (Quiz Generator) 功能
+    // =============================================
+    let currentQuizData = [];
+
+    const QUIZ_SYSTEM_PROMPT = `你是大學財務管理教授。請根據「CH2 現金流量與年金」(包含普通年金、期初年金、年金終值 FVA、年金現值 PVA、等額還款 C、永續年金) 出 10 題單選題。
+    請嚴格以 JSON 陣列格式回傳，絕對不要有任何其他文字說明或 Markdown 標記，格式如下：
+    [
+      {
+        "question": "題目內容(可用 $ 寫數學公式，若包含 LaTeX 指令請使用雙反斜線跳脫，例如 \\\\frac{A}{B})",
+        "options": ["選項1", "選項2", "選項3", "選項4"],
+        "answer": 0,
+        "explanation": "詳解說明(可用 $ 寫數學公式，若包含 LaTeX 指令請使用雙反斜線跳脫)"
+      }
+    ]
+    注意：answer 欄位是正確選項的整數索引 (0, 1, 2, 或 3)。`;
+
+    async function generateDynamicQuiz() {
+        const btn = document.getElementById('generate-quiz-btn');
+        const loading = document.getElementById('quiz-loading');
+        const container = document.getElementById('quiz-container');
+        const resultDiv = document.getElementById('quiz-result');
+
+        btn.disabled = true;
+        loading.classList.remove('hidden');
+        container.classList.add('hidden');
+        resultDiv.classList.add('hidden');
+        container.innerHTML = ''; 
+
+        try {
+            // 呼叫 AI 產生考題，並啟用 isJson 確保格式合法
+            let jsonStr = await callGemini(QUIZ_SYSTEM_PROMPT, "請出 10 題關於 CH2 年金與現金流的測驗題。", true);
+            
+            // 清理可能包含的 Markdown 格式 (防呆處理)
+            jsonStr = jsonStr.replace(/```json/g, '').replace(/```/g, '').trim();
+            const startIndex = jsonStr.indexOf('[');
+            const endIndex = jsonStr.lastIndexOf(']');
+            if (startIndex !== -1 && endIndex !== -1) {
+                jsonStr = jsonStr.substring(startIndex, endIndex + 1);
+            }
+
+            currentQuizData = JSON.parse(jsonStr);
+            renderQuiz(currentQuizData);
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<p class="text-red-500 text-center py-4">題目生成失敗，請稍後再試。</p>';
+            container.classList.remove('hidden');
+        } finally {
+            btn.disabled = false;
+            loading.classList.add('hidden');
+        }
+    }
+
+    function renderQuiz(quizData) {
+        const container = document.getElementById('quiz-container');
+        let html = '';
+
+        quizData.forEach((q, qIndex) => {
+            html += `
+            <div class="card p-5 bg-white border-stone-200 transition-colors" id="question-card-${qIndex}">
+                <p class="font-bold text-lg text-stone-800 mb-4 text-justify">${qIndex + 1}. ${q.question}</p>
+                <div class="space-y-3">
+            `;
+            q.options.forEach((opt, oIndex) => {
+                html += `
+                    <label class="quiz-option-container flex items-center p-3 border border-stone-200 rounded-lg cursor-pointer">
+                        <input type="radio" name="q${qIndex}" value="${oIndex}" class="quiz-radio text-blue-600 focus:ring-blue-500 w-4 h-4 mr-3 flex-shrink-0">
+                        <span class="text-stone-700 font-medium">${opt}</span>
+                    </label>
+                `;
+            });
+            html += `
+                </div>
+                <div id="explanation-${qIndex}" class="hidden mt-4 p-4 bg-indigo-50/50 rounded-lg text-sm text-indigo-900 border border-indigo-100">
+                    <span class="font-bold text-indigo-700 flex items-center gap-1 mb-1">💡 詳解：</span> 
+                    ${q.explanation}
+                </div>
+            </div>`;
+        });
+
+        html += `
+            <div class="text-center mt-8">
+                <button onclick="submitQuiz()" class="btn-primary py-3 px-8 rounded-lg font-bold text-lg shadow-sm transition hover:-translate-y-0.5">送出答案與看分數</button>
+            </div>
+        `;
+
+        container.innerHTML = html;
+        container.classList.remove('hidden');
+
+        // 重新渲染題目與選項中的 LaTeX 數學公式
+        if (window.renderMathInElement) {
+            renderMathInElement(container, { delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}], throwOnError: false });
+        }
+    }
+
+    function submitQuiz() {
+        if (!currentQuizData || currentQuizData.length === 0) return;
+
+        let score = 0;
+        const total = currentQuizData.length;
+
+        currentQuizData.forEach((q, qIndex) => {
+            const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+            const explanationDiv = document.getElementById(`explanation-${qIndex}`);
+            const card = document.getElementById(`question-card-${qIndex}`);
+            
+            explanationDiv.classList.remove('hidden'); // 顯示詳解
+
+            // 處理標示
+            if (selected && parseInt(selected.value) === q.answer) {
+                // 答對
+                score += 1;
+                card.classList.remove('border-stone-200');
+                card.classList.add('border-green-300', 'bg-green-50/30');
+            } else {
+                // 答錯或未答
+                card.classList.remove('border-stone-200');
+                card.classList.add('border-rose-300', 'bg-rose-50/30');
+                
+                // 標示出正確選項的底色
+                const correctInput = document.querySelector(`input[name="q${qIndex}"][value="${q.answer}"]`);
+                if(correctInput) {
+                    correctInput.closest('label').classList.add('bg-green-100', 'border-green-400', 'shadow-inner');
+                }
+            }
+            
+            // 停用所有選項避免再改
+            document.querySelectorAll(`input[name="q${qIndex}"]`).forEach(input => input.disabled = true);
+        });
+
+        const resultDiv = document.getElementById('quiz-result');
+        const scorePercent = Math.round((score / total) * 100);
+
+        let feedback = '';
+        if (scorePercent === 100) feedback = '太棒了！您完全掌握了本章節的核心概念 🏆';
+        else if (scorePercent >= 60) feedback = '表現不錯！可以再複習一下錯題的詳解 💪';
+        else feedback = '看來還需要多加練習，別氣餒，回到上方重新看一次核心概念吧 📖';
+
+        resultDiv.innerHTML = `
+            <h3 class="text-2xl font-bold text-stone-800 mb-2">測驗結果：${score} / ${total} 題</h3>
+            <p class="text-5xl font-bold ${scorePercent >= 60 ? 'text-blue-600' : 'text-rose-500'} mb-3">${scorePercent} 分</p>
+            <p class="text-stone-600">${feedback}</p>
+            <div class="mt-6">
+                <button onclick="document.getElementById('quiz-generator').scrollIntoView({behavior:'smooth'})" class="text-blue-600 hover:text-blue-800 underline text-sm font-medium">往上查看各題詳解</button>
+            </div>
+        `;
+        resultDiv.classList.remove('hidden');
+        
+        // 滾動到分數區域
+        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // =============================================
+    // 財務計算函式
+    // =============================================
+    function calcFVA(C, r, n, type) {
+        if (r === 0) return C * n;
+        let fv = C * ((Math.pow(1 + r, n) - 1) / r);
+        if (type === 1) fv *= (1 + r);
+        return fv;
+    }
+    function calcPVA(C, r, n, type) {
+        if (r === 0) return C * n;
+        let pv = C * ((1 - Math.pow(1 + r, -n)) / r);
+        if (type === 1) pv *= (1 + r);
+        return pv;
+    }
+    function calcC(PV, r, n) {
+        if (r === 0) return PV / n;
+        return PV * r / (1 - Math.pow(1 + r, -n));
+    }
+    function calcPVP(C, r) { return r === 0 ? 0 : C / r; }
+
+    // =============================================
+    // 計算邏輯
+    // =============================================
+    function runFVACalculator() {
+        const C = parseFloat(document.getElementById('fva-payment').value) || 0;
+        const r_percent = parseFloat(document.getElementById('fva-rate').value) || 0;
+        const n = parseFloat(document.getElementById('fva-periods').value) || 0;
+        const type = parseInt(document.getElementById('fva-type').value);
+        const r = r_percent / 100;
+        const isValid = C > 0 && r >= 0 && n > 0;
+        const FV = isValid ? calcFVA(C, r, n, type) : 0;
+        document.getElementById('fva-result').textContent = formatCurrency(FV);
+        const typeLabel = type === 1 ? '期初年金 (Annuity Due)' : '普通年金 (Ordinary Annuity)';
+        const fDiv = document.getElementById('fva-formula');
+        fDiv.innerHTML = type === 1 ? `$$FVAD=C[\\frac{(1+r)^{n}-1}{r}](1+r)$$` : `$$FVA=C[\\frac{(1+r)^{n}-1}{r}]$$`;
+        document.getElementById('fva-note').textContent = `計算方式：${typeLabel}。`;
+        renderMathInElement(fDiv, { delimiters: [{ left:'$$', right:'$$', display:true }] });
+        state.fva = { C, r_percent, n, type, FV };
+        document.getElementById('fva-ai-btn').disabled = !isValid;
+        document.getElementById('fva-ai-result').classList.add('hidden');
+    }
+
+    function runPVACalculator() {
+        const C = parseFloat(document.getElementById('pva-payment').value) || 0;
+        const r_percent = parseFloat(document.getElementById('pva-rate').value) || 0;
+        const n = parseFloat(document.getElementById('pva-periods').value) || 0;
+        const type = parseInt(document.getElementById('pva-type').value);
+        const r = r_percent / 100;
+        const isValid = C > 0 && r >= 0 && n > 0;
+        const PV = isValid ? calcPVA(C, r, n, type) : 0;
+        document.getElementById('pva-result').textContent = formatCurrency(PV);
+        const fDiv = document.getElementById('pva-formula');
+        fDiv.innerHTML = type === 1 ? `$$PVAD=C[\\frac{1-\\frac{1}{(1+r)^{n}}}{r}](1+r)$$` : `$$PVA=C[\\frac{1-\\frac{1}{(1+r)^{n}}}{r}]$$`;
+        document.getElementById('pva-note').textContent = `計算方式：${type === 0 ? '普通年金 (PVA)' : '期初年金 (PVAD)'}。`;
+        renderMathInElement(fDiv, { delimiters: [{ left:'$$', right:'$$', display:true }] });
+        renderMathInElement(document.getElementById('pva-hint-container'), { delimiters: [{ left:'$', right:'$', display:false }], throwOnError: false });
+        state.pva = { C, r_percent, n, type, PV };
+        document.getElementById('pva-ai-btn').disabled = !isValid;
+        document.getElementById('pva-ai-result').classList.add('hidden');
+    }
+
+    function runC_Calculator() {
+        const PV = parseFloat(document.getElementById('c-principal').value) || 0;
+        const r_percent = parseFloat(document.getElementById('c-rate').value) || 0;
+        const n = parseFloat(document.getElementById('c-periods').value) || 0;
+        const r = r_percent / 100;
+        const isValid = PV > 0 && r >= 0 && n > 0;
+        const C = isValid ? calcC(PV, r, n) : 0;
+        document.getElementById('c-result').textContent = formatCurrency(C);
+        state.c = { PV, r_percent, n, C };
+        document.getElementById('c-ai-btn').disabled = !isValid;
+        document.getElementById('c-ai-result').classList.add('hidden');
+    }
+
+    function runPVP_Calculator() {
+        const C = parseFloat(document.getElementById('pvp-payment').value) || 0;
+        const r_percent = parseFloat(document.getElementById('pvp-rate').value) || 0;
+        const r = r_percent / 100;
+        const isValid = C > 0 && r > 0;
+        const PVP = isValid ? calcPVP(C, r) : 0;
+        document.getElementById('pvp-result').textContent = formatCurrency(PVP);
+        document.getElementById('pvp-note').textContent = isValid ? `計算方式：PVP = ${formatCurrency(C)} / ${r_percent}%` : '請輸入有效的現金流與利率。';
+        renderMathInElement(document.getElementById('pvp-description'), { delimiters: [{ left:'$', right:'$', display:false }], throwOnError: false });
+        state.pvp = { C, r_percent, PVP };
+        document.getElementById('pvp-ai-btn').disabled = !isValid;
+        document.getElementById('pvp-ai-result').classList.add('hidden');
+    }
+
+    // =============================================
+    // 初始化
+    // =============================================
+    document.addEventListener('DOMContentLoaded', function() {
+        // KaTeX
+        renderMathInElement(document.body, { delimiters: [{ left:'$$', right:'$$', display:true }, { left:'$', right:'$', display:false }], throwOnError: false });
+
+        // 事件監聽
+        document.querySelectorAll('#fva-calculator input, #fva-calculator select').forEach(el => el.addEventListener('input', runFVACalculator));
+        document.querySelectorAll('#pva-calculator input, #pva-calculator select').forEach(el => el.addEventListener('input', runPVACalculator));
+        document.querySelectorAll('#loan-payment input').forEach(el => el.addEventListener('input', runC_Calculator));
+        document.querySelectorAll('#perpetuity input').forEach(el => el.addEventListener('input', runPVP_Calculator));
+
+        // 範例按鈕
+        document.getElementById('load-example-2-2').addEventListener('click', () => {
+            document.getElementById('fva-payment').value = 10000;
+            document.getElementById('fva-rate').value = 4;
+            document.getElementById('fva-periods').value = 8;
+            document.getElementById('fva-type').value = 1;
+            runFVACalculator();
+        });
+        document.getElementById('clear-fva').addEventListener('click', () => {
+            ['fva-payment','fva-rate','fva-periods'].forEach(id => document.getElementById(id).value = '');
+            runFVACalculator();
+        });
+        document.getElementById('load-example-2-3').addEventListener('click', () => {
+            document.getElementById('pva-payment').value = 25000;
+            document.getElementById('pva-rate').value = 0.15;
+            document.getElementById('pva-periods').value = 240;
+            document.getElementById('pva-type').value = 0;
+            runPVACalculator();
+        });
+        document.getElementById('clear-pva').addEventListener('click', () => {
+            ['pva-payment','pva-rate','pva-periods'].forEach(id => document.getElementById(id).value = '');
+            runPVACalculator();
+        });
+        document.getElementById('load-example-C').addEventListener('click', () => {
+            document.getElementById('c-principal').value = 500000;
+            document.getElementById('c-rate').value = 0.5;
+            document.getElementById('c-periods').value = 60;
+            runC_Calculator();
+            document.getElementById('c-note').textContent = '此結果驗證了教材綜合演練題 3 (月付金)。';
+        });
+
+        // 概念 Accordion
+        document.querySelectorAll('.concept-card button').forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('span');
+                const isOpen = !content.classList.contains('hidden');
+                document.querySelectorAll('.concept-content').forEach(c => c.classList.add('hidden'));
+                document.querySelectorAll('.concept-card button span').forEach(i => i.textContent = '+');
+                content.classList.toggle('hidden', isOpen);
+                icon.textContent = isOpen ? '+' : '-';
+                if (!content.classList.contains('hidden')) {
+                    renderMathInElement(content, { delimiters: [{ left:'$$', right:'$$', display:true }, { left:'$', right:'$', display:false }], throwOnError: false });
+                }
+            });
+        });
+
+        // 問答框快速按鈕
+        document.querySelectorAll('.quick-q').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('chat-input').value = btn.textContent;
+                sendChatMessage();
+            });
+        });
+        document.getElementById('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter') sendChatMessage(); });
+
+        // 導航高亮
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('nav a');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href').substring(1) === entry.target.id) link.classList.add('active');
+                    });
+                }
+            });
+        }, { rootMargin: '-50% 0px -50% 0px' });
+        sections.forEach(s => observer.observe(s));
+        navLinks.forEach(a => {
+            a.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // 初始計算
+        runFVACalculator();
+        runPVACalculator();
+        runC_Calculator();
+        runPVP_Calculator();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第1章講義：貨幣的時間價值與利率基礎</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <style>
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;max-width:850px;margin:0 auto;padding:20px;line-height:1.6;color:#333;}
+        h1{border-bottom:2px solid #ccc;padding-bottom:5px;color:#1a1a1a;}
+        h2{color:#2a2a2a;margin-top:30px;} h3{color:#4a4a4a;} h4{color:#555;}
+        .math-block{margin:15px 0;padding:10px;background-color:#e6f9ff;overflow-x:auto;font-size:1.1em;}
+        table{width:100%;border-collapse:collapse;margin-top:15px;}
+        th,td{border:1px solid #ddd;padding:10px;text-align:center;}
+        th{background-color:#e9e9e9;}
+        ul,ol{margin-left:20px;} li{margin-bottom:5px;}
+        strong{color:#1a1a1a;}
+        hr{border:none;border-top:1px solid #eee;margin:40px 0;}
+        .decision-box{margin:20px 0;padding:15px;border:1px solid #ffcc00;background-color:#fffacd;}
+        /* ── 互動按鈕 ── */
+        .ib{margin:16px 0 8px 0;padding:12px 16px;background:linear-gradient(135deg,#F0FDFA 0%,#99F6E444 100%);border-left:4px solid #0D9488;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .ib .ib-text{font-size:.88rem;color:#134E4A;font-weight:500;}
+        .ib .ib-text span{font-size:1.05rem;margin-right:5px;}
+        .btn-ib{display:inline-flex;align-items:center;gap:6px;background-color:#0D9488;color:white;padding:7px 15px;border-radius:6px;font-size:.83rem;font-weight:600;text-decoration:none;transition:background-color .2s,transform .1s;white-space:nowrap;}
+        .btn-ib:hover{background-color:#0F766E;transform:translateY(-1px);}
+        .banner{background:linear-gradient(135deg,#0F766E 0%,#0D9488 100%);color:white;padding:14px 20px;border-radius:10px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .banner p{margin:0;font-size:.88rem;opacity:.9;} .banner strong{font-size:1rem;}
+        .btn-banner{display:inline-flex;align-items:center;gap:6px;background:white;color:#0F766E;padding:8px 16px;border-radius:6px;font-size:.83rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:opacity .2s;}
+        .btn-banner:hover{opacity:.85;}
+        .note{font-size:.9em;color:#555;margin-top:5px;}
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <div><strong>📊 第1章互動教材已備妥</strong><p>閱讀講義時，可點擊各範例下方的按鈕，在新分頁開啟互動計算機即時驗算。</p></div>
+        <a href="https://gemini.google.com/share/3732c5a9ec5c" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> 開啟完整互動教材</a>
+    </div>
+    <h1>第一章：貨幣的時間價值與利率基礎 (Time Value of Money and Interest Fundamentals)</h1>
+    <h2>導言</h2>
+    <p>歡迎來到財務數學的核心世界！本章將帶領您深入理解所有金融決策的起點：貨幣的時間價值 (Time Value of Money, TVM)。</p>
+    <p>您將學會如何量化資金在不同時間點的價值，這是進行任何投資評估、貸款計算或退休規劃的基礎。我們將透過單利與複利的系統化探討，解析資金的成長模式，並掌握現值（PV）、未來價值（FV）以及比較利率的關鍵工具（實質利率）。</p>
+    <hr>
+    <h2>1.1 單利：線性的成長 (Simple Interest)</h2>
+    <h3>核心概念</h3>
+    <p>單利是最基礎的利息計算方式。它最大的特點是：利息僅對原始本金 (P) 計算。單利的成長是線性的，通常用於短期借貸或特定票據的計算。</p>
+    <h3>單利公式</h3>
+    <p>利息總額 ($I$):</p>
+    <div class="math-block">$$I = P \times r \times n$$</div>
+    <p>未來價值 ($FV$):</p>
+    <div class="math-block">$$FV = P + I = P(1+r \times n)$$</div>
+    <h3>符號說明</h3>
+    <ul>
+        <li>$P$：本金 (Principal)，原始投入或借貸的金額。</li>
+        <li>$r$：年利率 (Annual Interest Rate)，以小數表示。</li>
+        <li>$n$：期數 (Number of Periods)，通常為總年數。</li>
+    </ul>
+    <hr>
+    <h2>1.2 複利：指數型的爆發 (Compound Interest and Future Value)</h2>
+    <h3>核心概念</h3>
+    <p>複利是現代金融市場的標準計息方式。它的核心在於「利滾利」：每一期產生的利息會自動加回本金，並在下一期以這個「新本金」為基礎計算利息。複利的成長是指數型的，理解複利是理解長期投資回報的關鍵。</p>
+    <h3>1. 每年複利一次</h3>
+    <div class="math-block">$$FV = P(1+r)^n$$</div>
+    <h3>2. 複利頻率 (Compounding Frequency)</h3>
+    <p>當每年複利 $m$ 次時：</p>
+    <div class="math-block">$$FV = P\left(1+\frac{r}{m}\right)^{mn}$$</div>
+    <h3>3. 連續複利 (Continuous Compounding)</h3>
+    <div class="math-block">$$FV = P e^{rn}$$</div>
+    <h3>範例演練 1.1：複利頻率的影響</h3>
+    <p>假設某筆投資本金為 $P=8,000$ 元，年利率 $r=5\%=0.05$，投資期間 $n=4$ 年。</p>
+    <p>每年複利 ($m=1$):</p>
+    <div class="math-block">$$FV = 8000 \times (1+0.05)^4 \approx 9,724.05 \text{ 元}$$</div>
+    <p>每月複利 ($m=12$):</p>
+    <div class="math-block">$$FV = 8000 \times \left(1+\frac{0.05}{12}\right)^{48} \approx 9,767.24 \text{ 元}$$</div>
+    <p>連續複利:</p>
+    <div class="math-block">$$FV = 8000 \times e^{0.05 \times 4} \approx 9,771.22 \text{ 元}$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>🔢</span>範例 1.1：調整複利頻率，觀察 FV 的差異</div>
+        <a href="https://gemini.google.com/share/3732c5a9ec5c" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> 開啟 FV 複利分析器</a>
+    </div>
+    <hr>
+    <h2>1.3 現值與折現 (Present Value and Discounting)</h2>
+    <h3>核心概念</h3>
+    <p>現值 (Present Value, PV) 是貨幣時間價值的逆向應用。它回答了這個問題：「為了在未來獲得一筆錢 ($FV$)，今天我需要投入多少資金？」這個將未來價值轉換回現值的過程，稱為折現 (Discounting)。</p>
+    <h3>1. 現值公式</h3>
+    <div class="math-block">$$PV = \frac{FV}{(1+r)^n}$$</div>
+    <h3>2. 範例演練 1.2：現值計算</h3>
+    <p>假設您希望在 $10$ 年後擁有 $FV=15,000$ 元，折現率 $r=5\%$，今天需要存入多少錢？</p>
+    <div class="math-block">$$PV = \frac{15000}{(1+0.05)^{10}} \approx 9,208.70 \text{ 元}$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>🏦</span>範例 1.2：輸入未來目標金額，計算今天需投入多少</div>
+        <a href="https://gemini.google.com/share/3732c5a9ec5c" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟 PV 現值計算機</a>
+    </div>
+    <hr>
+    <h2>1.4 利率比較：名目利率與實質利率 (Nominal vs. Effective Rate)</h2>
+    <h3>核心概念</h3>
+    <ul>
+        <li>名目利率 ($r_{Nominal}$)：合約上列出的年利率，不考慮複利頻率的影響。</li>
+        <li>實質利率 (Effective Annual Rate, EAR)：考慮了複利頻率 ($m$) 之後，實際賺取或支付的年利率。</li>
+    </ul>
+    <h3>1. 實質利率 (EAR) 計算公式</h3>
+    <div class="math-block">$$EAR = \left(1+\frac{r_{Nominal}}{m}\right)^m - 1$$</div>
+    <h3>2. 範例演練 1.3：計算實質利率</h3>
+    <p>假設名目年利率 $r_{Nominal}$ 為 $12\%$，但每月複利一次 ($m=12$)。實質年利率 (EAR) 約為 $12.68\%$。</p>
+
+    <div class="ib">
+        <div class="ib-text"><span>📊</span>範例 1.3：比較不同複利頻率下的 EAR</div>
+        <a href="https://gemini.google.com/share/3732c5a9ec5c" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> 開啟 EAR 比較器</a>
+    </div>
+    <hr>
+    <h2>綜合演練</h2>
+    <p>請應用本章學到的所有概念與公式來回答以下問題：</p>
+
+    <div class="ib">
+        <div class="ib-text"><span>✏️</span>建議先自行計算，再使用互動工具驗算，或使用 AI 動態測驗卷自我檢測</div>
+        <a href="https://gemini.google.com/share/3732c5a9ec5c" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> 開啟 AI 動態測驗卷</a>
+    </div>
+    <ol>
+        <li>假設您將 $50,000$ 元存入銀行，年利率為 $3\%$，$10$ 年後：單利計算下本利和為多少？每年複利計算 FV 又是多少？</li>
+        <li>某筆 $20,000$ 元的債務需要在 $3$ 年後償還，折現率為 $6\%$，現值是多少？</li>
+        <li>某投資產品名目年利率 $6\%$，每季複利 ($m=4$)，EAR 為多少？</li>
+        <li>信用卡名目年利率 $18\%$，每月複利 ($m=12$)，實際年利率 (EAR) 為多少？</li>
+        <li>方案 A（名目年利率 $10\%$、每年複利）vs 方案 B（$9.8\%$、每月複利），哪個 EAR 更高？</li>
+        <li>希望 $5$ 年後存到 $500,000$ 元，年報酬率 $6\%$（每年複利），今天需投入多少本金？</li>
+        <li>名目年利率 $15\%$、每日複利（$365$ 天），約等於多少 EAR？</li>
+        <li>將未來價值折現回現值的過程，與哪種概念最直接相關：利滾利、機會成本、或通貨膨脹？</li>
+    </ol>
+
+    <div class="ib">
+        <div class="ib-text"><span>💬</span>還有疑問？到 AI 問答框即時提問本章概念</div>
+        <a href="https://gemini.google.com/share/3732c5a9ec5c" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> 開啟 AI 概念問答</a>
+    </div>
+    <hr>
+</body></html>

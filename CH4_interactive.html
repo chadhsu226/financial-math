@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CH4 分期償還與貸款攤銷儀表板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #F5F5F4; color: #292524; }
+        .btn-primary { background-color: #F97316; color: #FFFFFF; transition: background-color 0.3s; }
+        .btn-primary:hover { background-color: #EA580C; }
+        .btn-secondary { background-color: #A8A29E; color: #292524; transition: background-color 0.3s; }
+        .btn-secondary:hover { background-color: #78716C; }
+        .btn-step { background-color: #0D9488; color: #FFFFFF; transition: background-color 0.3s; }
+        .btn-step:hover { background-color: #0F766E; }
+        .card { background-color: #FFFFFF; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); border: 1px solid #E7E5E4; }
+        .input-field { border-color: #D6D3D1; border-width: 1px; border-style: solid; border-radius: 0.375rem; transition: border-color 0.3s, box-shadow 0.3s; }
+        .input-field:focus { border-color: #F97316; box-shadow: 0 0 0 2px rgba(249,115,22,0.2); outline: none; }
+        .nav-link { transition: color 0.3s, border-color 0.3s; }
+        .nav-link.active { color: #F97316; border-bottom-color: #F97316; }
+        .nav-link:not(.active):hover { color: #EA580C; }
+        /* AI 功能區塊 */
+        .ai-section { border-top: 2px dashed #FED7AA; margin-top: 1.5rem; padding-top: 1.5rem; }
+        .ai-tab-btn { padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; transition: all 0.2s; cursor: pointer; border: 2px solid transparent; }
+        .ai-tab-btn.active-scenario { background-color: #F97316; color: white; }
+        .ai-tab-btn.active-steps { background-color: #0D9488; color: white; }
+        .ai-tab-btn:not(.active-scenario):not(.active-steps) { background-color: #FFF7ED; color: #C2410C; border-color: #FED7AA; }
+        .ai-tab-btn:not(.active-scenario):not(.active-steps):hover { background-color: #FFEDD5; }
+        .step-block { background: linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 100%); border-left: 4px solid #0D9488; border-radius: 0.5rem; padding: 0.75rem 1rem; margin-bottom: 0.5rem; }
+        .step-number { display: inline-flex; align-items: center; justify-content: center; width: 1.75rem; height: 1.75rem; background-color: #0D9488; color: white; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; margin-right: 0.5rem; flex-shrink: 0; }
+        /* 問答框 */
+        .chat-bubble-user { background-color: #FFEDD5; border-radius: 1rem 1rem 0.25rem 1rem; padding: 0.75rem 1rem; margin-left: 2rem; }
+        .chat-bubble-ai { background-color: #FFF7ED; border: 1px solid #FED7AA; border-radius: 1rem 1rem 1rem 0.25rem; padding: 0.75rem 1rem; margin-right: 2rem; }
+        .chat-input { border: 2px solid #FED7AA; border-radius: 0.75rem; padding: 0.6rem 1rem; width: 100%; outline: none; transition: border-color 0.2s; font-size: 0.9rem; }
+        .chat-input:focus { border-color: #F97316; }
+        .typing-dot { display: inline-block; width: 0.5rem; height: 0.5rem; background-color: #F97316; border-radius: 50%; animation: typingBounce 1.2s infinite ease-in-out; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+        /* 測驗卷樣式 */
+        .quiz-radio:checked + span { font-weight: bold; color: #F97316; }
+        .quiz-option-container { transition: all 0.2s; }
+        .quiz-option-container:hover { background-color: #FFF7ED; }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="container mx-auto px-4 py-3">
+            <h1 class="text-2xl md:text-3xl font-bold text-orange-700">CH4 分期償還與貸款攤銷</h1>
+            <p class="text-stone-500 mt-1">計算貸款月付金與攤銷餘額分析</p>
+        </div>
+    </header>
+    <nav class="bg-white/70 backdrop-blur-md sticky top-[80px] z-10 shadow-sm">
+        <div class="container mx-auto px-4">
+            <ul class="flex space-x-4 sm:space-x-8 border-b border-stone-200 overflow-x-auto">
+                <li><a href="#payment-calculator" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent active">還款金額 (C) 計算機</a></li>
+                <li><a href="#amortization-analyzer" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">攤銷表與餘額 (OLB) 分析</a></li>
+                <li><a href="#concepts" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">核心概念</a></li>
+                <li><a href="#ai-chatbox" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">💬 AI 問答</a></li>
+                <li><a href="#quiz-generator" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">📝 動態測驗卷</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 md:p-8 space-y-12">
+
+        <!-- 1. 還款金額計算機 -->
+        <section id="payment-calculator" class="scroll-mt-36">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-stone-800">貸款還款金額 (C) 確定</h2>
+                <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">貸款本金 ($PV$) 是未來等額還款 ($C$) 的現值總和。本工具反推出每期等額還款金額。</p>
+            </div>
+            <div class="card p-6 md:p-8 max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">貸款參數輸入</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="loan-principal" class="block text-sm font-medium text-stone-700">貸款本金 ($PV_A$)</label>
+                                <input type="number" id="loan-principal" value="3000000" min="0" class="mt-1 block w-full input-field p-2">
+                            </div>
+                            <div>
+                                <label for="loan-annual-rate" class="block text-sm font-medium text-stone-700">年利率 %</label>
+                                <input type="number" id="loan-annual-rate" value="2.4" min="0" step="0.01" class="mt-1 block w-full input-field p-2">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="loan-years" class="block text-sm font-medium text-stone-700">還款總年數 ($n$)</label>
+                                    <input type="number" id="loan-years" value="20" min="1" class="mt-1 block w-full input-field p-2">
+                                </div>
+                                <div>
+                                    <label for="loan-frequency" class="block text-sm font-medium text-stone-700">每年還款次數 ($m$)</label>
+                                    <select id="loan-frequency" class="mt-1 block w-full input-field p-2">
+                                        <option value="12" selected>每月 (m=12) - 範例 4.1</option>
+                                        <option value="1">每年 (m=1)</option>
+                                        <option value="4">每季 (m=4)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2 pt-4">
+                            <button id="load-example-4-1" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">載入範例 4.1 (房貸)</button>
+                            <button id="load-exercise-4-1" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">載入練習 4.1 (車貸)</button>
+                            <button id="clear-loan-c" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">清除</button>
+                        </div>
+                        <div id="c-formula" class="text-sm mt-3 text-stone-700 overflow-x-auto p-2 bg-stone-50 rounded-lg">
+                            $$\text{C} = PV_{A} \times \frac{r}{1 - (1+r)^{-N}}$$
+                            <p class="text-xs mt-2 text-stone-600">其中 $r$ 為每期利率 ($\frac{\text{年利率}}{m}$)，$N$ 為總期數 ($n \times m$)</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">結果分析</h3>
+                        <div class="card p-4 bg-stone-50 border-stone-200">
+                            <h4 class="font-semibold text-stone-600">每期等額還款金額 ($C$)</h4>
+                            <p id="loan-payment-result" class="text-3xl font-bold text-orange-700 mt-1">NT$ 0.00</p>
+                        </div>
+                        <div id="payment-details-card" class="card p-4 mt-4 text-sm bg-orange-50 border-orange-200 hidden">
+                            <p id="loan-details" class="text-stone-700">
+                                <strong>期數 ($N$)：</strong><span id="loan-total-periods">—</span> 期 |
+                                <strong>每期利率 ($r$)：</strong><span id="loan-per-rate">—</span> %
+                            </p>
+                            <p class="mt-2 text-stone-700">總還款額：<span id="loan-total-payment">—</span></p>
+                            <p class="text-stone-700">總利息支出：<span id="loan-total-interest">—</span></p>
+                        </div>
+
+                        <!-- AI 功能區：還款金額 -->
+                        <div class="ai-section">
+                            <p class="text-xs font-bold text-orange-400 uppercase tracking-widest mb-3">✦ AI 輔助學習</p>
+                            <div class="flex gap-2 mb-3">
+                                <button id="payment-tab-scenario" class="ai-tab-btn active-scenario" onclick="switchAITab('payment','scenario')">✨ 還款情境分析</button>
+                                <button id="payment-tab-steps" class="ai-tab-btn" onclick="switchAITab('payment','steps')">📖 逐步解題</button>
+                            </div>
+                            <button id="payment-ai-btn" class="btn-primary py-2 px-4 rounded-md font-semibold w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50" disabled onclick="triggerAI('payment')">
+                                <span>✨</span><span id="payment-ai-btn-label">還款情境分析 (Gemini AI)</span>
+                            </button>
+                            <div id="payment-ai-loading" class="hidden mt-3 text-center text-orange-600 font-medium text-sm">
+                                <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+                                <span class="ml-2">AI 分析中...</span>
+                            </div>
+                            <div id="payment-ai-result" class="mt-3 hidden"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 攤銷表與 OLB 分析 -->
+        <section id="amortization-analyzer" class="scroll-mt-36">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-stone-800">攤銷表與未償餘額 (OLB) 分析</h2>
+                <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">觀察每期還款如何拆分為利息和本金，並計算特定期數後的剩餘本金。</p>
+            </div>
+            <div class="card p-6 md:p-8 max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                    <div class="lg:col-span-1">
+                        <h3 class="text-xl font-bold mb-4">攤銷計算與餘額查詢</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="amort-principal" class="block text-sm font-medium text-stone-700">貸款本金 ($PV$)</label>
+                                <input type="number" id="amort-principal" placeholder="3000000" class="mt-1 block w-full input-field p-2">
+                            </div>
+                            <div>
+                                <label for="amort-payment" class="block text-sm font-medium text-stone-700">每期還款金額 ($C$)</label>
+                                <input type="number" id="amort-payment" placeholder="15751.34" class="mt-1 block w-full input-field p-2">
+                            </div>
+                            <div>
+                                <label for="amort-per-rate" class="block text-sm font-medium text-stone-700">每期利率 ($r$) %</label>
+                                <input type="number" id="amort-per-rate" placeholder="0.2" class="mt-1 block w-full input-field p-2">
+                                <p class="text-xs text-stone-500 mt-1">例如：年利率 2.4% / 12 = 0.2%</p>
+                            </div>
+                            <div>
+                                <label for="amort-total-periods" class="block text-sm font-medium text-stone-700">總期數 ($N$)</label>
+                                <input type="number" id="amort-total-periods" placeholder="240" min="1" class="mt-1 block w-full input-field p-2">
+                            </div>
+                            <div class="pt-2">
+                                <label for="amort-target-period" class="block text-sm font-medium text-stone-700">查詢目標期數 ($k$)</label>
+                                <input type="number" id="amort-target-period" placeholder="60 (即 5 年)" min="1" class="mt-1 block w-full input-field p-2">
+                            </div>
+                        </div>
+                        <div class="card p-4 bg-orange-50 border-orange-200 mt-4 text-center">
+                            <h4 class="font-semibold text-orange-800">目標期數 ($k$) 後未償餘額 ($OLB_k$)</h4>
+                            <p id="olb-result" class="text-3xl font-bold text-orange-700 mt-1">N/A</p>
+                        </div>
+                        <div class="flex space-x-2 pt-4">
+                            <button id="load-example-4-2" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">載入範例 4.2/4.3</button>
+                            <button id="clear-amort" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">清除</button>
+                        </div>
+                        <div id="olb-formula" class="text-sm mt-3 text-stone-700 overflow-x-auto p-2 bg-stone-50 rounded-lg">
+                            $$\text{OLB}_k = C \times \left[ \frac{1 - (1+r)^{-(N-k)}}{r} \right]$$
+                            <p class="text-xs mt-2 text-stone-600">未償餘額等於剩下 $N-k$ 期還款的現值總和。</p>
+                        </div>
+
+                        <!-- AI 功能區：攤銷分析 -->
+                        <div class="ai-section">
+                            <p class="text-xs font-bold text-orange-400 uppercase tracking-widest mb-3">✦ AI 輔助學習</p>
+                            <div class="flex gap-2 mb-3">
+                                <button id="amort-tab-scenario" class="ai-tab-btn active-scenario" onclick="switchAITab('amort','scenario')">✨ 攤銷現象分析</button>
+                                <button id="amort-tab-steps" class="ai-tab-btn" onclick="switchAITab('amort','steps')">📖 逐步解題</button>
+                            </div>
+                            <button id="amort-ai-btn" class="btn-primary py-2 px-4 rounded-md font-semibold w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50" disabled onclick="triggerAI('amort')">
+                                <span>✨</span><span id="amort-ai-btn-label">攤銷現象分析 (Gemini AI)</span>
+                            </button>
+                            <div id="amort-ai-loading" class="hidden mt-3 text-center text-orange-600 font-medium text-sm">
+                                <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+                                <span class="ml-2">AI 分析中...</span>
+                            </div>
+                            <div id="amort-ai-result" class="mt-3 hidden"></div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-2">
+                        <h3 class="text-xl font-bold mb-4">攤銷表 (前 10 期)</h3>
+                        <div class="overflow-x-auto shadow-md rounded-lg">
+                            <table class="min-w-full divide-y divide-stone-200">
+                                <thead class="bg-orange-600 text-white">
+                                    <tr>
+                                        <th class="px-3 py-2 text-left text-xs font-medium uppercase">期數 ($t$)</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium uppercase">期初餘額</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium uppercase">月付金 ($C$)</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium uppercase text-yellow-300">當期利息</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium uppercase text-green-300">償還本金</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium uppercase">期末餘額</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="amort-table-body" class="bg-white divide-y divide-stone-200">
+                                    <tr><td colspan="6" class="p-4 text-center text-stone-500">請輸入貸款參數以生成攤銷表...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 核心概念 -->
+        <section id="concepts" class="scroll-mt-36">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-stone-800">核心概念速覽：貸款攤銷</h2>
+                <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">快速回顧貸款償還與攤銷表的關鍵原理。</p>
+            </div>
+            <div class="space-y-4 max-w-4xl mx-auto">
+                <div class="concept-card card overflow-hidden">
+                    <button class="w-full text-left p-4 bg-white hover:bg-stone-50 transition flex justify-between items-center">
+                        <h3 class="text-lg font-bold">貸款還款公式原理</h3>
+                        <span class="text-orange-600 text-2xl font-light">+</span>
+                    </button>
+                    <div class="concept-content p-4 pt-0 text-stone-700 hidden">
+                        <p><strong>核心概念：</strong>貸款 ($PV_A$) 視為未來等額還款 ($C$) 序列的現值總和，利用普通年金現值公式的變形來求解 $C$。</p>
+                        <p class="mt-2"><strong>關鍵：</strong>確保利率 ($r$) 和期數 ($N$) 與每年還款次數 ($m$) 匹配（例如，月利率和總月數）。</p>
+                    </div>
+                </div>
+                <div class="concept-card card overflow-hidden">
+                    <button class="w-full text-left p-4 bg-white hover:bg-stone-50 transition flex justify-between items-center">
+                        <h3 class="text-lg font-bold">貸款攤銷表的核心現象</h3>
+                        <span class="text-orange-600 text-2xl font-light">+</span>
+                    </button>
+                    <div class="concept-content p-4 pt-0 text-stone-700 hidden">
+                        <p>在等額還款模式下，隨著時間推移：</p>
+                        <ul class="list-disc list-inside mt-1 space-y-1">
+                            <li><strong>當期利息 $\downarrow$：</strong>因為期初餘額 ($OLB$) 逐漸減少，計算利息的基數變小。</li>
+                            <li><strong>償還本金 $\uparrow$：</strong>由於 $C$ 固定，利息減少的部分會自動轉為償還本金。</li>
+                            <li><strong>貸款初期：</strong>大部分月付金用於支付利息。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. AI 問答框 -->
+        <section id="ai-chatbox" class="scroll-mt-36">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-stone-800">💬 CH4 概念問答</h2>
+                <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">針對本章的貸款攤銷概念提問，AI 將限定在 CH4 範圍內回答。</p>
+            </div>
+            <div class="card p-6 md:p-8 max-w-3xl mx-auto">
+                <div class="mb-4">
+                    <p class="text-sm font-semibold text-stone-500 mb-2">快速提問：</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="quick-q text-xs bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 rounded-full px-3 py-1 transition">為什麼貸款初期大部分還利息？</button>
+                        <button class="quick-q text-xs bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 rounded-full px-3 py-1 transition">OLB 和期初餘額有什麼不同？</button>
+                        <button class="quick-q text-xs bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 rounded-full px-3 py-1 transition">提早還款如何減少總利息？</button>
+                        <button class="quick-q text-xs bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 rounded-full px-3 py-1 transition">縮短還款年限和降低利率哪個划算？</button>
+                    </div>
+                </div>
+                <div id="chat-history" class="space-y-3 mb-4 max-h-80 overflow-y-auto p-2 bg-stone-50 rounded-xl min-h-[80px]">
+                    <p class="text-sm text-stone-400 text-center pt-4">請輸入問題，AI 將針對本章概念回答 👆</p>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <input type="text" id="chat-input" class="chat-input" placeholder="輸入關於 CH4 的問題..." maxlength="200">
+                    <button onclick="sendChatMessage()" class="btn-primary py-2 px-4 rounded-lg font-semibold text-sm whitespace-nowrap flex-shrink-0">送出 →</button>
+                </div>
+                <p class="text-xs text-stone-400 mt-2 text-center">AI 僅回答貸款攤銷、還款金額、OLB 未償餘額相關問題</p>
+            </div>
+        </section>
+
+        <!-- 5. 動態測驗卷 -->
+        <section id="quiz-generator" class="scroll-mt-36">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-stone-800">📝 CH4 動態測驗卷</h2>
+                <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">點擊下方按鈕，AI 將為您即時生成 10 題專屬隨堂測驗，驗證您的學習成果。</p>
+            </div>
+            <div class="card p-6 md:p-8 max-w-3xl mx-auto">
+                <div id="quiz-setup" class="text-center">
+                    <button id="generate-quiz-btn" onclick="generateDynamicQuiz()" class="btn-primary py-3 px-8 rounded-lg font-bold text-lg inline-flex items-center justify-center gap-2 transition hover:scale-105">
+                        <span class="text-xl">✨</span> 立即生成 CH4 隨堂測驗 (Gemini AI)
+                    </button>
+                    <div id="quiz-loading" class="hidden mt-4 text-orange-600 font-medium flex items-center justify-center gap-2">
+                        <svg class="animate-spin h-5 w-5 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        AI 正在根據本章重點用心出題中，請稍候...
+                    </div>
+                </div>
+                
+                <div id="quiz-container" class="hidden mt-6 space-y-6 text-left">
+                    <!-- 動態生成的測驗題目將插入於此 -->
+                </div>
+                
+                <div id="quiz-result" class="hidden mt-8 p-6 bg-green-50 border-2 border-green-200 rounded-xl text-center shadow-inner">
+                    <!-- 測驗結果與分數將顯示於此 -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-200 mt-12">
+        <div class="container mx-auto px-4 py-6 text-center text-stone-600">
+            <p>&copy; 銘傳大學財金系財務數學教材，僅供教學與展示用途。</p>
+        </div>
+    </footer>
+
+<script>
+    const API_MODEL = 'gemini-2.5-flash-preview-05-20';
+    const apiKey = ""; // API key is provided by the environment
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${API_MODEL}:generateContent?key=${apiKey}`;
+
+    const aiMode = { payment: 'scenario', amort: 'scenario' };
+    const state  = { payment: {}, amort: {} };
+
+    function renderAllMath(root = document.body) {
+        if (typeof renderMathInElement !== 'function') return;
+        renderMathInElement(root, {
+            delimiters: [{ left:'$$',right:'$$',display:true },{ left:'$',right:'$',display:false },{ left:'\\(',right:'\\)',display:false },{ left:'\\[',right:'\\]',display:true }],
+            throwOnError: false
+        });
+    }
+
+    const formatCurrency = (v, d=2) => (isNaN(v)||!isFinite(v)) ? 'N/A' : `NT$ ${v.toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d})}`;
+
+    async function exponentialBackoffFetch(url, options, maxRetries=5, delay=1000) {
+        for (let i=0; i<maxRetries; i++) {
+            try { const r=await fetch(url,options); if(r.status!==429) return r; }
+            catch(e) { if(i===maxRetries-1) throw e; }
+            await new Promise(r=>setTimeout(r,delay*Math.pow(2,i)));
+        }
+        throw new Error('API failed');
+    }
+
+    // ★ 修改：加入 isJson 參數以支援原生 JSON 模式
+    async function callGemini(sys, usr, isJson = false) {
+        const payload = { contents:[{parts:[{text:usr}]}], systemInstruction:{parts:[{text:sys}]} };
+        if (isJson) {
+            payload.generationConfig = { responseMimeType: "application/json" };
+        }
+        const r = await exponentialBackoffFetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        const d = await r.json();
+        return d.candidates?.[0]?.content?.parts?.[0]?.text||null;
+    }
+
+    // ── Tab 切換 ──
+    const tabLabels = {
+        payment:{ scenario:'還款情境分析 (Gemini AI)', steps:'📖 顯示逐步解題過程' },
+        amort:  { scenario:'攤銷現象分析 (Gemini AI)', steps:'📖 顯示逐步解題過程' },
+    };
+
+    function switchAITab(tool, mode) {
+        aiMode[tool]=mode;
+        const sBtn=document.getElementById(`${tool}-tab-scenario`);
+        const tBtn=document.getElementById(`${tool}-tab-steps`);
+        const btn =document.getElementById(`${tool}-ai-btn`);
+        const lbl =document.getElementById(`${tool}-ai-btn-label`);
+        sBtn.classList.remove('active-scenario','active-steps');
+        tBtn.classList.remove('active-scenario','active-steps');
+        if(mode==='scenario'){ sBtn.classList.add('active-scenario'); btn.className=btn.className.replace('btn-step','btn-primary'); }
+        else                 { tBtn.classList.add('active-steps');    btn.className=btn.className.replace('btn-primary','btn-step'); }
+        lbl.textContent=tabLabels[tool][mode];
+        document.getElementById(`${tool}-ai-result`).classList.add('hidden');
+    }
+
+    function renderAIResult(id, text, mode) {
+        const c=document.getElementById(id);
+        if(mode==='scenario'){
+            c.innerHTML=`<div class="card p-4 bg-orange-50 border-orange-200 text-stone-800"><h4 class="font-bold text-orange-800 mb-2 flex items-center gap-1"><span>✨</span> 財務規劃師分析</h4><p class="text-sm leading-relaxed">${text.replace(/\n/g,'<br>')}</p></div>`;
+        } else {
+            const lines=text.split('\n').filter(l=>l.trim());
+            let html=`<div class="space-y-2"><h4 class="font-bold text-teal-800 mb-3 flex items-center gap-1"><span>📖</span> 逐步解題過程</h4>`;
+            lines.forEach(line=>{
+                const m=line.match(/^(步驟\s*\d+|Step\s*\d+|\d+\.|第\s*\d+\s*步)/i);
+                if(m){ const num=m[0].replace(/[^0-9]/g,'')||'•'; html+=`<div class="step-block flex items-start"><span class="step-number">${num}</span><span class="text-sm text-teal-900"><strong>${m[0]}</strong> ${line.replace(m[0],'').trim()}</span></div>`; }
+                else { html+=`<p class="text-sm text-stone-700 px-2">${line}</p>`; }
+            });
+            html+='</div>'; c.innerHTML=html;
+        }
+        c.classList.remove('hidden');
+        renderAllMath(c);
+    }
+
+    function showLoading(tool, show) {
+        document.getElementById(`${tool}-ai-loading`).classList.toggle('hidden',!show);
+        document.getElementById(`${tool}-ai-btn`).disabled=show;
+    }
+
+    // ── 統一 AI 觸發 ──
+    async function triggerAI(tool) {
+        const mode=aiMode[tool]; const s=state[tool];
+        showLoading(tool,true);
+        document.getElementById(`${tool}-ai-result`).classList.add('hidden');
+        let sys='', usr='';
+
+        if(tool==='payment'){
+            if(mode==='scenario'){
+                sys="你是專業貸款顧問，專精於還款規劃教學。根據使用者的貸款參數，提供約100-150字的分析，包含：1.貸款負擔程度評估；2.總利息佔總還款額的比例；3.一項提前還款或縮短年限的具體建議。僅限 CH4 貸款還款範圍。";
+                usr=`貸款本金: ${formatCurrency(s.PV)}, 年利率: ${s.annualRate}%, 總年數: ${s.n}年, 還款頻率: 每年${s.m}次, 每期還款(C): ${formatCurrency(s.C)}, 總還款額: ${formatCurrency(s.C*s.N)}, 總利息: ${formatCurrency(s.C*s.N-s.PV)}。請分析。`;
+            } else {
+                sys="你是財務數學教師，請用步驟格式（步驟1:、步驟2:...）說明從貸款本金反推每期還款金額 C 的計算過程，包含計算每期利率 r=年利率/m、總期數 N=n×m，再代入公式 C=PV×r/(1-(1+r)^-N)。代入實際數字。僅限 CH4 範圍。";
+                usr=`請逐步示範：PV=${formatCurrency(s.PV)}, 年利率=${s.annualRate}%, n=${s.n}年, m=${s.m}次/年, 每期利率r=${((s.annualRate/100)/s.m*100).toFixed(3)}%, 總期數N=${s.N}, C=${formatCurrency(s.C)} 的計算步驟。`;
+            }
+        } else if(tool==='amort'){
+            if(mode==='scenario'){
+                sys="你是財務規劃師，專精於貸款攤銷教學。根據攤銷查詢結果，提供約100-150字的分析，包含：1.說明「前期重利息、後期重本金」現象的原因；2.估算k期後已支付利息佔比；3.根據剩餘OLB給出財務建議。僅限 CH4 攤銷分析範圍。";
+                usr=`貸款總期數(N): ${s.N}期, 目標期數(k): ${s.k}期, 每期還款(C): ${formatCurrency(s.C)}, 目標期後未償餘額(OLB): ${formatCurrency(s.OLB)}。請分析。`;
+            } else {
+                sys="你是財務數學教師，請用步驟格式（步驟1:、步驟2:...）說明未償餘額(OLB_k)的計算過程：OLB_k = C×[1-(1+r)^-(N-k)]/r，即剩餘期數的年金現值。代入實際數字，並說明攤銷表中每期利息和本金的計算邏輯。僅限 CH4 OLB 計算範圍。";
+                usr=`請逐步示範：C=${formatCurrency(s.C)}, 每期利率r=${s.r_pct}%, 總期數N=${s.N}, 目標期數k=${s.k}, OLB_k=${formatCurrency(s.OLB)} 的計算步驟，以及第1期攤銷明細。`;
+            }
+        }
+
+        try {
+            const text=await callGemini(sys,usr);
+            if(text) renderAIResult(`${tool}-ai-result`,text,mode);
+            else { document.getElementById(`${tool}-ai-result`).innerHTML='<p class="text-sm text-red-500">無法取得 AI 回應，請稍後再試。</p>'; document.getElementById(`${tool}-ai-result`).classList.remove('hidden'); }
+        } catch(e) {
+            document.getElementById(`${tool}-ai-result`).innerHTML='<p class="text-sm text-red-500">連線失敗，請檢查網路。</p>';
+            document.getElementById(`${tool}-ai-result`).classList.remove('hidden');
+        } finally { showLoading(tool,false); }
+    }
+
+    // ── 問答框 ──
+    const chatHistory=[];
+    const CHAT_SYSTEM_PROMPT=`你是「財務數學 CH4」的 AI 學習助理，專門回答貸款攤銷相關問題，包含：等額還款金額(C)的計算、攤銷表(Amortization Table)、未償餘額(OLB)、前期重利息後期重本金現象、提前還款策略等概念。
+規則：
+1. 只回答 CH4 貸款攤銷相關問題。
+2. 若超出範圍，禮貌說明「這超出 CH4 範圍，建議參考其他章節」。
+3. 以繁體中文回答，簡潔清楚，適合大學財金系一年級學生。
+4. 若學生問作業題，提供觀念方向而非直接給答案。
+5. 回答控制在 150 字以內。`;
+
+    async function sendChatMessage() {
+        const input=document.getElementById('chat-input');
+        const q=input.value.trim(); if(!q) return;
+        input.value='';
+        const hDiv=document.getElementById('chat-history');
+        if(hDiv.querySelector('p.text-stone-400')) hDiv.innerHTML='';
+        hDiv.innerHTML+=`<div class="chat-bubble-user text-sm">${q}</div>`;
+        const tid='typing-'+Date.now();
+        hDiv.innerHTML+=`<div id="${tid}" class="chat-bubble-ai text-sm flex items-center gap-1"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
+        hDiv.scrollTop=hDiv.scrollHeight;
+        chatHistory.push({role:'user',parts:[{text:q}]});
+        try {
+            const payload={contents:chatHistory,systemInstruction:{parts:[{text:CHAT_SYSTEM_PROMPT}]}};
+            const r=await exponentialBackoffFetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+            const data=await r.json();
+            const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'抱歉，無法取得回應。';
+            chatHistory.push({role:'model',parts:[{text}]});
+            document.getElementById(tid).outerHTML=`<div class="chat-bubble-ai text-sm leading-relaxed">${text.replace(/\n/g,'<br>')}</div>`;
+        } catch(e) {
+            document.getElementById(tid).outerHTML=`<div class="chat-bubble-ai text-sm text-red-500">連線失敗，請稍後再試。</div>`;
+        }
+        hDiv.scrollTop=hDiv.scrollHeight;
+    }
+
+    // =============================================
+    // 動態測驗卷 (Quiz Generator) 功能
+    // =============================================
+    let currentQuizData = [];
+
+    // ★ 修改：加入雙反斜線跳脫提示
+    const QUIZ_SYSTEM_PROMPT = `你是大學財務管理教授。請根據「分期償還與貸款攤銷（包含貸款本金 PV、等額還款金額 C 的計算、攤銷表原理、前期重利息與後期重本金現象、未償餘額 OLB）」出 10 題單選題。
+    請嚴格以 JSON 陣列格式回傳，絕對不要有任何其他文字說明或 Markdown 標記，格式如下：
+    [
+      {
+        "question": "題目內容(可用 $ 寫數學公式，若包含 LaTeX 指令請使用雙反斜線跳脫，例如 \\\\frac{A}{B})",
+        "options": ["選項1", "選項2", "選項3", "選項4"],
+        "answer": 0,
+        "explanation": "詳解說明(可用 $ 寫數學公式，若包含 LaTeX 指令請使用雙反斜線跳脫)"
+      }
+    ]
+    注意：answer 欄位是正確選項的整數索引 (0, 1, 2, 或 3)。`;
+
+    async function generateDynamicQuiz() {
+        const btn = document.getElementById('generate-quiz-btn');
+        const loading = document.getElementById('quiz-loading');
+        const container = document.getElementById('quiz-container');
+        const resultDiv = document.getElementById('quiz-result');
+
+        btn.disabled = true;
+        loading.classList.remove('hidden');
+        container.classList.add('hidden');
+        resultDiv.classList.add('hidden');
+        container.innerHTML = '';
+
+        try {
+            // ★ 修改：統一使用共用的 callGemini 並且傳入 isJson = true
+            let jsonStr = await callGemini(QUIZ_SYSTEM_PROMPT, "請出 10 題關於 CH4 分期償還與貸款攤銷的測驗題。", true);
+
+            // 防呆：清理可能包含的 Markdown 格式
+            jsonStr = jsonStr.replace(/```json/g, '').replace(/```/g, '').trim();
+            const startIndex = jsonStr.indexOf('[');
+            const endIndex = jsonStr.lastIndexOf(']');
+            if (startIndex !== -1 && endIndex !== -1) {
+                jsonStr = jsonStr.substring(startIndex, endIndex + 1);
+            }
+
+            currentQuizData = JSON.parse(jsonStr);
+            renderQuiz(currentQuizData);
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<p class="text-red-500 text-center py-4">題目生成失敗，請稍後再試。</p>';
+            container.classList.remove('hidden');
+        } finally {
+            btn.disabled = false;
+            loading.classList.add('hidden');
+        }
+    }
+
+    function renderQuiz(quizData) {
+        const container = document.getElementById('quiz-container');
+        let html = '';
+
+        quizData.forEach((q, qIndex) => {
+            html += `
+            <div class="card p-5 bg-white border-stone-200 transition-colors" id="question-card-${qIndex}">
+                <p class="font-bold text-lg text-stone-800 mb-4 text-justify">${qIndex + 1}. ${q.question}</p>
+                <div class="space-y-3">
+            `;
+            q.options.forEach((opt, oIndex) => {
+                html += `
+                    <label class="quiz-option-container flex items-center p-3 border border-stone-200 rounded-lg cursor-pointer">
+                        <input type="radio" name="q${qIndex}" value="${oIndex}" class="quiz-radio text-orange-600 focus:ring-orange-500 w-4 h-4 mr-3 flex-shrink-0">
+                        <span class="text-stone-700 font-medium">${opt}</span>
+                    </label>
+                `;
+            });
+            html += `
+                </div>
+                <div id="explanation-${qIndex}" class="hidden mt-4 p-4 rounded-lg text-sm bg-orange-50 border border-orange-200 text-orange-900">
+                    <span class="font-bold flex items-center gap-1 mb-1 text-orange-700">💡 詳解：</span>
+                    ${q.explanation}
+                </div>
+            </div>`;
+        });
+
+        html += `
+            <div class="text-center mt-8">
+                <button onclick="submitQuiz()" class="btn-primary py-3 px-8 rounded-lg font-bold text-lg shadow-sm transition hover:-translate-y-0.5">送出答案與看分數</button>
+            </div>
+        `;
+
+        container.innerHTML = html;
+        container.classList.remove('hidden');
+
+        // 重新渲染題目與選項中的 LaTeX 數學公式
+        renderAllMath(container);
+    }
+
+    function submitQuiz() {
+        if (!currentQuizData || currentQuizData.length === 0) return;
+
+        let score = 0;
+        const total = currentQuizData.length;
+
+        currentQuizData.forEach((q, qIndex) => {
+            const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+            const explanationDiv = document.getElementById(`explanation-${qIndex}`);
+            const card = document.getElementById(`question-card-${qIndex}`);
+
+            explanationDiv.classList.remove('hidden');
+
+            if (selected && parseInt(selected.value) === q.answer) {
+                score += 1;
+                card.classList.remove('border-stone-200');
+                card.classList.add('border-green-300', 'bg-green-50/30');
+            } else {
+                card.classList.remove('border-stone-200');
+                card.classList.add('border-rose-300', 'bg-rose-50/30');
+                const correctInput = document.querySelector(`input[name="q${qIndex}"][value="${q.answer}"]`);
+                if (correctInput) {
+                    correctInput.closest('label').classList.add('bg-green-100', 'border-green-400', 'shadow-inner');
+                }
+            }
+            document.querySelectorAll(`input[name="q${qIndex}"]`).forEach(input => input.disabled = true);
+        });
+
+        const resultDiv = document.getElementById('quiz-result');
+        const scorePercent = Math.round((score / total) * 100);
+        let feedback = '';
+        if (scorePercent === 100) feedback = '太棒了！您完全掌握了本章節的核心概念 🏆';
+        else if (scorePercent >= 60) feedback = '表現不錯！可以再複習一下錯題的詳解 💪';
+        else feedback = '看來還需要多加練習，別氣餒，回到上方重新看一次核心概念吧 📖';
+
+        resultDiv.innerHTML = `
+            <h3 class="text-2xl font-bold text-stone-800 mb-2">測驗結果：${score} / ${total} 題</h3>
+            <p class="text-5xl font-bold mb-3 ${scorePercent >= 60 ? 'text-orange-600' : 'text-rose-500'}">${scorePercent} 分</p>
+            <p class="text-stone-600">${feedback}</p>
+            <div class="mt-6">
+                <button onclick="document.getElementById('quiz-generator').scrollIntoView({behavior:'smooth'})" class="underline text-sm font-medium text-orange-600 hover:text-orange-800">往上查看各題詳解</button>
+            </div>
+        `;
+        resultDiv.classList.remove('hidden');
+        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // ── 財金計算 ──
+    function calcLoanPayment(PV, r, N) {
+        if(r===0) return PV/N;
+        return PV * r / (1-Math.pow(1+r,-N));
+    }
+    function calcOLB(C, r, N, k) {
+        const rem=N-k; if(rem<=0) return 0;
+        if(r===0) return C*rem;
+        return C*(1-Math.pow(1+r,-rem))/r;
+    }
+
+    // ── 計算邏輯 ──
+    function runLoanPaymentCalculator() {
+        const PV=parseFloat(document.getElementById('loan-principal').value)||0;
+        const annualRate=parseFloat(document.getElementById('loan-annual-rate').value)||0;
+        const n=parseFloat(document.getElementById('loan-years').value)||0;
+        const m=parseInt(document.getElementById('loan-frequency').value);
+        const r=annualRate/100/m; const N=n*m;
+        const isValid=PV>0&&n>0;
+        const C=isValid?calcLoanPayment(PV,r,N):0;
+        document.getElementById('loan-payment-result').textContent=formatCurrency(C);
+        const detailsCard=document.getElementById('payment-details-card');
+        if(isValid){
+            document.getElementById('loan-total-periods').textContent=N;
+            document.getElementById('loan-per-rate').textContent=(r*100).toFixed(3);
+            document.getElementById('loan-total-payment').textContent=formatCurrency(C*N);
+            document.getElementById('loan-total-interest').textContent=formatCurrency(C*N-PV);
+            detailsCard.classList.remove('hidden');
+        } else { detailsCard.classList.add('hidden'); }
+        state.payment={PV,annualRate,n,m,N,C};
+        document.getElementById('payment-ai-btn').disabled=!isValid;
+        document.getElementById('payment-ai-result').classList.add('hidden');
+        renderAllMath(document.getElementById('c-formula'));
+    }
+
+    function runAmortizationAnalyzer() {
+        const PV_initial=parseFloat(document.getElementById('amort-principal').value)||0;
+        const C=parseFloat(document.getElementById('amort-payment').value)||0;
+        const r_pct=parseFloat(document.getElementById('amort-per-rate').value)||0;
+        const N=parseInt(document.getElementById('amort-total-periods').value)||0;
+        const k=parseInt(document.getElementById('amort-target-period').value)||0;
+        const r=r_pct/100;
+        const tableBody=document.getElementById('amort-table-body');
+        const olbDiv=document.getElementById('olb-result');
+        tableBody.innerHTML='<tr><td colspan="6" class="p-4 text-center text-stone-500">請輸入貸款參數以生成攤銷表...</td></tr>';
+        olbDiv.textContent='N/A';
+        document.getElementById('amort-ai-btn').disabled=true;
+        if(PV_initial<=0||C<=0||N<=0) return;
+
+        const OLB=calcOLB(C,r,N,k);
+        olbDiv.textContent=formatCurrency(OLB);
+
+        tableBody.innerHTML='';
+        let bal=PV_initial;
+        const displayPeriods=Math.min(N,10);
+        for(let t=1; t<=N; t++){
+            const interest=bal*r;
+            let principal=C-interest;
+            let endBal=bal-principal;
+            if(t===N){ if(endBal<0&&principal>0) principal=bal; endBal=0; }
+            const isTarget=t===k;
+            if(t<=displayPeriods||isTarget){
+                const tr=document.createElement('tr');
+                tr.className=isTarget?'bg-orange-100 font-semibold':'';
+                tr.innerHTML=`<td class="px-3 py-2 whitespace-nowrap text-sm">${t}</td><td class="px-3 py-2 whitespace-nowrap text-sm">${formatCurrency(bal)}</td><td class="px-3 py-2 whitespace-nowrap text-sm">${formatCurrency(C)}</td><td class="px-3 py-2 whitespace-nowrap text-sm text-yellow-600">${formatCurrency(interest)}</td><td class="px-3 py-2 whitespace-nowrap text-sm text-green-600">${formatCurrency(principal)}</td><td class="px-3 py-2 whitespace-nowrap text-sm">${formatCurrency(endBal)}</td>`;
+                tableBody.appendChild(tr);
+                if(t===displayPeriods&&N>displayPeriods&&k>displayPeriods) tableBody.innerHTML+=`<tr><td colspan="6" class="p-2 text-center text-stone-400">... (中間省略) ...</td></tr>`;
+            }
+            bal=bal-principal;
+        }
+
+        state.amort={PV_initial,C,r_pct,N,k,OLB};
+        document.getElementById('amort-ai-btn').disabled=false;
+        document.getElementById('amort-ai-result').classList.add('hidden');
+        renderAllMath(document.getElementById('olb-formula'));
+    }
+
+    // ── 初始化 ──
+    document.addEventListener('DOMContentLoaded',function(){
+        renderAllMath(document.body);
+
+        document.querySelectorAll('#payment-calculator input,#payment-calculator select').forEach(el=>el.addEventListener('input',runLoanPaymentCalculator));
+        document.querySelectorAll('#amortization-analyzer input').forEach(el=>el.addEventListener('input',runAmortizationAnalyzer));
+
+        document.getElementById('load-example-4-1').addEventListener('click',()=>{
+            document.getElementById('loan-principal').value=3000000;
+            document.getElementById('loan-annual-rate').value=2.4;
+            document.getElementById('loan-years').value=20;
+            document.getElementById('loan-frequency').value=12;
+            runLoanPaymentCalculator();
+        });
+        document.getElementById('load-exercise-4-1').addEventListener('click',()=>{
+            document.getElementById('loan-principal').value=1500000;
+            document.getElementById('loan-annual-rate').value=4.8;
+            document.getElementById('loan-years').value=5;
+            document.getElementById('loan-frequency').value=12;
+            runLoanPaymentCalculator();
+        });
+        document.getElementById('clear-loan-c').addEventListener('click',()=>{
+            ['loan-principal','loan-annual-rate','loan-years'].forEach(id=>document.getElementById(id).value='');
+            runLoanPaymentCalculator();
+        });
+        document.getElementById('load-example-4-2').addEventListener('click',()=>{
+            document.getElementById('amort-principal').value=3000000;
+            document.getElementById('amort-payment').value=15751.34;
+            document.getElementById('amort-per-rate').value=0.2;
+            document.getElementById('amort-total-periods').value=240;
+            document.getElementById('amort-target-period').value=60;
+            runAmortizationAnalyzer();
+        });
+        document.getElementById('clear-amort').addEventListener('click',()=>{
+            ['amort-principal','amort-payment','amort-per-rate','amort-total-periods','amort-target-period'].forEach(id=>document.getElementById(id).value='');
+            runAmortizationAnalyzer();
+        });
+
+        document.querySelectorAll('.concept-card button').forEach(btn=>{
+            btn.addEventListener('click',()=>{
+                const c=btn.nextElementSibling; const icon=btn.querySelector('span');
+                const isOpen=!c.classList.contains('hidden');
+                document.querySelectorAll('.concept-content').forEach(x=>x.classList.add('hidden'));
+                document.querySelectorAll('.concept-card button span').forEach(i=>i.textContent='+');
+                c.classList.toggle('hidden',isOpen); icon.textContent=isOpen?'+':'-';
+                if(!c.classList.contains('hidden')) renderAllMath(c);
+            });
+        });
+
+        document.querySelectorAll('.quick-q').forEach(btn=>{
+            btn.addEventListener('click',()=>{ document.getElementById('chat-input').value=btn.textContent; sendChatMessage(); });
+        });
+        document.getElementById('chat-input').addEventListener('keydown',e=>{ if(e.key==='Enter') sendChatMessage(); });
+
+        const sections=document.querySelectorAll('section');
+        const navLinks=document.querySelectorAll('nav a');
+        const observer=new IntersectionObserver(entries=>{
+            entries.forEach(entry=>{ if(entry.isIntersecting){ navLinks.forEach(link=>{ link.classList.remove('active'); if(link.getAttribute('href').substring(1)===entry.target.id) link.classList.add('active'); }); } });
+        },{rootMargin:'-50% 0px -50% 0px'});
+        sections.forEach(s=>observer.observe(s));
+        navLinks.forEach(a=>{ a.addEventListener('click',function(e){ e.preventDefault(); document.querySelector(this.getAttribute('href')).scrollIntoView({behavior:'smooth'}); }); });
+
+        runLoanPaymentCalculator();
+        runAmortizationAnalyzer();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第2章講義：現金流量與年金</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <style>
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;max-width:850px;margin:0 auto;padding:20px;line-height:1.6;color:#333;}
+        h1{border-bottom:2px solid #ccc;padding-bottom:5px;color:#1a1a1a;}
+        h2{color:#2a2a2a;margin-top:30px;} h3{color:#4a4a4a;} h4{color:#555;}
+        .math-block{margin:15px 0;padding:10px;background-color:#e6f9ff;overflow-x:auto;font-size:1.1em;}
+        table{width:100%;border-collapse:collapse;margin-top:15px;}
+        th,td{border:1px solid #ddd;padding:10px;text-align:center;}
+        th{background-color:#e9e9e9;}
+        ul,ol{margin-left:20px;} li{margin-bottom:5px;}
+        strong{color:#1a1a1a;}
+        hr{border:none;border-top:1px solid #eee;margin:40px 0;}
+        .decision-box{margin:20px 0;padding:15px;border:1px solid #ffcc00;background-color:#fffacd;}
+        /* ── 互動按鈕 ── */
+        .ib{margin:16px 0 8px 0;padding:12px 16px;background:linear-gradient(135deg,#EFF6FF 0%,#BFDBFE44 100%);border-left:4px solid #2563EB;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .ib .ib-text{font-size:.88rem;color:#1E3A8A;font-weight:500;}
+        .ib .ib-text span{font-size:1.05rem;margin-right:5px;}
+        .btn-ib{display:inline-flex;align-items:center;gap:6px;background-color:#2563EB;color:white;padding:7px 15px;border-radius:6px;font-size:.83rem;font-weight:600;text-decoration:none;transition:background-color .2s,transform .1s;white-space:nowrap;}
+        .btn-ib:hover{background-color:#1D4ED8;transform:translateY(-1px);}
+        .banner{background:linear-gradient(135deg,#1D4ED8 0%,#2563EB 100%);color:white;padding:14px 20px;border-radius:10px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .banner p{margin:0;font-size:.88rem;opacity:.9;} .banner strong{font-size:1rem;}
+        .btn-banner{display:inline-flex;align-items:center;gap:6px;background:white;color:#1D4ED8;padding:8px 16px;border-radius:6px;font-size:.83rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:opacity .2s;}
+        .btn-banner:hover{opacity:.85;}
+        .note{font-size:.9em;color:#555;margin-top:5px;}
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <div><strong>📊 第2章互動教材已備妥</strong><p>閱讀講義時，可點擊各範例下方的按鈕，在新分頁開啟互動計算機即時驗算。</p></div>
+        <a href="https://gemini.google.com/share/cf33662a2d55" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> 開啟完整互動教材</a>
+    </div>
+    <h1>第二章：現金流量與年金 (Cash Flows and Annuities)</h1>
+    <h2>導言</h2>
+    <p>在掌握了單一現金流的時間價值後，本章將進入更貼近實際金融情境的應用：處理連續且等額的現金流量，即年金 (Annuity)。您將學會如何運用現值與未來價值的原則，計算這些現金流系列的總價值，為複雜的財務規劃打下基礎。</p>
+    <hr>
+    <h2>2.1 現金流量的基礎概念 (Cash Flow Basics)</h2>
+    <h3>核心概念</h3>
+    <p>現金流量 (Cash Flow) 指的是在特定時間點上，資金的實際流入或流出。準確識別現金流的金額和發生時間點至關重要。</p>
+    <ul>
+        <li>流入 (Inflow, +)：代表資金進入，以正值表示。</li>
+        <li>流出 (Outflow, -)：代表資金支出，以負值表示。</li>
+    </ul>
+    <h3>2. 範例演練 2.1：時間線圖的應用</h3>
+    <p><strong>情境：</strong>您今天買了一台新筆記型電腦，價格是 $5,000$ 元，並在未來三年，每年年初都將花費 $1,000$ 元購買軟體。</p>
+    <p><strong>時間線呈現：</strong>$t=0$ 為 $-\$5,000$ (流出)，$t=1, 2, 3$ 分別為 $-\$1,000$。</p>
+    <hr>
+    <h2>2.2 年金的定義與分類 (Annuity Definition and Classification)</h2>
+    <h3>核心概念</h3>
+    <p>年金 (Annuity) 是指一系列金額相等且間隔時間相同的連續現金流。</p>
+    <p><strong>普通年金 (Ordinary Annuity)</strong>：現金流發生在每期的期末。案例：房貸或車貸的每月還款。</p>
+    <p><strong>期初年金 (Annuity Due)</strong>：現金流發生在每期的期初。案例：租金繳納、每月月初開始的定期儲蓄計畫。</p>
+    <p><strong>永續年金 (Perpetuity)</strong>：等額現金流將無限期持續。案例：某些優先股所支付的固定股利。</p>
+
+    <div class="ib">
+        <div class="ib-text"><span>💡</span>想直觀比較普通年金與期初年金的差異？</div>
+        <a href="https://gemini.google.com/share/cf33662a2d55" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> 開啟年金終值計算機</a>
+    </div>
+    <hr>
+    <h2>2.3 年金的終值計算 (Future Value of an Annuity)</h2>
+    <h3>1. 普通年金終值 ($FVA$)</h3>
+    <div class="math-block">$$FVA = C\left[\frac{(1+r)^n - 1}{r}\right]$$</div>
+    <h3>2. 期初年金終值 ($FVAD$)</h3>
+    <div class="math-block">$$FVAD = C\left[\frac{(1+r)^n - 1}{r}\right](1+r)$$</div>
+    <h3>3. 範例演練 2.2：期初年金終值計算</h3>
+    <p><strong>情境：</strong>小明每年年初存入 $C=10,000$ 元，年利率 $r=4\%$，為期 $n=8$ 年。$8$ 年後儲蓄的未來價值為多少？</p>
+    <div class="math-block">$$FVAD = 10000\left[\frac{(1.04)^8 - 1}{0.04}\right](1.04) \approx 95,827.95 \text{ 元}$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>🔢</span>範例 2.2 已預載至計算機，點擊即可驗算並看 AI 分析</div>
+        <a href="https://gemini.google.com/share/cf33662a2d55" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟範例 2.2 互動計算機</a>
+    </div>
+    <hr>
+    <h2>2.4 年金的現值計算 (Present Value of an Annuity)</h2>
+    <h3>1. 普通年金現值 ($PVA$)</h3>
+    <div class="math-block">$$PVA = C\left[\frac{1 - \frac{1}{(1+r)^n}}{r}\right]$$</div>
+    <h3>2. 期初年金現值 ($PVAD$)</h3>
+    <div class="math-block">$$PVAD = PVA \times (1+r)$$</div>
+    <h3>3. 永續年金現值 ($PVP$)</h3>
+    <div class="math-block">$$PVP = \frac{C}{r}$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>♾️</span>試試看調整折現率，觀察永續年金現值如何變化</div>
+        <a href="https://gemini.google.com/share/cf33662a2d55" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> 開啟永續年金計算機</a>
+    </div>
+    <h3>4. 範例演練 2.3：房貸現值（普通年金）</h3>
+    <p><strong>情境：</strong>小華每月能支付 $C=25,000$ 元房貸。年利率 $1.8\%$，每月複利，還款期限 $20$ 年。請問他能申請到的房貸總額為多少？</p>
+    <p>（每月利率 $r_m = 0.0015$，總期數 $N = 240$）</p>
+    <div class="math-block">$$PVA = 25,000\left[\frac{1 - \frac{1}{(1+0.0015)^{240}}}{0.0015}\right] \approx 5,115,102.5 \text{ 元}$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>🏠</span>範例 2.3 房貸情境：調整月付金，看看你可以貸多少？</div>
+        <a href="https://gemini.google.com/share/cf33662a2d55" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟範例 2.3 互動計算機</a>
+    </div>
+    <hr>
+    <h2>綜合演練</h2>
+
+    <div class="ib">
+        <div class="ib-text"><span>✏️</span>建議先自行計算，再使用互動工具驗算，或使用 AI 動態測驗卷自我檢測</div>
+        <a href="https://gemini.google.com/share/cf33662a2d55" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> 開啟 AI 動態測驗卷</a>
+    </div>
+    <ol>
+        <li>小華計畫每年年底存入 $30,000$ 元，為期 $20$ 年，年利率 $5\%$，$20$ 年後累積多少退休金？</li>
+        <li>某公司未來 $10$ 年每年年底獲得 $80,000$ 元淨收益，折現率 $6\%$，此專案現值為多少？</li>
+        <li>小王借了 $500,000$ 元，年利率 $6\%$，每月複利，還款期 $5$ 年，每月還款金額約為多少？</li>
+        <li>某人退休後每月期初領取 $50,000$ 元，持續 $20$ 年，年利率 $3\%$（每月複利），現在需存入多少錢？</li>
+        <li>永續年金每年支付 $50,000$ 元，折現率 $5\%$，現值為多少？</li>
+        <li><strong>個案思考（奧運金牌）：</strong>一次性領取 $20,000,000$ 元，或每月領取 $75,000$ 元持續 $50$ 年，年利率 $2\%$（每月複利），哪個方案對您更有利？</li>
+    </ol>
+
+    <div class="ib">
+        <div class="ib-text"><span>💬</span>還有疑問？到 AI 問答框即時提問本章概念</div>
+        <a href="https://gemini.google.com/share/cf33662a2d55" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> 開啟 AI 概念問答</a>
+    </div>
+    <hr>
+</body></html>

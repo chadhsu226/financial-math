@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>財務數學第六章：投資組合風險互動工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #FDFBF8; color: #4A4A4A; }
+        .latex { font-family: 'Times New Roman', serif; font-style: italic; }
+        .nav-link { transition: all 0.3s ease; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { color: #D97706; border-bottom-color: #D97706; }
+        .card { background-color: #FFFFFF; border: 1px solid #F3F4F6; transition: box-shadow 0.3s ease; }
+        .card:hover { box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05); }
+        .btn-primary { background-color: #F59E0B; color: white; transition: background-color 0.3s; }
+        .btn-primary:hover { background-color: #D97706; }
+        .btn-secondary { background-color: #E5E7EB; color: #374151; transition: background-color 0.3s; }
+        .btn-secondary:hover { background-color: #D1D5DB; }
+        .btn-step { background-color: #0D9488; color: white; transition: background-color 0.3s; }
+        .btn-step:hover { background-color: #0F766E; }
+        input[type=number] { -moz-appearance: textfield; }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #F59E0B; cursor: pointer; border-radius: 50%; margin-top: -6px; }
+        input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; background: #F59E0B; cursor: pointer; border-radius: 50%; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 45vh; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #F59E0B; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* AI 功能區塊 */
+        .ai-section { border-top: 2px dashed #FCD34D; margin-top: 1.5rem; padding-top: 1.5rem; }
+        .ai-tab-btn { padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; transition: all 0.2s; cursor: pointer; border: 2px solid transparent; }
+        .ai-tab-btn.active-scenario { background-color: #F59E0B; color: white; }
+        .ai-tab-btn.active-steps   { background-color: #0D9488; color: white; }
+        .ai-tab-btn:not(.active-scenario):not(.active-steps) { background-color: #FFFBEB; color: #92400E; border-color: #FCD34D; }
+        .ai-tab-btn:not(.active-scenario):not(.active-steps):hover { background-color: #FEF3C7; }
+        .step-block { background: linear-gradient(135deg,#F0FDFA 0%,#CCFBF1 100%); border-left: 4px solid #0D9488; border-radius: 0.5rem; padding: 0.75rem 1rem; margin-bottom: 0.5rem; }
+        .step-number { display:inline-flex; align-items:center; justify-content:center; width:1.75rem; height:1.75rem; background-color:#0D9488; color:white; border-radius:9999px; font-size:0.75rem; font-weight:700; margin-right:0.5rem; flex-shrink:0; }
+        /* 問答框 */
+        .chat-bubble-user { background-color: #FEF3C7; border-radius: 1rem 1rem 0.25rem 1rem; padding: 0.75rem 1rem; margin-left: 2rem; }
+        .chat-bubble-ai   { background-color: #FFFBEB; border: 1px solid #FCD34D; border-radius: 1rem 1rem 1rem 0.25rem; padding: 0.75rem 1rem; margin-right: 2rem; }
+        .chat-input { border: 2px solid #FCD34D; border-radius: 0.75rem; padding: 0.6rem 1rem; width: 100%; outline: none; transition: border-color 0.2s; font-size: 0.9rem; }
+        .chat-input:focus { border-color: #F59E0B; }
+        .typing-dot { display:inline-block; width:0.5rem; height:0.5rem; background-color:#F59E0B; border-radius:50%; animation:typingBounce 1.2s infinite ease-in-out; }
+        .typing-dot:nth-child(2){animation-delay:0.2s} .typing-dot:nth-child(3){animation-delay:0.4s}
+        @keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+        /* 測驗卷樣式 */
+        .quiz-radio:checked + span { font-weight: bold; color: #D97706; }
+        .quiz-option-container { transition: all 0.2s; }
+        .quiz-option-container:hover { background-color: #FFFBEB; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-gray-200">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-xl font-bold text-amber-600">財務數學第六章</h1>
+                <div class="hidden md:flex items-baseline space-x-2">
+                    <a href="#knowledge-base" class="nav-link px-3 py-2 text-sm font-medium">即時知識庫 ✨</a>
+                    <a href="#single-asset"   class="nav-link px-3 py-2 text-sm font-medium">單一資產分析</a>
+                    <a href="#portfolio"      class="nav-link px-3 py-2 text-sm font-medium">投資組合分析</a>
+                    <a href="#practice"       class="nav-link px-3 py-2 text-sm font-medium">綜合演練</a>
+                    <a href="#ai-chatbox"     class="nav-link px-3 py-2 text-sm font-medium">💬 AI 問答</a>
+                    <a href="#quiz-generator" class="nav-link px-3 py-2 text-sm font-medium">📝 動態測驗卷</a>
+                </div>
+                <button id="mobile-menu-button" class="md:hidden bg-white p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100">
+                    <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+        </nav>
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#knowledge-base" class="nav-link block px-3 py-2 text-base font-medium">即時知識庫 ✨</a>
+                <a href="#single-asset"   class="nav-link block px-3 py-2 text-base font-medium">單一資產分析</a>
+                <a href="#portfolio"      class="nav-link block px-3 py-2 text-base font-medium">投資組合分析</a>
+                <a href="#practice"       class="nav-link block px-3 py-2 text-base font-medium">綜合演練</a>
+                <a href="#ai-chatbox"     class="nav-link block px-3 py-2 text-base font-medium">💬 AI 問答</a>
+                <a href="#quiz-generator" class="nav-link block px-3 py-2 text-base font-medium">📝 動態測驗卷</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-16">
+
+        <!-- 1. 即時知識庫 -->
+        <section id="knowledge-base" class="scroll-mt-20">
+            <div class="card p-6 md:p-8 rounded-xl shadow-sm">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">即時知識庫：提問財務概念 ✨</h2>
+                <p class="text-gray-600 mb-4 text-sm">輸入您想了解的任何財務數學術語、定義或公式，AI 將提供簡潔的解釋。</p>
+                <div class="flex space-x-3">
+                    <input type="text" id="gemini-query" class="flex-grow p-3 border border-gray-300 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 text-sm" placeholder="例如：什麼是共變異數？相關係數如何影響分散效果？">
+                    <button id="ask-gemini-btn" class="btn-primary flex-shrink-0 px-5 py-3 rounded-md font-semibold flex items-center gap-2 text-sm">
+                        <div id="gemini-loader" class="loader hidden"></div>提問
+                    </button>
+                </div>
+                <div id="gemini-result-container" class="mt-4 border-t pt-4 hidden">
+                    <h3 class="text-base font-semibold text-gray-800 mb-2">Gemini 解答</h3>
+                    <p id="gemini-answer" class="text-gray-700 text-sm leading-relaxed"></p>
+                    <div id="gemini-citations" class="mt-2 text-xs text-gray-500 border-t pt-2"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 單一資產分析 -->
+        <section id="single-asset" class="scroll-mt-20">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900">單一資產分析</h2>
+                <p class="mt-3 max-w-2xl mx-auto text-lg text-gray-500">學習如何量化單一資產的預期報酬與風險。</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <div class="card p-6 md:p-8 rounded-xl shadow-sm">
+                    <h3 class="text-xl font-bold mb-3">互動計算機：預期報酬與風險</h3>
+                    <p class="text-gray-600 mb-4 text-sm">輸入不同經濟情境的機率與預期報酬率，右側圖表與數據即時更新。</p>
+                    <div class="flex space-x-2 mb-5">
+                        <button id="load-example-btn" class="btn-secondary px-3 py-2 rounded-md text-sm font-medium w-1/3">載入範例</button>
+                        <button id="generate-scenario-btn" class="btn-secondary px-3 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-1 w-1/3">
+                            <div id="scenario-loader" class="loader hidden"></div>✨ 自動生成
+                        </button>
+                        <button id="clear-asset-inputs" class="btn-secondary px-3 py-2 rounded-md text-sm font-medium w-1/3">清除</button>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">情境一：繁榮</label>
+                            <div class="flex space-x-2">
+                                <input type="number" id="p1" value="30" class="w-1/2 p-2 border border-gray-300 rounded-md text-sm focus:ring-amber-500 focus:border-amber-500" placeholder="機率 (%)">
+                                <input type="number" id="r1" value="20" class="w-1/2 p-2 border border-gray-300 rounded-md text-sm focus:ring-amber-500 focus:border-amber-500" placeholder="報酬率 (%)">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">情境二：正常</label>
+                            <div class="flex space-x-2">
+                                <input type="number" id="p2" value="40" class="w-1/2 p-2 border border-gray-300 rounded-md text-sm focus:ring-amber-500 focus:border-amber-500" placeholder="機率 (%)">
+                                <input type="number" id="r2" value="10" class="w-1/2 p-2 border border-gray-300 rounded-md text-sm focus:ring-amber-500 focus:border-amber-500" placeholder="報酬率 (%)">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">情境三：衰退</label>
+                            <div class="flex space-x-2">
+                                <input type="number" id="p3" value="30" class="w-1/2 p-2 border border-gray-300 rounded-md text-sm focus:ring-amber-500 focus:border-amber-500" placeholder="機率 (%)">
+                                <input type="number" id="r3" value="-5" class="w-1/2 p-2 border border-gray-300 rounded-md text-sm focus:ring-amber-500 focus:border-amber-500" placeholder="報酬率 (%)">
+                            </div>
+                        </div>
+                        <p id="probability-error" class="text-red-500 text-sm hidden">總機率必須等於 100%。</p>
+                    </div>
+
+                    <!-- AI 功能區：單一資產 -->
+                    <div class="ai-section">
+                        <p class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-3">✦ AI 輔助學習</p>
+                        <div class="flex gap-2 mb-3">
+                            <button id="asset-tab-scenario" class="ai-tab-btn active-scenario" onclick="switchAITab('asset','scenario')">✨ 風險情境解讀</button>
+                            <button id="asset-tab-steps"    class="ai-tab-btn"                onclick="switchAITab('asset','steps')">📖 逐步解題</button>
+                        </div>
+                        <button id="asset-ai-btn" class="btn-primary py-2 px-4 rounded-md font-semibold w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50" disabled onclick="triggerAI('asset')">
+                            <span>✨</span><span id="asset-ai-btn-label">風險情境解讀 (Gemini AI)</span>
+                        </button>
+                        <div id="asset-ai-loading" class="hidden mt-3 text-center text-amber-600 font-medium text-sm">
+                            <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+                            <span class="ml-2">AI 分析中...</span>
+                        </div>
+                        <div id="asset-ai-result" class="mt-3 hidden"></div>
+                    </div>
+                </div>
+
+                <div class="card p-6 md:p-8 rounded-xl shadow-sm">
+                    <h3 class="text-xl font-bold mb-4">計算結果與視覺化</h3>
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-gray-600">預期報酬率 (<span class="latex">R̄</span>):</span>
+                            <span id="expected-return" class="text-2xl font-bold text-amber-600">—</span>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-gray-600">變異數 (<span class="latex">σ²</span>):</span>
+                            <span id="variance" class="text-lg font-semibold text-gray-800">—</span>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-gray-600">標準差 (<span class="latex">σ</span>):</span>
+                            <span id="std-dev" class="text-2xl font-bold text-amber-600">—</span>
+                        </div>
+                    </div>
+                    <div class="chart-container"><canvas id="returnDistributionChart"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 投資組合分析 -->
+        <section id="portfolio" class="scroll-mt-20">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900">投資組合分析</h2>
+                <p class="mt-3 max-w-2xl mx-auto text-lg text-gray-500">探索結合不同資產如何透過「分散效果」降低整體風險。</p>
+            </div>
+            <div class="card p-6 md:p-8 rounded-xl shadow-sm">
+                <h3 class="text-xl font-bold mb-2">分散風險的魔力：互動模擬</h3>
+                <p class="text-gray-600 mb-6 text-sm">調整兩個資產的權重以及相關係數，觀察風險-報酬曲線如何變化。特別注意當 ρ 從 +1.0 降至 -1.0 時，曲線向左彎曲的分散效果。</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-5">
+                        <div class="border p-4 rounded-md bg-gray-50">
+                            <h4 class="font-semibold mb-1 text-sm">資產 A (範例)</h4>
+                            <p class="text-sm text-gray-500">預期報酬: <span id="assetA-return-label">8.00%</span>，標準差: <span id="assetA-stddev-label">14.70%</span></p>
+                        </div>
+                        <div class="border p-4 rounded-md bg-gray-50">
+                            <h4 class="font-semibold mb-1 text-sm">資產 B (範例)</h4>
+                            <p class="text-sm text-gray-500">預期報酬: <span id="assetB-return-label">5.00%</span>，標準差: <span id="assetB-stddev-label">10.00%</span></p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">投資組合權重</label>
+                            <input id="weight-slider" type="range" min="0" max="100" value="70" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-sm text-gray-600 mt-1">
+                                <span>資產 A: <span id="weightA-label" class="font-semibold">70%</span></span>
+                                <span>資產 B: <span id="weightB-label" class="font-semibold">30%</span></span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">相關係數 (<span class="latex">ρ</span>)</label>
+                            <input id="correlation-slider" type="range" min="-1" max="1" value="0.5" step="0.01" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <div class="text-center text-sm text-gray-600 mt-1 font-semibold"><span id="correlation-label">0.50</span></div>
+                        </div>
+                        <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+                            <p class="font-semibold text-sm">目前投資組合</p>
+                            <p class="text-sm">預期報酬: <span id="portfolio-return-label" class="font-bold text-amber-700">—</span></p>
+                            <p class="text-sm">標準差 (風險): <span id="portfolio-stddev-label" class="font-bold text-amber-700">—</span></p>
+                        </div>
+
+                        <!-- AI 功能區：投資組合 -->
+                        <div class="ai-section">
+                            <p class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-3">✦ AI 輔助學習</p>
+                            <div class="flex gap-2 mb-3">
+                                <button id="portfolio-tab-scenario" class="ai-tab-btn active-scenario" onclick="switchAITab('portfolio','scenario')">✨ 分散效果解讀</button>
+                                <button id="portfolio-tab-steps"    class="ai-tab-btn"                onclick="switchAITab('portfolio','steps')">📖 逐步解題</button>
+                            </div>
+                            <button id="portfolio-ai-btn" class="btn-primary py-2 px-4 rounded-md font-semibold w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50" disabled onclick="triggerAI('portfolio')">
+                                <span>✨</span><span id="portfolio-ai-btn-label">分散效果解讀 (Gemini AI)</span>
+                            </button>
+                            <div id="portfolio-ai-loading" class="hidden mt-3 text-center text-amber-600 font-medium text-sm">
+                                <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+                                <span class="ml-2">AI 分析中...</span>
+                            </div>
+                            <div id="portfolio-ai-result" class="mt-3 hidden"></div>
+                        </div>
+                    </div>
+                    <div class="chart-container h-[400px] max-h-[55vh]">
+                        <canvas id="portfolioChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 綜合演練 -->
+        <section id="practice" class="scroll-mt-20">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900">綜合演練</h2>
+                <p class="mt-3 max-w-2xl mx-auto text-lg text-gray-500">透過練習鞏固所學知識（點擊題目顯示解答）。</p>
+            </div>
+            <div class="space-y-4" id="practice-container"></div>
+        </section>
+
+        <!-- 5. AI 問答框 -->
+        <section id="ai-chatbox" class="scroll-mt-20">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900">💬 CH6 概念問答</h2>
+                <p class="mt-3 max-w-2xl mx-auto text-lg text-gray-500">針對本章投資組合風險概念提問，AI 將限定在 CH6 範圍內回答。</p>
+            </div>
+            <div class="card p-6 md:p-8 max-w-3xl mx-auto rounded-xl shadow-sm">
+                <div class="mb-4">
+                    <p class="text-sm font-semibold text-stone-500 mb-2">快速提問：</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="quick-q text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-full px-3 py-1 transition">標準差和變異數有什麼差別？</button>
+                        <button class="quick-q text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-full px-3 py-1 transition">相關係數為 -1 代表什麼意思？</button>
+                        <button class="quick-q text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-full px-3 py-1 transition">為什麼分散投資可以降低風險？</button>
+                        <button class="quick-q text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-full px-3 py-1 transition">共變異數和相關係數的關係？</button>
+                    </div>
+                </div>
+                <div id="chat-history" class="space-y-3 mb-4 max-h-80 overflow-y-auto p-2 bg-stone-50 rounded-xl min-h-[80px]">
+                    <p class="text-sm text-stone-400 text-center pt-4">請輸入問題，AI 將針對本章概念回答 👆</p>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <input type="text" id="chat-input" class="chat-input" placeholder="輸入關於 CH6 的問題..." maxlength="200">
+                    <button onclick="sendChatMessage()" class="btn-primary py-2 px-4 rounded-lg font-semibold text-sm whitespace-nowrap flex-shrink-0">送出 →</button>
+                </div>
+                <p class="text-xs text-stone-400 mt-2 text-center">AI 僅回答預期報酬、標準差、相關係數、投資組合風險相關問題</p>
+            </div>
+        </section>
+
+
+        <!-- 6. 動態測驗卷 -->
+        <section id="quiz-generator" class="scroll-mt-36">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900">📝 CH6 動態測驗卷</h2>
+                <p class="mt-2 text-lg text-gray-500 max-w-3xl mx-auto">點擊下方按鈕，AI 將為您即時生成 10 題專屬隨堂測驗，驗證您的學習成果。</p>
+            </div>
+            <div class="card p-6 md:p-8 max-w-3xl mx-auto">
+                <div id="quiz-setup" class="text-center">
+                    <button id="generate-quiz-btn" onclick="generateDynamicQuiz()" class="btn-primary py-3 px-8 rounded-lg font-bold text-lg inline-flex items-center justify-center gap-2 transition hover:scale-105">
+                        <span class="text-xl">✨</span> 立即生成 CH6 隨堂測驗 (Gemini AI)
+                    </button>
+                    <div id="quiz-loading" class="hidden mt-4 font-medium flex items-center justify-center gap-2" style="color:#F59E0B">
+                        <svg class="animate-spin h-5 w-5" style="color:#F59E0B" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        AI 正在根據本章重點用心出題中，請稍候...
+                    </div>
+                </div>
+                <div id="quiz-container" class="hidden mt-6 space-y-6 text-left">
+                    <!-- 動態生成的測驗題目將插入於此 -->
+                </div>
+                <div id="quiz-result" class="hidden mt-8 p-6 bg-stone-50 border-2 rounded-xl text-center shadow-inner" style="border-color:#FDE68A">
+                    <!-- 測驗結果與分數將顯示於此 -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-200 mt-16"><div class="max-w-7xl mx-auto px-4 py-6 text-center text-stone-600 text-sm">&copy; 銘傳大學財金系財務數學教材，僅供教學與展示用途。</div></footer>
+
+<script>
+    const API_MODEL = 'gemini-2.5-flash-preview-05-20';
+    const apiKey = ""; // API key is provided by the environment
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${API_MODEL}:generateContent?key=${apiKey}`;
+
+    const aiMode = { asset: 'scenario', portfolio: 'scenario' };
+    const state  = { asset: {}, portfolio: {} };
+
+    // ── 數學渲染器 (新增) ──
+    function renderAllMath(root=document.body){
+        if(typeof renderMathInElement!=='function') return;
+        renderMathInElement(root,{
+            delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],
+            throwOnError:false
+        });
+    }
+
+    async function fetchWithBackoff(url, options, maxRetries=5, delay=1000) {
+        for(let i=0;i<maxRetries;i++){
+            try{const r=await fetch(url,options);if(r.status!==429)return r;}
+            catch(e){if(i===maxRetries-1)throw e;}
+            await new Promise(r=>setTimeout(r,delay*Math.pow(2,i)+Math.random()*500));
+        }
+        throw new Error('API failed');
+    }
+    
+    // ── 支援 JSON Mode 的 API 呼叫 ──
+    async function callGemini(sys, usr, isJson=false) {
+        const payload={contents:[{parts:[{text:usr}]}],systemInstruction:{parts:[{text:sys}]}};
+        if(isJson){
+            payload.generationConfig = { responseMimeType: "application/json" };
+        }
+        const r=await fetchWithBackoff(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        const d=await r.json(); return d.candidates?.[0]?.content?.parts?.[0]?.text||null;
+    }
+
+    // ── Tab 切換 ──
+    const tabLabels = {
+        asset:     { scenario:'風險情境解讀 (Gemini AI)',   steps:'📖 顯示逐步解題過程' },
+        portfolio: { scenario:'分散效果解讀 (Gemini AI)',   steps:'📖 顯示逐步解題過程' },
+    };
+    function switchAITab(tool, mode) {
+        aiMode[tool]=mode;
+        const sBtn=document.getElementById(`${tool}-tab-scenario`);
+        const tBtn=document.getElementById(`${tool}-tab-steps`);
+        const btn =document.getElementById(`${tool}-ai-btn`);
+        const lbl =document.getElementById(`${tool}-ai-btn-label`);
+        sBtn.classList.remove('active-scenario','active-steps');
+        tBtn.classList.remove('active-scenario','active-steps');
+        if(mode==='scenario'){sBtn.classList.add('active-scenario');btn.className=btn.className.replace('btn-step','btn-primary');}
+        else                  {tBtn.classList.add('active-steps');   btn.className=btn.className.replace('btn-primary','btn-step');}
+        lbl.textContent=tabLabels[tool][mode];
+        document.getElementById(`${tool}-ai-result`).classList.add('hidden');
+    }
+
+    function renderAIResult(id, text, mode) {
+        const c=document.getElementById(id);
+        if(mode==='scenario'){
+            c.innerHTML=`<div class="card p-4 bg-amber-50 border border-amber-200 text-stone-800 rounded-lg"><h4 class="font-bold text-amber-800 mb-2 flex items-center gap-1"><span>✨</span> AI 分析師報告</h4><p class="text-sm leading-relaxed">${text.replace(/\n/g,'<br>')}</p></div>`;
+        } else {
+            const lines=text.split('\n').filter(l=>l.trim());
+            let html=`<div class="space-y-2"><h4 class="font-bold text-teal-800 mb-3 flex items-center gap-1"><span>📖</span> 逐步解題過程</h4>`;
+            lines.forEach(line=>{
+                const m=line.match(/^(步驟\s*\d+|Step\s*\d+|\d+\.|第\s*\d+\s*步)/i);
+                if(m){const num=m[0].replace(/[^0-9]/g,'')||'•';html+=`<div class="step-block flex items-start"><span class="step-number">${num}</span><span class="text-sm text-teal-900"><strong>${m[0]}</strong> ${line.replace(m[0],'').trim()}</span></div>`;}
+                else{html+=`<p class="text-sm text-stone-700 px-2">${line}</p>`;}
+            });
+            html+='</div>'; c.innerHTML=html;
+        }
+        c.classList.remove('hidden');
+        renderAllMath(c);
+    }
+
+    function showLoading(tool, show) {
+        document.getElementById(`${tool}-ai-loading`).classList.toggle('hidden',!show);
+        document.getElementById(`${tool}-ai-btn`).disabled=show;
+    }
+
+    // ── 統一 AI 觸發 ──
+    async function triggerAI(tool) {
+        const mode=aiMode[tool]; const s=state[tool];
+        showLoading(tool,true);
+        document.getElementById(`${tool}-ai-result`).classList.add('hidden');
+        let sys='',usr='';
+
+        if(tool==='asset'){
+            if(mode==='scenario'){
+                sys="你是投資分析師，專精於單一資產風險教學。根據使用者的預期報酬和風險指標，提供約100-150字的分析，包含：1.預期報酬率和標準差的實務解讀；2.各情境對風險貢獻的分析；3.一個與此風險報酬特性相符的實際投資品類建議。僅限 CH6 單一資產風險範圍。";
+                usr=`情境資料：繁榮(機率${s.p1}%,報酬${s.r1}%), 正常(機率${s.p2}%,報酬${s.r2}%), 衰退(機率${s.p3}%,報酬${s.r3}%); 預期報酬=${s.eR?.toFixed(2)}%, 標準差=${s.sigma?.toFixed(2)}%, 變異數=${s.variance?.toFixed(4)}。請分析。`;
+            } else {
+                sys="你是財務數學教師，請用步驟格式（步驟1:、步驟2:...）說明預期報酬率和標準差的計算過程：1.計算E(R)=Σp×r；2.計算方差σ²=Σp×(r-E(R))²；3.標準差σ=√σ²。代入實際數字。僅限 CH6 預期報酬與風險計算範圍。";
+                usr=`請逐步示範：繁榮(p=${s.p1}%,r=${s.r1}%), 正常(p=${s.p2}%,r=${s.r2}%), 衰退(p=${s.p3}%,r=${s.r3}%), E(R)=${s.eR?.toFixed(2)}%, σ²=${s.variance?.toFixed(4)}, σ=${s.sigma?.toFixed(2)}% 的計算過程。`;
+            }
+        } else if(tool==='portfolio'){
+            if(mode==='scenario'){
+                sys="你是投資組合分析師，專精於分散風險教學。根據目前投資組合的設定，提供約100-150字的分析，包含：1.解釋相關係數對投資組合風險的影響；2.與兩資產個別風險相比，分散效果的量化說明；3.何種情境下此投資組合最有效率。僅限 CH6 投資組合風險範圍。";
+                usr=`資產A(報酬8%,σ14.7%), 資產B(報酬5%,σ10%), 權重A=${s.wA?.toFixed(0)}%, 相關係數ρ=${s.rho?.toFixed(2)}, 組合預期報酬=${s.pReturn?.toFixed(2)}%, 組合標準差=${s.pSigma?.toFixed(2)}%。請分析分散效果。`;
+            } else {
+                sys="你是財務數學教師，請用步驟格式（步驟1:、步驟2:...）說明二資產投資組合的預期報酬和標準差計算過程：1.E(Rp)=wA×rA+wB×rB；2.σ²p=wA²σA²+wB²σB²+2wAwBσAσBρ；3.σp=√σ²p。代入實際數字，並解釋ρ如何影響σp。僅限 CH6 投資組合計算範圍。";
+                usr=`請逐步示範：wA=${s.wA?.toFixed(0)}%, wB=${100-(s.wA||0)}%, rA=8%, rB=5%, σA=14.7%, σB=10%, ρ=${s.rho?.toFixed(2)}, E(Rp)=${s.pReturn?.toFixed(2)}%, σp=${s.pSigma?.toFixed(2)}% 的計算過程。`;
+            }
+        }
+
+        try{
+            const text=await callGemini(sys,usr);
+            if(text) renderAIResult(`${tool}-ai-result`,text,mode);
+            else{document.getElementById(`${tool}-ai-result`).innerHTML='<p class="text-sm text-red-500">無法取得回應，請稍後再試。</p>';document.getElementById(`${tool}-ai-result`).classList.remove('hidden');}
+        }catch(e){
+            document.getElementById(`${tool}-ai-result`).innerHTML='<p class="text-sm text-red-500">連線失敗，請檢查網路。</p>';
+            document.getElementById(`${tool}-ai-result`).classList.remove('hidden');
+        }finally{showLoading(tool,false);}
+    }
+
+    // ── 問答框 ──
+    const chatHistory=[];
+    const CHAT_SYSTEM_PROMPT=`你是「財務數學 CH6」的 AI 學習助理，專門回答投資組合風險相關問題，包含：預期報酬率E(R)、變異數σ²、標準差σ、共變異數(Cov)、相關係數ρ、投資組合預期報酬、投資組合風險、分散效果、效率前緣等概念。
+規則：
+1. 只回答 CH6 投資組合風險相關問題。
+2. 若超出範圍，禮貌說明「這超出 CH6 範圍，建議參考其他章節」。
+3. 以繁體中文回答，簡潔清楚，適合大學財金系一年級學生。
+4. 若學生問作業題，提供觀念方向而非直接給答案。
+5. 回答控制在 150 字以內。`;
+
+    async function sendChatMessage(){
+        const input=document.getElementById('chat-input'); const q=input.value.trim(); if(!q) return;
+        input.value=''; const hDiv=document.getElementById('chat-history');
+        if(hDiv.querySelector('p.text-stone-400')) hDiv.innerHTML='';
+        hDiv.innerHTML+=`<div class="chat-bubble-user text-sm">${q}</div>`;
+        const tid='typing-'+Date.now();
+        hDiv.innerHTML+=`<div id="${tid}" class="chat-bubble-ai text-sm flex items-center gap-1"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
+        hDiv.scrollTop=hDiv.scrollHeight;
+        chatHistory.push({role:'user',parts:[{text:q}]});
+        try{
+            const payload={contents:chatHistory,systemInstruction:{parts:[{text:CHAT_SYSTEM_PROMPT}]}};
+            const r=await fetchWithBackoff(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+            const data=await r.json(); const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'抱歉，無法取得回應。';
+            chatHistory.push({role:'model',parts:[{text}]});
+            document.getElementById(tid).outerHTML=`<div class="chat-bubble-ai text-sm leading-relaxed">${text.replace(/\n/g,'<br>')}</div>`;
+            renderAllMath(document.getElementById(tid));
+        }catch(e){document.getElementById(tid).outerHTML=`<div class="chat-bubble-ai text-sm text-red-500">連線失敗，請稍後再試。</div>`;}
+        hDiv.scrollTop=hDiv.scrollHeight;
+    }
+
+    // ── 即時知識庫 ──
+    async function askGeminiForExplanation(){
+        const query=document.getElementById('gemini-query').value.trim(); if(!query) return;
+        const btn=document.getElementById('ask-gemini-btn'); const loader=document.getElementById('gemini-loader');
+        const container=document.getElementById('gemini-result-container'); const answerEl=document.getElementById('gemini-answer');
+        btn.disabled=true; loader.classList.remove('hidden'); container.classList.remove('hidden');
+        answerEl.textContent='正在查詢中，請稍候...';
+        document.getElementById('gemini-citations').innerHTML='';
+        try{
+            const sys="你是一位頂尖的財務數學導師，專精於投資組合風險、預期報酬、標準差、相關係數等概念。請根據用戶的問題，提供一個簡潔、專業的中文解釋，維持在兩段以內。";
+            const payload={contents:[{parts:[{text:query}]}],systemInstruction:{parts:[{text:sys}]}};
+            const r=await fetchWithBackoff(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+            const data=await r.json(); const text=data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if(text){
+                answerEl.innerHTML=text.replace(/\n/g,'<br>');
+                renderAllMath(answerEl);
+                document.getElementById('gemini-citations').textContent='（AI 回答，僅供參考）';
+            }
+            else{answerEl.textContent='抱歉，未能獲得有效回答，請嘗試其他問題。';}
+        }catch(e){answerEl.textContent='網路或 API 呼叫發生錯誤，請稍後再試。';}
+        finally{btn.disabled=false;loader.classList.add('hidden');}
+    }
+
+    // ── 動態測驗卷 (Quiz Generator) 功能 ──
+    let currentQuizData = [];
+
+    const QUIZ_SYSTEM_PROMPT = `你是大學財務管理教授。請根據「投資組合風險（包含預期報酬率、變異數、標準差、共變異數、相關係數、投資組合預期報酬、投資組合標準差與分散效果）」出 10 題單選題。
+    請嚴格以 JSON 陣列格式回傳，絕對不要有任何其他文字說明或 Markdown 標記，格式如下：
+    [
+      {
+        "question": "題目內容(可用 $ 寫數學公式，若包含 LaTeX 指令請使用雙反斜線跳脫，例如 \\\\frac{A}{B})",
+        "options": ["選項1", "選項2", "選項3", "選項4"],
+        "answer": 0,
+        "explanation": "詳解說明(可用 $ 寫數學公式，若包含 LaTeX 指令請使用雙反斜線跳脫)"
+      }
+    ]
+    注意：answer 欄位是正確選項的整數索引 (0, 1, 2, 或 3)。`;
+
+    async function generateDynamicQuiz() {
+        const btn = document.getElementById('generate-quiz-btn');
+        const loading = document.getElementById('quiz-loading');
+        const container = document.getElementById('quiz-container');
+        const resultDiv = document.getElementById('quiz-result');
+
+        btn.disabled = true;
+        loading.classList.remove('hidden');
+        container.classList.add('hidden');
+        resultDiv.classList.add('hidden');
+        container.innerHTML = '';
+
+        try {
+            // 使用 isJson=true 強制回傳合法 JSON 格式
+            let jsonStr = await callGemini(QUIZ_SYSTEM_PROMPT, "請出 10 題關於 CH6 投資組合風險的測驗題。", true);
+
+            // 防呆處理
+            jsonStr = jsonStr.replace(/```json/g, '').replace(/```/g, '').trim();
+            const startIndex = jsonStr.indexOf('[');
+            const endIndex = jsonStr.lastIndexOf(']');
+            if (startIndex !== -1 && endIndex !== -1) {
+                jsonStr = jsonStr.substring(startIndex, endIndex + 1);
+            }
+
+            currentQuizData = JSON.parse(jsonStr);
+            renderQuiz(currentQuizData);
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<p class="text-red-500 text-center py-4">題目生成失敗，請稍後再試。</p>';
+            container.classList.remove('hidden');
+        } finally {
+            btn.disabled = false;
+            loading.classList.add('hidden');
+        }
+    }
+
+    function renderQuiz(quizData) {
+        const container = document.getElementById('quiz-container');
+        let html = '';
+
+        quizData.forEach((q, qIndex) => {
+            html += `
+            <div class="card p-5 bg-white border-gray-200 transition-colors" id="question-card-${qIndex}">
+                <p class="font-bold text-lg text-gray-800 mb-4 text-justify">${qIndex + 1}. ${q.question}</p>
+                <div class="space-y-3">
+            `;
+            q.options.forEach((opt, oIndex) => {
+                html += `
+                    <label class="quiz-option-container flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer">
+                        <input type="radio" name="q${qIndex}" value="${oIndex}" class="quiz-radio w-4 h-4 mr-3 flex-shrink-0" style="accent-color: #F59E0B">
+                        <span class="text-gray-700 font-medium">${opt}</span>
+                    </label>
+                `;
+            });
+            html += `
+                </div>
+                <div id="explanation-${qIndex}" class="hidden mt-4 p-4 rounded-lg text-sm bg-amber-50 border border-amber-200 text-amber-900">
+                    <span class="font-bold flex items-center gap-1 mb-1 text-amber-700">💡 詳解：</span>
+                    ${q.explanation}
+                </div>
+            </div>`;
+        });
+
+        html += `
+            <div class="text-center mt-8">
+                <button onclick="submitQuiz()" class="btn-primary py-3 px-8 rounded-lg font-bold text-lg shadow-sm transition hover:-translate-y-0.5">送出答案與看分數</button>
+            </div>
+        `;
+
+        container.innerHTML = html;
+        container.classList.remove('hidden');
+
+        // 重新渲染公式
+        renderAllMath(container);
+    }
+
+    function submitQuiz() {
+        if (!currentQuizData || currentQuizData.length === 0) return;
+
+        let score = 0;
+        const total = currentQuizData.length;
+
+        currentQuizData.forEach((q, qIndex) => {
+            const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+            const explanationDiv = document.getElementById(`explanation-${qIndex}`);
+            const card = document.getElementById(`question-card-${qIndex}`);
+
+            explanationDiv.classList.remove('hidden');
+
+            if (selected && parseInt(selected.value) === q.answer) {
+                score += 1;
+                card.classList.remove('border-gray-200');
+                card.classList.add('border-green-300', 'bg-green-50/30');
+            } else {
+                card.classList.remove('border-gray-200');
+                card.classList.add('border-rose-300', 'bg-rose-50/30');
+                const correctInput = document.querySelector(`input[name="q${qIndex}"][value="${q.answer}"]`);
+                if (correctInput) {
+                    correctInput.closest('label').classList.add('bg-green-100', 'border-green-400', 'shadow-inner');
+                }
+            }
+            document.querySelectorAll(`input[name="q${qIndex}"]`).forEach(input => input.disabled = true);
+        });
+
+        const resultDiv = document.getElementById('quiz-result');
+        const scorePercent = Math.round((score / total) * 100);
+        let feedback = '';
+        if (scorePercent === 100) feedback = '太棒了！您完全掌握了本章節的核心概念 🏆';
+        else if (scorePercent >= 60) feedback = '表現不錯！可以再複習一下錯題的詳解 💪';
+        else feedback = '看來還需要多加練習，別氣餒，回到上方重新看一次核心概念吧 📖';
+
+        resultDiv.innerHTML = `
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">測驗結果：${score} / ${total} 題</h3>
+            <p class="text-5xl font-bold mb-3" style="color:${scorePercent >= 60 ? '#D97706' : '#f43f5e'}">${scorePercent} 分</p>
+            <p class="text-gray-600">${feedback}</p>
+            <div class="mt-6">
+                <button onclick="document.getElementById('quiz-generator').scrollIntoView({behavior:'smooth'})" class="underline text-sm font-medium" style="color:#D97706">往上查看各題詳解</button>
+            </div>
+        `;
+        resultDiv.classList.remove('hidden');
+        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // ── 圖表與計算 ──
+    let returnDistributionChart, portfolioChart;
+
+    function createOrUpdateDistributionChart(labels, data, eR) {
+        const ctx=document.getElementById('returnDistributionChart').getContext('2d');
+        if(returnDistributionChart){
+            returnDistributionChart.data.labels=labels;
+            returnDistributionChart.data.datasets[0].data=data;
+            returnDistributionChart.options.plugins.annotation.annotations.line1.value=eR;
+            returnDistributionChart.update(); return;
+        }
+        const annotPlugin={id:'annotation',afterDraw(chart,args,opts){
+            const{ctx,chartArea:{top,bottom},scales:{x}}=chart;
+            const{annotations}=opts; if(!annotations) return;
+            Object.values(annotations).forEach(ann=>{
+                if(ann.type==='line'&&ann.value!==undefined){
+                    ctx.save();ctx.beginPath();ctx.lineWidth=ann.borderWidth||2;ctx.strokeStyle=ann.borderColor||'rgb(217,119,6)';
+                    ctx.setLineDash(ann.borderDash||[]);const xp=x.getPixelForValue(ann.value);ctx.moveTo(xp,top);ctx.lineTo(xp,bottom);ctx.stroke();
+                    if(ann.label?.content){ctx.font=`bold 10px sans-serif`;ctx.fillStyle=ann.label.color||'white';ctx.textAlign='center';ctx.fillText(ann.label.content,xp,top-5);}
+                    ctx.restore();
+                }
+            });
+        }};
+        Chart.register(annotPlugin);
+        returnDistributionChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'機率',data,backgroundColor:'rgba(245,158,11,0.6)',borderColor:'rgba(217,119,6,1)',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,title:{display:true,text:'機率 (%)'}},x:{title:{display:true,text:'報酬率 (%)'}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`機率: ${c.raw}%`}},annotation:{annotations:{line1:{type:'line',value:eR,borderColor:'rgb(217,119,6)',borderWidth:2,borderDash:[6,6],label:{enabled:true,content:`E(R): ${eR?.toFixed(2)}%`,position:'start',font:{size:10,weight:'bold'},color:'white'}}}}}}});
+    }
+
+    function calculateSingleAsset(){
+        const p1v=parseFloat(document.getElementById('p1').value)/100||0;
+        const r1v=parseFloat(document.getElementById('r1').value)/100||0;
+        const p2v=parseFloat(document.getElementById('p2').value)/100||0;
+        const r2v=parseFloat(document.getElementById('r2').value)/100||0;
+        const p3v=parseFloat(document.getElementById('p3').value)/100||0;
+        const r3v=parseFloat(document.getElementById('r3').value)/100||0;
+        const totalP=(p1v+p2v+p3v)*100;
+        const errEl=document.getElementById('probability-error');
+        if(Math.abs(totalP-100)>0.01){errEl.textContent=`總機率必須等於 100%，目前為 ${totalP.toFixed(0)}%。`;errEl.classList.remove('hidden');return;}
+        errEl.classList.add('hidden');
+        const eR=p1v*r1v+p2v*r2v+p3v*r3v;
+        const variance=p1v*Math.pow(r1v-eR,2)+p2v*Math.pow(r2v-eR,2)+p3v*Math.pow(r3v-eR,2);
+        const sigma=Math.sqrt(variance);
+        document.getElementById('expected-return').textContent=`${(eR*100).toFixed(2)}%`;
+        document.getElementById('variance').textContent=variance.toFixed(4);
+        document.getElementById('std-dev').textContent=`${(sigma*100).toFixed(2)}%`;
+        const labels=[(r1v*100).toFixed(1),(r2v*100).toFixed(1),(r3v*100).toFixed(1)];
+        createOrUpdateDistributionChart(labels,[p1v*100,p2v*100,p3v*100],eR*100);
+        state.asset={p1:p1v*100,r1:r1v*100,p2:p2v*100,r2:r2v*100,p3:p3v*100,r3:r3v*100,eR:eR*100,variance,sigma:sigma*100};
+        document.getElementById('asset-ai-btn').disabled=false;
+        document.getElementById('asset-ai-result').classList.add('hidden');
+    }
+
+    const assetA={r:0.08,s:0.147}, assetB={r:0.05,s:0.10};
+
+    function createPortfolioChart(){
+        const ctx=document.getElementById('portfolioChart').getContext('2d');
+        portfolioChart=new Chart(ctx,{type:'scatter',data:{datasets:[]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{type:'linear',position:'bottom',title:{display:true,text:'標準差 (風險, %)'},ticks:{callback:v=>v.toFixed(1)}},y:{title:{display:true,text:'預期報酬 (%)'},ticks:{callback:v=>v.toFixed(1)}}},plugins:{tooltip:{callbacks:{label:c=>`${c.dataset.label}: (風險:${c.parsed.x.toFixed(2)}%, 報酬:${c.parsed.y.toFixed(2)}%)`}},legend:{position:'bottom'}}}});
+    }
+
+    function calculatePortfolio(){
+        const wA=parseFloat(document.getElementById('weight-slider').value)/100;
+        const wB=1-wA;
+        const rho=parseFloat(document.getElementById('correlation-slider').value);
+        document.getElementById('weightA-label').textContent=`${(wA*100).toFixed(0)}%`;
+        document.getElementById('weightB-label').textContent=`${(wB*100).toFixed(0)}%`;
+        document.getElementById('correlation-label').textContent=rho.toFixed(2);
+        const pReturn=wA*assetA.r+wB*assetB.r;
+        const pVar=Math.pow(wA,2)*Math.pow(assetA.s,2)+Math.pow(wB,2)*Math.pow(assetB.s,2)+2*wA*wB*assetA.s*assetB.s*rho;
+        const pSigma=Math.sqrt(pVar);
+        document.getElementById('portfolio-return-label').textContent=`${(pReturn*100).toFixed(2)}%`;
+        document.getElementById('portfolio-stddev-label').textContent=`${(pSigma*100).toFixed(2)}%`;
+
+        const frontierData=[];
+        for(let i=0;i<=100;i++){
+            const wa=i/100,wb=1-wa;
+            const r=wa*assetA.r+wb*assetB.r;
+            const v=Math.pow(wa,2)*Math.pow(assetA.s,2)+Math.pow(wb,2)*Math.pow(assetB.s,2)+2*wa*wb*assetA.s*assetB.s*rho;
+            frontierData.push({x:Math.sqrt(v)*100,y:r*100});
+        }
+        portfolioChart.data.datasets=[
+            {type:'line',label:`效率前緣 (ρ=${rho.toFixed(2)})`,data:frontierData,borderColor:'rgba(217,119,6,0.5)',backgroundColor:'transparent',borderWidth:3,pointRadius:0,tension:0.1,fill:false},
+            {type:'scatter',label:'資產 A',data:[{x:assetA.s*100,y:assetA.r*100}],backgroundColor:'rgb(37,99,235)',pointRadius:6,pointHoverRadius:8},
+            {type:'scatter',label:'資產 B',data:[{x:assetB.s*100,y:assetB.r*100}],backgroundColor:'rgb(22,163,74)',pointRadius:6,pointHoverRadius:8},
+            {type:'scatter',label:'目前投資組合',data:[{x:pSigma*100,y:pReturn*100}],backgroundColor:'rgb(220,38,38)',pointRadius:8,pointHoverRadius:10,borderColor:'white',borderWidth:2}
+        ];
+        portfolioChart.update();
+
+        state.portfolio={wA:wA*100,rho,pReturn:pReturn*100,pSigma:pSigma*100};
+        document.getElementById('portfolio-ai-btn').disabled=false;
+        document.getElementById('portfolio-ai-result').classList.add('hidden');
+    }
+
+    // ── 綜合演練資料 ──
+    const practiceProblems=[
+        {q:"1. 假設資產 A 的預期報酬率為 20%（機率 0.6）和 -10%（機率 0.4）。請問資產 A 的預期報酬率 E(R) 是多少？",a:"E(R) = (0.6 × 0.20) + (0.4 × -0.10) = 0.12 - 0.04 = 0.08 或 8%"},
+        {q:"2. 延續第一題，請計算資產 A 的報酬率變異數 (σ²) 和標準差 (σ)。",a:"E(R) = 0.08<br>σ² = 0.6 × (0.20 - 0.08)² + 0.4 × (-0.10 - 0.08)²<br>σ² = 0.6 × 0.0144 + 0.4 × 0.0324 = 0.00864 + 0.01296 = 0.0216<br>σ = √0.0216 ≈ 0.147 或 14.70%"},
+        {q:"3. 若您建立投資組合 P：70% 投資於資產 A（E(R)=8%），30% 投資於資產 B（E(R)=5%）。請問 E(Rp) 是多少？",a:"E(Rp) = (0.7 × 0.08) + (0.3 × 0.05) = 0.056 + 0.015 = 0.071 或 7.1%"},
+        {q:"4. 延續第 3 題，若 ρAB = +1.0，資產 B 的 σB = 10%，資產 A 的 σA ≈ 14.70%，投資組合標準差 σP 是多少？",a:"當 ρAB = +1.0 時，σP = wAσA + wBσB<br>σP = (0.7 × 0.147) + (0.3 × 0.10) = 0.1029 + 0.03 = 0.1329 或 13.29%<br>結論：完全正相關下，沒有分散效果。"},
+        {q:"5. 延續同樣數據，若 ρAB = -1.0，投資組合標準差 σP 是多少？",a:"當 ρAB = -1.0 時，σP = |wAσA - wBσB|<br>σP = |(0.7 × 0.147) - (0.3 × 0.10)| = |0.1029 - 0.03| = 0.0729 或 7.29%<br>結論：完全負相關下，分散效果極佳，風險顯著降低。"},
+        {q:"6. 在計算投資組合總風險 σP 時，哪個因子衡量兩資產的變動關聯性？若此因子為負值，對整體風險有何影響？",a:"關鍵因子是共變異數 (CovAB) 或相關係數 (ρAB)。若為負值（ρAB < 0），兩資產報酬率傾向反向變動，使公式中的連動項為負值，顯著降低投資組合整體風險，達到優秀的分散效果。"},
+        {q:"7. 請說明標準差被用來衡量風險的原因，以及為何它比變異數更具實用性。",a:"標準差量化了資產實際報酬率偏離預期報酬率的平均程度，完美捕捉報酬率的不確定性。它比變異數更實用，因為單位是百分比（%），與報酬率單位相同，使得比較和解讀更直觀。"},
+    ];
+
+    // ── 初始化 ──
+    document.addEventListener('DOMContentLoaded',()=>{
+        renderAllMath(document.body);
+        
+        // 知識庫
+        document.getElementById('ask-gemini-btn').addEventListener('click',askGeminiForExplanation);
+        document.getElementById('gemini-query').addEventListener('keypress',e=>{if(e.key==='Enter')askGeminiForExplanation();});
+
+        // 單一資產計算機
+        [document.getElementById('p1'),document.getElementById('r1'),document.getElementById('p2'),document.getElementById('r2'),document.getElementById('p3'),document.getElementById('r3')].forEach(el=>el.addEventListener('input',calculateSingleAsset));
+
+        document.getElementById('load-example-btn').addEventListener('click',()=>{
+            document.getElementById('p1').value=30;document.getElementById('r1').value=20;
+            document.getElementById('p2').value=40;document.getElementById('r2').value=10;
+            document.getElementById('p3').value=30;document.getElementById('r3').value=-5;
+            calculateSingleAsset();
+        });
+        document.getElementById('clear-asset-inputs').addEventListener('click',()=>{
+            ['p1','r1','p2','r2','p3','r3'].forEach(id=>document.getElementById(id).value='');
+            calculateSingleAsset();
+        });
+
+        // 自動生成情境
+        document.getElementById('generate-scenario-btn').addEventListener('click',async()=>{
+            const btn=document.getElementById('generate-scenario-btn');
+            const loader=document.getElementById('scenario-loader');
+            btn.disabled=true; loader.classList.remove('hidden'); btn.querySelector('span')&&(btn.querySelector('span').textContent='生成中...');
+            try{
+                const payload={contents:[{parts:[{text:"Generate three distinct economic scenarios (Prosperity, Normal, Recession) for a hypothetical stock. Assign reasonable probabilities that sum to 100 (in percent) and corresponding realistic annual returns (in percent). Return ONLY a JSON array with 3 objects, each with 'p' (integer, probability) and 'r' (integer, return)."}]}],generationConfig:{responseMimeType:"application/json",responseSchema:{type:"ARRAY",items:{type:"OBJECT",properties:{"p":{type:"INTEGER"},"r":{type:"INTEGER"}},required:["p","r"]}}}};
+                const r=await fetchWithBackoff(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+                const data=await r.json(); const jsonText=data.candidates?.[0]?.content?.parts?.[0]?.text;
+                if(jsonText){
+                    const scenarios=JSON.parse(jsonText);
+                    if(scenarios.length===3){
+                        const sumP=scenarios.reduce((s,x)=>s+x.p,0); const scale=100/sumP;
+                        ['p1','p2','p3'].forEach((id,i)=>document.getElementById(id).value=Math.round(scenarios[i].p*scale));
+                        ['r1','r2','r3'].forEach((id,i)=>document.getElementById(id).value=scenarios[i].r);
+                        calculateSingleAsset();
+                    }
+                }
+            }catch(e){console.error('scenario gen error',e);}
+            finally{btn.disabled=false;loader.classList.add('hidden');const s=btn.querySelector('span');if(s)s.textContent='✨ 自動生成';}
+        });
+
+        // 投資組合滑桿
+        document.getElementById('assetA-return-label').textContent=`${(assetA.r*100).toFixed(2)}%`;
+        document.getElementById('assetA-stddev-label').textContent=`${(assetA.s*100).toFixed(2)}%`;
+        document.getElementById('assetB-return-label').textContent=`${(assetB.r*100).toFixed(2)}%`;
+        document.getElementById('assetB-stddev-label').textContent=`${(assetB.s*100).toFixed(2)}%`;
+        createPortfolioChart();
+        [document.getElementById('weight-slider'),document.getElementById('correlation-slider')].forEach(el=>el.addEventListener('input',calculatePortfolio));
+
+        // 綜合演練
+        const container=document.getElementById('practice-container');
+        practiceProblems.forEach((prob,idx)=>{
+            const div=document.createElement('div'); div.className='card rounded-xl overflow-hidden shadow-sm';
+            div.innerHTML=`<div class="p-4 md:p-6"><button class="w-full text-left focus:outline-none" data-idx="${idx}"><div class="flex justify-between items-center gap-4"><h4 class="text-sm font-semibold text-gray-800 text-left">${prob.q}</h4><svg class="w-5 h-5 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div></button><div class="practice-answer mt-4 text-gray-600 bg-amber-50 p-4 rounded-lg text-sm hidden"><p>${prob.a}</p></div></div>`;
+            container.appendChild(div);
+        });
+        container.addEventListener('click',e=>{
+            const btn=e.target.closest('button');
+            if(btn){const ans=btn.parentElement.querySelector('.practice-answer');const icon=btn.querySelector('svg');ans.classList.toggle('hidden');icon.classList.toggle('rotate-180');}
+        });
+
+        // 問答框
+        document.querySelectorAll('.quick-q').forEach(btn=>{btn.addEventListener('click',()=>{document.getElementById('chat-input').value=btn.textContent;sendChatMessage();});});
+        document.getElementById('chat-input').addEventListener('keydown',e=>{if(e.key==='Enter')sendChatMessage();});
+
+        // 手機選單
+        const mobileBtn=document.getElementById('mobile-menu-button');
+        const mobileMenu=document.getElementById('mobile-menu');
+        mobileBtn.addEventListener('click',()=>mobileMenu.classList.toggle('hidden'));
+        document.querySelectorAll('.nav-link').forEach(link=>link.addEventListener('click',()=>mobileMenu.classList.add('hidden')));
+
+        // 導航高亮
+        const sections=document.querySelectorAll('section[id]');
+        const navLinks=document.querySelectorAll('nav .nav-link');
+        const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){navLinks.forEach(l=>{l.classList.remove('active');if(l.getAttribute('href')==='#'+entry.target.id)l.classList.add('active');});}});},{rootMargin:'-50% 0px -50% 0px'});
+        sections.forEach(s=>observer.observe(s));
+
+        // 初始計算
+        calculateSingleAsset();
+        calculatePortfolio();
+    });
+</script>
+</body>
+</html>

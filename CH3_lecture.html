@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第3章講義：債券與股權證券的評價</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <style>
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;max-width:850px;margin:0 auto;padding:20px;line-height:1.6;color:#333;}
+        h1{border-bottom:2px solid #ccc;padding-bottom:5px;color:#1a1a1a;}
+        h2{color:#2a2a2a;margin-top:30px;} h3{color:#4a4a4a;} h4{color:#555;}
+        .math-block{margin:15px 0;padding:10px;background-color:#e6f9ff;overflow-x:auto;font-size:1.1em;}
+        table{width:100%;border-collapse:collapse;margin-top:15px;}
+        th,td{border:1px solid #ddd;padding:10px;text-align:center;}
+        th{background-color:#e9e9e9;}
+        ul,ol{margin-left:20px;} li{margin-bottom:5px;}
+        strong{color:#1a1a1a;}
+        hr{border:none;border-top:1px solid #eee;margin:40px 0;}
+        .decision-box{margin:20px 0;padding:15px;border:1px solid #ffcc00;background-color:#fffacd;}
+        /* ── 互動按鈕 ── */
+        .ib{margin:16px 0 8px 0;padding:12px 16px;background:linear-gradient(135deg,#FAF5FF 0%,#E9D5FF44 100%);border-left:4px solid #9333EA;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .ib .ib-text{font-size:.88rem;color:#581C87;font-weight:500;}
+        .ib .ib-text span{font-size:1.05rem;margin-right:5px;}
+        .btn-ib{display:inline-flex;align-items:center;gap:6px;background-color:#9333EA;color:white;padding:7px 15px;border-radius:6px;font-size:.83rem;font-weight:600;text-decoration:none;transition:background-color .2s,transform .1s;white-space:nowrap;}
+        .btn-ib:hover{background-color:#7E22CE;transform:translateY(-1px);}
+        .banner{background:linear-gradient(135deg,#7E22CE 0%,#9333EA 100%);color:white;padding:14px 20px;border-radius:10px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .banner p{margin:0;font-size:.88rem;opacity:.9;} .banner strong{font-size:1rem;}
+        .btn-banner{display:inline-flex;align-items:center;gap:6px;background:white;color:#7E22CE;padding:8px 16px;border-radius:6px;font-size:.83rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:opacity .2s;}
+        .btn-banner:hover{opacity:.85;}
+        .note{font-size:.9em;color:#555;margin-top:5px;}
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <div><strong>📊 第3章互動教材已備妥</strong><p>閱讀講義時，可點擊各範例下方的按鈕，在新分頁開啟互動計算機即時驗算。</p></div>
+        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> 開啟完整互動教材</a>
+    </div>
+    <h1>第三章：債券與股權證券的評價 (Valuation of Fixed-Income and Equity Securities)</h1>
+    <h2>導言</h2>
+    <p>本章旨在將貨幣的時間價值和年金的概念，應用於金融市場中最常見的有價證券：<strong>債券</strong>與<strong>股票</strong>。您將學會如何為這些證券進行定價，並理解市場利率、票面利率、股利成長率等關鍵因素如何影響它們的合理價值。</p>
+    <hr>
+    <h2>3.1 債券的基礎概念與現金流量 (Bond Basics and Cash Flows)</h2>
+    <h3>核心概念</h3>
+    <p><strong>債券（Bond）</strong>是一種債務憑證。債券持有人享有兩種現金流：<strong>定期收到的利息（票息）</strong>與<strong>到期時收回的本金（面額）</strong>。</p>
+    <table>
+        <thead><tr><th>術語</th><th>定義</th><th>符號</th></tr></thead>
+        <tbody>
+            <tr><td>面額 (Face Value)</td><td>到期時償還給持有人的金額</td><td>FV</td></tr>
+            <tr><td>票面利率 (Coupon Rate)</td><td>每年支付的利息率</td><td>C</td></tr>
+            <tr><td>市場利率 (YTM)</td><td>投資人要求的回報率</td><td>r</td></tr>
+            <tr><td>到期日 (Maturity)</td><td>債券生命週期結束的時間點</td><td>n</td></tr>
+        </tbody>
+    </table>
+    <hr>
+    <h2>3.2 債券定價模型 (Bond Valuation Model)</h2>
+    <h3>1. 定價公式</h3>
+    <div class="math-block">$$Price = C \left[ \frac{1 - (1+r)^{-n}}{r} \right] + FV (1+r)^{-n}$$</div>
+    <h3>2. 範例演練 3.1：溢價債券定價</h3>
+    <p><strong>情境：</strong>面額 $FV=100,000$ 元，票面利率 $4\%$，每年付息，三年後到期 ($n=3$)，市場利率 $r=3.8\%$。</p>
+    <p>票息 $C = 100,000 \times 4\% = 4,000$ 元</p>
+    <div class="math-block">$$Price \approx 100,305.32 \text{ 元（溢價債券）}$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>🔢</span>範例 3.1：調整市場利率，觀察債券價格如何變化</div>
+        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟債券評價分析器</a>
+    </div>
+    <hr>
+    <h2>3.3 債券價格與市場利率的關係 (Interest Rate Risk)</h2>
+    <h3>核心概念</h3>
+    <p>債券的價格與市場利率之間存在<strong>反向關係</strong>：</p>
+    <ul>
+        <li>市場利率 <strong>上升</strong> → 債券價格 <strong>下降</strong></li>
+        <li>市場利率 <strong>下降</strong> → 債券價格 <strong>上升</strong></li>
+    </ul>
+
+    <div class="ib">
+        <div class="ib-text"><span>📉</span>試試看：拉高市場利率，觀察溢價如何變成折價</div>
+        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> 開啟利率風險模擬</a>
+    </div>
+    <hr>
+    <h2>3.4 股票評價與高登成長模型 (Gordon Growth Model, GGM)</h2>
+    <h3>核心概念</h3>
+    <p>高登成長模型（GGM）假設股利將以固定的速度（$g$）永續成長，將這一串無限成長的現金流折現回今天的價值。</p>
+    <h3>1. 定價公式</h3>
+    <div class="math-block">$$P_0 = \frac{D_1}{r - g}$$</div>
+    <p>其中 $D_1 = D_0 \times (1+g)$；$r$ 為要求報酬率；$g$ 為股利永續成長率。</p>
+    <h3>2. 範例演練 3.2：高登模型定價</h3>
+    <p><strong>情境：</strong>$D_0=2.00$ 元，$g=5\%$，$r=10\%$。</p>
+    <p>$D_1 = 2.00 \times 1.05 = 2.10$ 元</p>
+    <div class="math-block">$$P_0 = \frac{2.10}{0.10 - 0.05} = 42 \text{ 元}$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>📈</span>範例 3.2：調整成長率 g 和要求報酬率 r，觀察股價變化</div>
+        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟 GGM 股票評價計算機</a>
+    </div>
+    <hr>
+    <h2>綜合演練</h2>
+
+    <div class="ib">
+        <div class="ib-text"><span>✏️</span>建議先自行計算，再使用互動工具驗算，或使用 AI 動態測驗卷</div>
+        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> 開啟 AI 動態測驗卷</a>
+    </div>
+    <ol>
+        <li>面額 $100,000$ 元的零息債券，五年後到期，市場利率 $3\%$，合理價格為多少？</li>
+        <li>三年期債券，面額 $50,000$ 元，票面利率 $5\%$，市場利率 $6\%$，價格為多少？</li>
+        <li>$D_0=3$ 元，股利每年成長 $4\%$，要求報酬率 $10\%$，合理股價為多少？</li>
+        <li>當票面利率大於市場利率時，債券價格會如何？</li>
+        <li>高登成長模型的主要假設為何？</li>
+    </ol>
+
+    <div class="ib">
+        <div class="ib-text"><span>💬</span>還有疑問？到 AI 問答框即時提問本章概念</div>
+        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> 開啟 AI 概念問答</a>
+    </div>
+    <hr>
+</body></html>

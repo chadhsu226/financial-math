@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第4章講義：分期償還與貸款攤銷</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <style>
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;max-width:850px;margin:0 auto;padding:20px;line-height:1.6;color:#333;}
+        h1{border-bottom:2px solid #ccc;padding-bottom:5px;color:#1a1a1a;}
+        h2{color:#2a2a2a;margin-top:30px;} h3{color:#4a4a4a;} h4{color:#555;}
+        .math-block{margin:15px 0;padding:10px;background-color:#e6f9ff;overflow-x:auto;font-size:1.1em;}
+        table{width:100%;border-collapse:collapse;margin-top:15px;}
+        th,td{border:1px solid #ddd;padding:10px;text-align:center;}
+        th{background-color:#e9e9e9;}
+        ul,ol{margin-left:20px;} li{margin-bottom:5px;}
+        strong{color:#1a1a1a;}
+        hr{border:none;border-top:1px solid #eee;margin:40px 0;}
+        .decision-box{margin:20px 0;padding:15px;border:1px solid #ffcc00;background-color:#fffacd;}
+        /* ── 互動按鈕 ── */
+        .ib{margin:16px 0 8px 0;padding:12px 16px;background:linear-gradient(135deg,#FFF7ED 0%,#FED7AA44 100%);border-left:4px solid #F97316;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .ib .ib-text{font-size:.88rem;color:#9A3412;font-weight:500;}
+        .ib .ib-text span{font-size:1.05rem;margin-right:5px;}
+        .btn-ib{display:inline-flex;align-items:center;gap:6px;background-color:#F97316;color:white;padding:7px 15px;border-radius:6px;font-size:.83rem;font-weight:600;text-decoration:none;transition:background-color .2s,transform .1s;white-space:nowrap;}
+        .btn-ib:hover{background-color:#EA580C;transform:translateY(-1px);}
+        .banner{background:linear-gradient(135deg,#EA580C 0%,#F97316 100%);color:white;padding:14px 20px;border-radius:10px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .banner p{margin:0;font-size:.88rem;opacity:.9;} .banner strong{font-size:1rem;}
+        .btn-banner{display:inline-flex;align-items:center;gap:6px;background:white;color:#EA580C;padding:8px 16px;border-radius:6px;font-size:.83rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:opacity .2s;}
+        .btn-banner:hover{opacity:.85;}
+        .note{font-size:.9em;color:#555;margin-top:5px;}
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <div><strong>📊 第4章互動教材已備妥</strong><p>閱讀講義時，可點擊各範例下方的按鈕，在新分頁開啟互動計算機即時驗算。</p></div>
+        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> 開啟完整互動教材</a>
+    </div>
+    <h1>第四章：分期償還與貸款攤銷 (Amortization and Loan Repayment)</h1>
+    <h2>導言</h2>
+    <p>本章將把第二章學到的<strong>年金現值</strong>概念應用於實際的貸款情境。您將學會如何計算定期且等額的還款金額，並掌握製作<strong>貸款攤銷表</strong>的方法，從而理解每筆還款如何分配於利息支出與本金償還。</p>
+    <hr>
+    <h2>4.1 貸款還款金額的確定 (Calculating Loan Payment, $C$)</h2>
+    <h3>核心概念</h3>
+    <p>貸款本金總額 ($PV$) 本質上就是未來一系列等額還款（普通年金 $C$）在今天的現值總和。因此可利用普通年金現值公式反推每期還款金額 ($C$)。</p>
+    <h3>1. 貸款還款金額公式</h3>
+    <div class="math-block">$$C = PV_A \times \frac{r}{1 - (1+r)^{-n}}$$</div>
+    <h3>2. 範例演練 4.1：房貸月付金計算</h3>
+    <p><strong>情境：</strong>貸款 $\$3,000,000$ 元，年利率 $2.4\%$，每月複利，還款期限 $20$ 年（$240$ 個月）。每個月需償還多少？</p>
+    <p>每期利率 $r = 2.4\%/12 = 0.002$，總期數 $n = 240$</p>
+    <div class="math-block">$$C = 3,000,000 \times \frac{0.002}{1 - (1.002)^{-240}} \approx 15,751.34 \text{ 元}$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>🏠</span>範例 4.1：輸入貸款參數，即時計算月付金</div>
+        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟還款金額計算機</a>
+    </div>
+    <hr>
+    <h2>4.2 貸款攤銷表 (Amortization Schedule)</h2>
+    <h3>核心概念</h3>
+    <p>貸款攤銷表詳細記錄每期還款如何拆解為利息和本金。在定額還款模式下，由於本金逐漸減少，每期<strong>利息遞減</strong>，而<strong>本金償還遞增</strong>。</p>
+    <h3>攤銷表計算步驟</h3>
+    <ul>
+        <li>當期利息：$Interest_t = \text{期初餘額} \times r$</li>
+        <li>本金償還：$Principal_t = C - Interest_t$</li>
+        <li>期末餘額：$\text{期末餘額}_t = \text{期初餘額}_t - Principal_t$</li>
+    </ul>
+    <h3>範例演練 4.2：攤銷表前三期</h3>
+    <p>延續範例 4.1：貸款 $\$3,000,000$ 元，月付金 $\$15,751.34$ 元，月利率 $0.002$。</p>
+    <table>
+        <thead><tr><th>期數</th><th>期初餘額</th><th>月付金</th><th>當期利息</th><th>償還本金</th><th>期末餘額</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>3,000,000.00</td><td>15,751.34</td><td>6,000.00</td><td>9,751.34</td><td>2,990,248.66</td></tr>
+            <tr><td>2</td><td>2,990,248.66</td><td>15,751.34</td><td>5,980.50</td><td>9,770.84</td><td>2,980,477.82</td></tr>
+            <tr><td>3</td><td>2,980,477.82</td><td>15,751.34</td><td>5,960.96</td><td>9,790.38</td><td>2,970,687.44</td></tr>
+        </tbody>
+    </table>
+
+    <div class="ib">
+        <div class="ib-text"><span>📋</span>開啟攤銷表，觀察利息/本金比例如何隨時間改變</div>
+        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> 開啟攤銷表分析器</a>
+    </div>
+    <hr>
+    <h2>4.3 貸款未償餘額的計算 (Outstanding Loan Balance)</h2>
+    <h3>1. 現值法 (Present Value Method)</h3>
+    <p>第 $k$ 期結束後的未償餘額等於剩下所有 $(n-k)$ 期還款的現值總和：</p>
+    <div class="math-block">$$\text{OLB}_k = C \times \left[ \frac{1 - (1+r)^{-(n-k)}}{r} \right]$$</div>
+    <h3>2. 範例演練 4.3：計算剩餘餘額</h3>
+    <p>延續範例 4.1，在繳款滿 $5$ 年（$k=60$ 期）後，剩餘貸款餘額是多少？</p>
+    <div class="math-block">$$\text{OLB}_{60} = 15,751.34 \times \left[ \frac{1 - (1.002)^{-180}}{0.002} \right] \approx 2,379,025.69 \text{ 元}$$</div>
+    <p>雖然已繳了 $5$ 年，但只償還了約 $\$620,974.31$ 元本金，體現了貸款初期大部分還款用於支付利息的現象。</p>
+
+    <div class="ib">
+        <div class="ib-text"><span>🔍</span>範例 4.3：查詢任意期數後的剩餘本金（OLB）</div>
+        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟 OLB 餘額分析器</a>
+    </div>
+    <hr>
+    <h2>綜合演練</h2>
+
+    <div class="ib">
+        <div class="ib-text"><span>✏️</span>建議先自行計算，再使用互動工具驗算，或使用 AI 動態測驗卷</div>
+        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> 開啟 AI 動態測驗卷</a>
+    </div>
+    <ol>
+        <li>企業貸款 $\$1,500,000$ 元，年利率 $4.8\%$，每月複利，還款期 $5$ 年。月付金為多少？第一期利息與本金各為多少？</li>
+        <li>小陳借 $\$800,000$ 元，$10$ 年期，年利率 $6\%$，每年還款一次。年付金為多少？繳完第 $4$ 年後剩餘未償餘額為多少？</li>
+        <li>請說明貸款攤銷表的原理，為何等額還款中利息部分會逐漸減少？</li>
+        <li>$\$5,000,000$ 元，$25$ 年期，年利率 $3\%$，每月還款。貸款滿 $10$ 年後總共支付了多少利息？</li>
+    </ol>
+
+    <div class="ib">
+        <div class="ib-text"><span>💬</span>還有疑問？到 AI 問答框即時提問本章概念</div>
+        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> 開啟 AI 概念問答</a>
+    </div>
+    <hr>
+</body></html>

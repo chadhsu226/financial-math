@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CH3 債券與股權評價互動儀表板</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Noto Sans TC', sans-serif; background-color: #F5F5F4; color: #292524; }
+    .btn-primary { background-color: #9333EA; color: #FFFFFF; transition: background-color 0.3s; }
+    .btn-primary:hover { background-color: #7E22CE; }
+    .btn-secondary { background-color: #A8A29E; color: #292524; transition: background-color 0.3s; }
+    .btn-secondary:hover { background-color: #78716C; }
+    .btn-step { background-color: #0D9488; color: #FFFFFF; transition: background-color 0.3s; }
+    .btn-step:hover { background-color: #0F766E; }
+    .card { background-color: #FFFFFF; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); border: 1px solid #E7E5E4; }
+    .input-field { border-color: #D6D3D1; border-width: 1px; border-style: solid; border-radius: 0.375rem; transition: border-color 0.3s, box-shadow 0.3s; }
+    .input-field:focus { border-color: #9333EA; box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.2); outline: none; }
+    .nav-link { transition: color 0.3s, border-color 0.3s; }
+    .nav-link.active { color: #9333EA; border-bottom-color: #9333EA; }
+    .nav-link:not(.active):hover { color: #7E22CE; }
+    /* AI 功能區塊 */
+    .ai-section { border-top: 2px dashed #E9D5FF; margin-top: 1.5rem; padding-top: 1.5rem; }
+    .ai-tab-btn { padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; transition: all 0.2s; cursor: pointer; border: 2px solid transparent; }
+    .ai-tab-btn.active-scenario { background-color: #9333EA; color: white; }
+    .ai-tab-btn.active-steps { background-color: #0D9488; color: white; }
+    .ai-tab-btn:not(.active-scenario):not(.active-steps) { background-color: #FAF5FF; color: #6B21A8; border-color: #E9D5FF; }
+    .ai-tab-btn:not(.active-scenario):not(.active-steps):hover { background-color: #F3E8FF; }
+    .step-block { background: linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 100%); border-left: 4px solid #0D9488; border-radius: 0.5rem; padding: 0.75rem 1rem; margin-bottom: 0.5rem; }
+    .step-number { display: inline-flex; align-items: center; justify-content: center; width: 1.75rem; height: 1.75rem; background-color: #0D9488; color: white; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; margin-right: 0.5rem; flex-shrink: 0; }
+    /* 問答框 */
+    .chat-bubble-user { background-color: #F3E8FF; border-radius: 1rem 1rem 0.25rem 1rem; padding: 0.75rem 1rem; margin-left: 2rem; }
+    .chat-bubble-ai { background-color: #FAF5FF; border: 1px solid #E9D5FF; border-radius: 1rem 1rem 1rem 0.25rem; padding: 0.75rem 1rem; margin-right: 2rem; }
+    .chat-input { border: 2px solid #E9D5FF; border-radius: 0.75rem; padding: 0.6rem 1rem; width: 100%; outline: none; transition: border-color 0.2s; font-size: 0.9rem; }
+    .chat-input:focus { border-color: #9333EA; }
+    .typing-dot { display: inline-block; width: 0.5rem; height: 0.5rem; background-color: #9333EA; border-radius: 50%; animation: typingBounce 1.2s infinite ease-in-out; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+    /* 測驗卷樣式 */
+    .quiz-radio:checked + span { font-weight: bold; color: #9333EA; }
+    .quiz-option-container { transition: all 0.2s; }
+    .quiz-option-container:hover { background-color: #FAF5FF; }
+  </style>
+</head>
+<body class="antialiased">
+  <header class="bg-white shadow-sm sticky top-0 z-10">
+    <div class="container mx-auto px-4 py-3">
+      <h1 class="text-2xl md:text-3xl font-bold text-purple-700">CH3 債券與股權證券的評價</h1>
+      <p class="text-stone-500 mt-1">應用年金概念評估固定收益與股權證券價值</p>
+    </div>
+  </header>
+  <nav class="bg-white/70 backdrop-blur-md sticky top-[80px] z-10 shadow-sm">
+    <div class="container mx-auto px-4">
+      <ul class="flex space-x-4 sm:space-x-8 border-b border-stone-200 overflow-x-auto">
+        <li><a href="#bond-valuation" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent active">債券評價分析器</a></li>
+        <li><a href="#ggm-valuation" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">高登成長模型 (GGM)</a></li>
+        <li><a href="#concepts" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">核心概念</a></li>
+        <li><a href="#ai-chatbox" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">💬 AI 問答</a></li>
+        <li><a href="#quiz-generator" class="nav-link text-sm sm:text-base font-medium py-3 inline-block border-b-2 border-transparent">📝 動態測驗卷</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container mx-auto p-4 md:p-8 space-y-12">
+
+    <!-- 1. 債券評價分析器 -->
+    <section id="bond-valuation" class="scroll-mt-36">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-stone-800">債券評價與利率風險分析</h2>
+        <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">計算債券價格（票息現值 + 面額現值），並分析其與市場利率的關係。</p>
+      </div>
+      <div class="card p-6 md:p-8 max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          <div class="lg:col-span-2">
+            <h3 class="text-xl font-bold mb-4">債券參數輸入</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="bond-face-value" class="block text-sm font-medium text-stone-700">面額</label>
+                <input type="number" id="bond-face-value" value="100000" min="0" class="mt-1 block w-full input-field p-2" />
+                <p class="text-xs text-stone-500 mt-1">公式變量: $FV$</p>
+              </div>
+              <div>
+                <label for="bond-coupon-rate" class="block text-sm font-medium text-stone-700">票面利率 (Coupon Rate) %</label>
+                <input type="number" id="bond-coupon-rate" value="4" min="0" step="0.01" class="mt-1 block w-full input-field p-2" />
+                <p class="text-xs text-stone-500 mt-1">用於計算每期票息 ($C$)</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-4 mt-4">
+              <div>
+                <label for="bond-ytm" class="block text-sm font-medium text-stone-700">市場利率 %</label>
+                <input type="number" id="bond-ytm" value="3.8" min="0" step="0.01" class="mt-1 block w-full input-field p-2" />
+                <p class="text-xs text-stone-500 mt-1">公式變量: $r$ (YTM)</p>
+              </div>
+              <div>
+                <label for="bond-years" class="block text-sm font-medium text-stone-700">到期年數</label>
+                <input type="number" id="bond-years" value="3" min="1" class="mt-1 block w-full input-field p-2" />
+                <p class="text-xs text-stone-500 mt-1">公式變量: $n$</p>
+              </div>
+              <div>
+                <label for="bond-frequency" class="block text-sm font-medium text-stone-700">每年付息次數</label>
+                <select id="bond-frequency" class="mt-1 block w-full input-field p-2">
+                  <option value="1" selected>每年 (m=1) - 範例 3.1</option>
+                  <option value="2">每半年 (m=2)</option>
+                </select>
+                <p class="text-xs text-stone-500 mt-1">公式變量: $m$</p>
+              </div>
+            </div>
+            <div class="flex space-x-2 pt-4">
+              <button id="load-example-3-1" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">載入範例 3.1</button>
+              <button id="load-exercise-3-2" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">載入練習題 3.2</button>
+              <button id="clear-bond" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">清除</button>
+            </div>
+            <div id="bond-formula" class="text-sm mt-3 text-stone-700 overflow-x-auto p-2 bg-stone-50 rounded-lg">
+              $$\text{Price}=C \left[ \frac{1 - (1+r)^{-N}}{r} \right] + FV(1+r)^{-N}$$
+              <p class="text-xs mt-2 text-stone-600">其中 $C$ 為每期票息金額，$N$ 為總期數 ($n \times m$)</p>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold mb-4">評價結果</h3>
+            <div class="card p-4 bg-stone-50 border-stone-200">
+              <h4 class="font-semibold text-stone-600">債券理論價格 (Price)</h4>
+              <p id="bond-price-result" class="text-3xl font-bold text-purple-700 mt-1">NT$ 0.00</p>
+            </div>
+            <div id="bond-premium-note" class="card p-3 text-center mt-4 text-sm font-semibold transition-colors duration-300">請輸入參數</div>
+
+            <!-- AI 功能區：債券 -->
+            <div class="ai-section">
+              <p class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-3">✦ AI 輔助學習</p>
+              <div class="flex gap-2 mb-3">
+                <button id="bond-tab-scenario" class="ai-tab-btn active-scenario" onclick="switchAITab('bond','scenario')">✨ 價格風險分析</button>
+                <button id="bond-tab-steps" class="ai-tab-btn" onclick="switchAITab('bond','steps')">📖 逐步解題</button>
+              </div>
+              <button id="bond-ai-btn" class="btn-primary py-2 px-4 rounded-md font-semibold w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50" disabled onclick="triggerAI('bond')">
+                <span>✨</span><span id="bond-ai-btn-label">價格與風險分析 (Gemini AI)</span>
+              </button>
+              <div id="bond-ai-loading" class="hidden mt-3 text-center text-purple-600 font-medium text-sm">
+                <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+                <span class="ml-2">AI 分析中...</span>
+              </div>
+              <div id="bond-ai-result" class="mt-3 hidden"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. GGM 高登成長模型 -->
+    <section id="ggm-valuation" class="scroll-mt-36">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-stone-800">高登成長模型 (GGM) 評價</h2>
+        <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">假設股利以固定速度 ($g$) 永續成長，計算股票的合理價格。 $P_{0}=\dfrac{D_{1}}{r-g}$</p>
+      </div>
+      <div class="card p-6 md:p-8 max-w-xl mx-auto">
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="ggm-d0" class="block text-sm font-medium text-stone-700">剛發放的股利</label>
+              <input type="number" id="ggm-d0" value="2.00" min="0" step="0.01" class="mt-1 block w-full input-field p-2" />
+              <p class="text-xs text-stone-500 mt-1">公式變量: $D_{0}$</p>
+            </div>
+            <div>
+              <label for="ggm-growth" class="block text-sm font-medium text-stone-700">股利永續成長率 %</label>
+              <input type="number" id="ggm-growth" value="5" min="0" step="0.01" class="mt-1 block w-full input-field p-2" />
+              <p class="text-xs text-stone-500 mt-1">公式變量: $g$</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="ggm-required-return" class="block text-sm font-medium text-stone-700">要求報酬率 %</label>
+              <input type="number" id="ggm-required-return" value="10" min="0" step="0.01" class="mt-1 block w-full input-field p-2" />
+              <p class="text-xs text-stone-500 mt-1">公式變量: $r$</p>
+            </div>
+            <div class="py-2">
+              <h4 class="font-semibold text-stone-600">預期下一期股利:</h4>
+              <p id="d1-value" class="text-xl font-bold text-stone-700">NT$ 2.10</p>
+            </div>
+          </div>
+        </div>
+        <div class="pt-4 text-center">
+          <button id="load-example-3-2" class="btn-secondary py-2 px-6 rounded-md font-semibold">載入範例 3.2</button>
+        </div>
+        <div id="ggm-result-card" class="card p-4 bg-purple-50 border-purple-200 text-center mt-4">
+          <h4 class="font-semibold text-purple-800">股票合理價格 ($P_{0}$)</h4>
+          <p id="ggm-price-result" class="text-3xl font-bold text-purple-700 mt-1">NT$ 0.00</p>
+          <p id="ggm-note" class="text-sm mt-1 text-stone-600"></p>
+        </div>
+        <div id="ggm-warning" class="mt-4 text-sm font-semibold text-center text-red-600 hidden">
+          警告：請確保要求報酬率 ($r$) 嚴格大於成長率 ($g$)，否則模型無效。
+        </div>
+
+        <!-- AI 功能區：GGM -->
+        <div class="ai-section">
+          <p class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-3">✦ AI 輔助學習</p>
+          <div class="flex gap-2 mb-3">
+            <button id="ggm-tab-scenario" class="ai-tab-btn active-scenario" onclick="switchAITab('ggm','scenario')">✨ 股票評價解讀</button>
+            <button id="ggm-tab-steps" class="ai-tab-btn" onclick="switchAITab('ggm','steps')">📖 逐步解題</button>
+          </div>
+          <button id="ggm-ai-btn" class="btn-primary py-2 px-4 rounded-md font-semibold w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50" disabled onclick="triggerAI('ggm')">
+            <span>✨</span><span id="ggm-ai-btn-label">股票評價解讀 (Gemini AI)</span>
+          </button>
+          <div id="ggm-ai-loading" class="hidden mt-3 text-center text-purple-600 font-medium text-sm">
+            <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+            <span class="ml-2">AI 分析中...</span>
+          </div>
+          <div id="ggm-ai-result" class="mt-3 hidden"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 核心概念 -->
+    <section id="concepts" class="scroll-mt-36">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-stone-800">核心概念速覽：債券與股權</h2>
+        <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">快速回顧債券現金流結構與評價模型的關鍵假設。</p>
+      </div>
+      <div class="space-y-4 max-w-4xl mx-auto">
+        <div class="concept-card card overflow-hidden">
+          <button class="w-full text-left p-4 bg-white hover:bg-stone-50 transition flex justify-between items-center">
+            <h3 class="text-lg font-bold">債券基礎與價格分類</h3>
+            <span class="text-purple-600 text-2xl font-light">+</span>
+          </button>
+          <div class="concept-content p-4 pt-0 text-stone-700 hidden">
+            <p><strong>債券現金流結構：</strong></p>
+            <ul class="list-disc list-inside mt-1 space-y-1">
+              <li><strong>票息 (Coupon)：</strong>定期收到的利息，屬於<strong>年金</strong>。</li>
+              <li><strong>面額 (Face Value, FV)：</strong>到期時收回的本金，屬於<strong>單一現金流</strong>。</li>
+            </ul>
+            <p class="mt-2 font-semibold">價格與利率的關係：</p>
+            <ul class="list-disc list-inside mt-1 space-y-1">
+              <li><strong>溢價 (Premium)：</strong>票面利率 > 市場利率 ($r$) $\Rightarrow$ 價格 > 面額</li>
+              <li><strong>折價 (Discount)：</strong>票面利率 < 市場利率 ($r$) $\Rightarrow$ 價格 < 面額</li>
+              <li><strong>平價 (Par)：</strong>票面利率 = 市場利率 ($r$) $\Rightarrow$ 價格 = 面額</li>
+            </ul>
+          </div>
+        </div>
+        <div class="concept-card card overflow-hidden">
+          <button class="w-full text-left p-4 bg-white hover:bg-stone-50 transition flex justify-between items-center">
+            <h3 class="text-lg font-bold">高登成長模型 (GGM) 假設</h3>
+            <span class="text-purple-600 text-2xl font-light">+</span>
+          </button>
+          <div class="concept-content p-4 pt-0 text-stone-700 hidden">
+            <p>GGM 是一個簡化的股權評價模型，主要假設包括：</p>
+            <ul class="list-disc list-inside mt-1 space-y-1">
+              <li><strong>股利永續成長：</strong>股利將以固定速度 ($g$) 永續成長。</li>
+              <li><strong>$r > g$ 限制：</strong>投資人要求的報酬率 ($r$) 必須嚴格大於股利成長率 ($g$)，否則結果無意義。</li>
+              <li><strong>適用對象：</strong>適用於成熟、穩定成長且有股利支付的公司。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. AI 問答框 -->
+    <section id="ai-chatbox" class="scroll-mt-36">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-stone-800">💬 CH3 概念問答</h2>
+        <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">針對本章的債券評價與股票評價概念提問，AI 將限定在 CH3 範圍內回答。</p>
+      </div>
+      <div class="card p-6 md:p-8 max-w-3xl mx-auto">
+        <div class="mb-4">
+          <p class="text-sm font-semibold text-stone-500 mb-2">快速提問：</p>
+          <div class="flex flex-wrap gap-2">
+            <button class="quick-q text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-full px-3 py-1 transition">為什麼市場利率上升，債券價格下跌？</button>
+            <button class="quick-q text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-full px-3 py-1 transition">溢價債券和折價債券的差異？</button>
+            <button class="quick-q text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-full px-3 py-1 transition">GGM 為什麼要求 r 大於 g？</button>
+            <button class="quick-q text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-full px-3 py-1 transition">YTM 和票面利率有什麼不同？</button>
+          </div>
+        </div>
+        <div id="chat-history" class="space-y-3 mb-4 max-h-80 overflow-y-auto p-2 bg-stone-50 rounded-xl min-h-[80px]">
+          <p class="text-sm text-stone-400 text-center pt-4">請輸入問題，AI 將針對本章概念回答 👆</p>
+        </div>
+        <div class="flex gap-2 items-center">
+          <input type="text" id="chat-input" class="chat-input" placeholder="輸入關於 CH3 的問題..." maxlength="200">
+          <button onclick="sendChatMessage()" class="btn-primary py-2 px-4 rounded-lg font-semibold text-sm whitespace-nowrap flex-shrink-0">送出 →</button>
+        </div>
+        <p class="text-xs text-stone-400 mt-2 text-center">AI 僅回答債券評價、GGM 股票評價相關問題</p>
+      </div>
+    </section>
+
+
+    <!-- 5. 動態測驗卷 -->
+    <section id="quiz-generator" class="scroll-mt-36">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-stone-800">📝 CH3 動態測驗卷</h2>
+            <p class="mt-2 text-lg text-stone-600 max-w-3xl mx-auto">點擊下方按鈕，AI 將為您即時生成 10 題專屬隨堂測驗，驗證您的學習成果。</p>
+        </div>
+        <div class="card p-6 md:p-8 max-w-3xl mx-auto">
+            <div id="quiz-setup" class="text-center">
+                <button id="generate-quiz-btn" onclick="generateDynamicQuiz()" class="btn-primary py-3 px-8 rounded-lg font-bold text-lg inline-flex items-center justify-center gap-2 transition hover:scale-105">
+                    <span class="text-xl">✨</span> 立即生成 CH3 隨堂測驗 (Gemini AI)
+                </button>
+                <div id="quiz-loading" class="hidden mt-4 font-medium flex items-center justify-center gap-2" style="color:#9333EA">
+                    <svg class="animate-spin h-5 w-5" style="color:#9333EA" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    AI 正在根據本章重點用心出題中，請稍候...
+                </div>
+            </div>
+            <div id="quiz-container" class="hidden mt-6 space-y-6 text-left">
+                <!-- 動態生成的測驗題目將插入於此 -->
+            </div>
+            <div id="quiz-result" class="hidden mt-8 p-6 bg-stone-50 border-2 rounded-xl text-center shadow-inner" style="border-color:#E9D5FF">
+                <!-- 測驗結果與分數將顯示於此 -->
+            </div>
+        </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-stone-200 mt-12">
+    <div class="container mx-auto px-4 py-6 text-center text-stone-600">
+      <p>&copy; 銘傳大學財金系財務數學教材，僅供教學與展示用途。</p>
+    </div>
+  </footer>
+
+  <script>
+    const API_MODEL = 'gemini-2.5-flash-preview-05-20';
+    const apiKey = ""; // API key is provided by the environment
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${API_MODEL}:generateContent?key=${apiKey}`;
+
+    const aiMode = { bond: 'scenario', ggm: 'scenario' };
+    const state = { bond: {}, ggm: {} };
+
+    // ── KaTeX ──
+    function renderAllMath(root = document.body) {
+      if (typeof renderMathInElement !== 'function') return;
+      renderMathInElement(root, {
+        delimiters: [{ left:'$$', right:'$$', display:true }, { left:'$', right:'$', display:false }, { left:'\\(', right:'\\)', display:false }, { left:'\\[', right:'\\]', display:true }],
+        throwOnError: false
+      });
+    }
+
+    // ── Fetch ──
+    const formatCurrency = (v, d=2) => isNaN(v) ? 'NT$ 0.00' : `NT$ ${v.toLocaleString('zh-TW', { minimumFractionDigits: d, maximumFractionDigits: d })}`;
+
+    async function exponentialBackoffFetch(url, options, maxRetries=5, delay=1000) {
+      for (let i=0; i<maxRetries; i++) {
+        try { const r = await fetch(url, options); if (r.status !== 429) return r; }
+        catch(e) { if (i===maxRetries-1) throw e; }
+        await new Promise(r => setTimeout(r, delay * Math.pow(2,i)));
+      }
+      throw new Error('API failed');
+    }
+
+    // ★ 修改：加入 isJson 參數以支援原生 JSON 模式
+    async function callGemini(systemPrompt, userQuery, isJson = false) {
+      const payload = { contents:[{parts:[{text:userQuery}]}], systemInstruction:{parts:[{text:systemPrompt}]} };
+      if (isJson) {
+        payload.generationConfig = { responseMimeType: "application/json" };
+      }
+      const r = await exponentialBackoffFetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+      const data = await r.json();
+      return data.candidates?.[0]?.content?.parts?.[0]?.text || null;
+    }
+
+    // ── AI Tab 切換 ──
+    const tabLabels = {
+      bond: { scenario:'價格與風險分析 (Gemini AI)', steps:'📖 顯示逐步解題過程' },
+      ggm:  { scenario:'股票評價解讀 (Gemini AI)',   steps:'📖 顯示逐步解題過程' },
+    };
+
+    function switchAITab(tool, mode) {
+      aiMode[tool] = mode;
+      const sBtn = document.getElementById(`${tool}-tab-scenario`);
+      const tBtn = document.getElementById(`${tool}-tab-steps`);
+      const btn  = document.getElementById(`${tool}-ai-btn`);
+      const lbl  = document.getElementById(`${tool}-ai-btn-label`);
+      sBtn.classList.remove('active-scenario','active-steps');
+      tBtn.classList.remove('active-scenario','active-steps');
+      if (mode==='scenario') { sBtn.classList.add('active-scenario'); btn.className=btn.className.replace('btn-step','btn-primary'); }
+      else                   { tBtn.classList.add('active-steps');    btn.className=btn.className.replace('btn-primary','btn-step'); }
+      lbl.textContent = tabLabels[tool][mode];
+      document.getElementById(`${tool}-ai-result`).classList.add('hidden');
+    }
+
+    // ── 結果渲染 ──
+    function renderAIResult(id, text, mode) {
+      const c = document.getElementById(id);
+      if (mode==='scenario') {
+        c.innerHTML = `<div class="card p-4 bg-purple-50 border-purple-200 text-stone-800"><h4 class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>✨</span> AI 分析師報告</h4><p class="text-sm leading-relaxed">${text.replace(/\n/g,'<br>')}</p></div>`;
+      } else {
+        const lines = text.split('\n').filter(l=>l.trim());
+        let html = `<div class="space-y-2"><h4 class="font-bold text-teal-800 mb-3 flex items-center gap-1"><span>📖</span> 逐步解題過程</h4>`;
+        lines.forEach(line => {
+          const m = line.match(/^(步驟\s*\d+|Step\s*\d+|\d+\.|第\s*\d+\s*步)/i);
+          if (m) { const num=m[0].replace(/[^0-9]/g,'')||'•'; html+=`<div class="step-block flex items-start"><span class="step-number">${num}</span><span class="text-sm text-teal-900"><strong>${m[0]}</strong> ${line.replace(m[0],'').trim()}</span></div>`; }
+          else { html+=`<p class="text-sm text-stone-700 px-2">${line}</p>`; }
+        });
+        html+='</div>'; c.innerHTML=html;
+      }
+      c.classList.remove('hidden');
+      renderAllMath(c);
+    }
+
+    function showLoading(tool, show) {
+      document.getElementById(`${tool}-ai-loading`).classList.toggle('hidden', !show);
+      document.getElementById(`${tool}-ai-btn`).disabled = show;
+    }
+
+    // ── 統一 AI 觸發 ──
+    async function triggerAI(tool) {
+      const mode = aiMode[tool];
+      const s = state[tool];
+      showLoading(tool, true);
+      document.getElementById(`${tool}-ai-result`).classList.add('hidden');
+
+      let sys='', usr='';
+
+      if (tool==='bond') {
+        if (mode==='scenario') {
+          sys = "你是專業固定收益證券分析師，專精於債券評價教學。根據使用者的債券計算結果，提供約100-150字的分析，包含：1.解釋債券處於溢價/折價/平價的原因；2.分析利率風險（價格對市場利率變動的敏感度）；3.一個具體的投資建議情境。僅限 CH3 債券評價範圍。";
+          usr = `面額(FV): ${formatCurrency(s.FV)}, 票面利率: ${s.CouponRate}%, 市場利率(YTM): ${s.YTM}%, 到期年數: ${s.n}年, 付息次數: ${s.m}次/年, 債券價格: ${formatCurrency(s.Price)}, 狀態: ${s.Status}。請分析。`;
+        } else {
+          sys = "你是財務數學教師，請用步驟格式（步驟1:、步驟2:...）說明債券定價公式的計算過程，分別計算票息現值（年金部分）和面額現值（單一現金流），最後加總。代入實際數字。僅限 CH3 債券評價範圍。";
+          usr = `請逐步示範：面額(FV)=${formatCurrency(s.FV)}, 票面利率=${s.CouponRate}%, 市場利率(YTM)=${s.YTM}%, 年數=${s.n}年, 付息${s.m}次/年, 最終價格=${formatCurrency(s.Price)} 的計算過程。`;
+        }
+      } else if (tool==='ggm') {
+        if (mode==='scenario') {
+          sys = "你是股票評價分析師，專精於高登成長模型(GGM)教學。根據計算結果，提供約100-150字的分析，包含：1.解釋股票合理價格的意義；2.分析成長率(g)和要求報酬率(r)對估值的影響；3.一個具體的股票評估情境（如某類型公司的估值應用）。僅限 CH3 GGM 範圍。";
+          usr = `剛發放股利(D0): ${formatCurrency(s.D0,2)}, 成長率(g): ${s.g_percent}%, 要求報酬率(r): ${s.r_percent}%, 預期下期股利(D1): ${formatCurrency(s.D1,2)}, 股票合理價格(P0): ${formatCurrency(s.Price)}。請分析。`;
+        } else {
+          sys = "你是財務數學教師，請用步驟格式（步驟1:、步驟2:...）說明高登成長模型(GGM) P0=D1/(r-g) 的計算過程，包含計算D1=D0×(1+g)，再代入公式求P0。解釋為何需要 r>g。代入實際數字。僅限 CH3 GGM 範圍。";
+          usr = `請逐步示範：D0=${formatCurrency(s.D0,2)}, g=${s.g_percent}%, r=${s.r_percent}%, D1=${formatCurrency(s.D1,2)}, P0=${formatCurrency(s.Price)} 的計算步驟與邏輯。`;
+        }
+      }
+
+      try {
+        const text = await callGemini(sys, usr);
+        if (text) renderAIResult(`${tool}-ai-result`, text, mode);
+        else { document.getElementById(`${tool}-ai-result`).innerHTML='<p class="text-sm text-red-500">無法取得回應，請稍後再試。</p>'; document.getElementById(`${tool}-ai-result`).classList.remove('hidden'); }
+      } catch(e) {
+        document.getElementById(`${tool}-ai-result`).innerHTML='<p class="text-sm text-red-500">連線失敗，請檢查網路。</p>';
+        document.getElementById(`${tool}-ai-result`).classList.remove('hidden');
+      } finally { showLoading(tool, false); }
+    }
+
+    // ── 問答框 ──
+    const chatHistory = [];
+    const CHAT_SYSTEM_PROMPT = `你是「財務數學 CH3」的 AI 學習助理，專門回答債券評價與股權評價相關問題，包含：債券定價公式、票息(Coupon)、面額(FV)、到期殖利率(YTM)、溢價/折價/平價債券、利率風險、高登成長模型(GGM)、股利折現等概念。
+規則：
+1. 只回答 CH3 債券與股票評價相關問題。
+2. 若超出範圍，禮貌說明「這超出 CH3 範圍，建議參考其他章節」。
+3. 以繁體中文回答，簡潔清楚，適合大學財金系一年級學生。
+4. 若學生問作業題，提供觀念方向而非直接給答案。
+5. 回答控制在 150 字以內。`;
+
+    async function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const q = input.value.trim(); if (!q) return;
+      input.value='';
+      const hDiv = document.getElementById('chat-history');
+      if (hDiv.querySelector('p.text-stone-400')) hDiv.innerHTML='';
+      hDiv.innerHTML+=`<div class="chat-bubble-user text-sm">${q}</div>`;
+      const tid='typing-'+Date.now();
+      hDiv.innerHTML+=`<div id="${tid}" class="chat-bubble-ai text-sm flex items-center gap-1"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
+      hDiv.scrollTop=hDiv.scrollHeight;
+      chatHistory.push({role:'user',parts:[{text:q}]});
+      try {
+        const payload={contents:chatHistory,systemInstruction:{parts:[{text:CHAT_SYSTEM_PROMPT}]}};
+        const r=await exponentialBackoffFetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        const data=await r.json();
+        const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'抱歉，無法取得回應。';
+        chatHistory.push({role:'model',parts:[{text}]});
+        document.getElementById(tid).outerHTML=`<div class="chat-bubble-ai text-sm leading-relaxed">${text.replace(/\n/g,'<br>')}</div>`;
+      } catch(e) {
+        document.getElementById(tid).outerHTML=`<div class="chat-bubble-ai text-sm text-red-500">連線失敗，請稍後再試。</div>`;
+      }
+      hDiv.scrollTop=hDiv.scrollHeight;
+    }
+
+    // ★ 新增：動態測驗卷 (Quiz Generator) 功能 ★
+    let currentQuizData = [];
+
+    const QUIZ_SYSTEM_PROMPT = `你是大學財務管理教授。請根據「CH3 債券與股權證券的評價」(包含債券定價、票面利率、YTM、溢價/折價、利率風險、高登成長模型 GGM) 出 10 題單選題。
+    請嚴格以 JSON 陣列格式回傳，絕對不要有任何其他文字說明或 Markdown 標記，格式如下：
+    [
+      {
+        "question": "題目內容(可用 $ 寫數學公式，若包含 LaTeX 指令請使用雙反斜線跳脫，例如 \\\\frac{A}{B})",
+        "options": ["選項1", "選項2", "選項3", "選項4"],
+        "answer": 0,
+        "explanation": "詳解說明(可用 $ 寫數學公式，若包含 LaTeX 指令請使用雙反斜線跳脫)"
+      }
+    ]
+    注意：answer 欄位是正確選項的整數索引 (0, 1, 2, 或 3)。`;
+
+    async function generateDynamicQuiz() {
+        const btn = document.getElementById('generate-quiz-btn');
+        const loading = document.getElementById('quiz-loading');
+        const container = document.getElementById('quiz-container');
+        const resultDiv = document.getElementById('quiz-result');
+
+        btn.disabled = true;
+        loading.classList.remove('hidden');
+        container.classList.add('hidden');
+        resultDiv.classList.add('hidden');
+        container.innerHTML = ''; 
+
+        try {
+            // 使用 isJson = true 確保產出合法 JSON
+            let jsonStr = await callGemini(QUIZ_SYSTEM_PROMPT, "請出 10 題關於 CH3 債券與股票評價的測驗題。", true);
+            
+            // 清理可能包含的 Markdown 標籤防呆
+            jsonStr = jsonStr.replace(/```json/g, '').replace(/```/g, '').trim();
+            const startIndex = jsonStr.indexOf('[');
+            const endIndex = jsonStr.lastIndexOf(']');
+            if (startIndex !== -1 && endIndex !== -1) {
+                jsonStr = jsonStr.substring(startIndex, endIndex + 1);
+            }
+
+            currentQuizData = JSON.parse(jsonStr);
+            renderQuiz(currentQuizData);
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<p class="text-red-500 text-center py-4">題目生成失敗，請稍後再試。</p>';
+            container.classList.remove('hidden');
+        } finally {
+            btn.disabled = false;
+            loading.classList.add('hidden');
+        }
+    }
+
+    function renderQuiz(quizData) {
+        const container = document.getElementById('quiz-container');
+        let html = '';
+
+        quizData.forEach((q, qIndex) => {
+            html += `
+            <div class="card p-5 bg-white border-stone-200 transition-colors" id="question-card-${qIndex}">
+                <p class="font-bold text-lg text-stone-800 mb-4 text-justify">${qIndex + 1}. ${q.question}</p>
+                <div class="space-y-3">
+            `;
+            q.options.forEach((opt, oIndex) => {
+                html += `
+                    <label class="quiz-option-container flex items-center p-3 border border-stone-200 rounded-lg cursor-pointer">
+                        <input type="radio" name="q${qIndex}" value="${oIndex}" class="quiz-radio text-purple-600 focus:ring-purple-500 w-4 h-4 mr-3 flex-shrink-0">
+                        <span class="text-stone-700 font-medium">${opt}</span>
+                    </label>
+                `;
+            });
+            html += `
+                </div>
+                <div id="explanation-${qIndex}" class="hidden mt-4 p-4 bg-purple-50/50 rounded-lg text-sm text-purple-900 border border-purple-100">
+                    <span class="font-bold text-purple-700 flex items-center gap-1 mb-1">💡 詳解：</span> 
+                    ${q.explanation}
+                </div>
+            </div>`;
+        });
+
+        html += `
+            <div class="text-center mt-8">
+                <button onclick="submitQuiz()" class="btn-primary py-3 px-8 rounded-lg font-bold text-lg shadow-sm transition hover:-translate-y-0.5">送出答案與看分數</button>
+            </div>
+        `;
+
+        container.innerHTML = html;
+        container.classList.remove('hidden');
+
+        // 重新渲染公式
+        if (typeof renderAllMath === 'function') {
+            renderAllMath(container);
+        }
+    }
+
+    function submitQuiz() {
+        if (!currentQuizData || currentQuizData.length === 0) return;
+
+        let score = 0;
+        const total = currentQuizData.length;
+
+        currentQuizData.forEach((q, qIndex) => {
+            const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+            const explanationDiv = document.getElementById(`explanation-${qIndex}`);
+            const card = document.getElementById(`question-card-${qIndex}`);
+            
+            explanationDiv.classList.remove('hidden');
+
+            // 批改
+            if (selected && parseInt(selected.value) === q.answer) {
+                score += 1;
+                card.classList.remove('border-stone-200');
+                card.classList.add('border-green-300', 'bg-green-50/30');
+            } else {
+                card.classList.remove('border-stone-200');
+                card.classList.add('border-rose-300', 'bg-rose-50/30');
+                
+                const correctInput = document.querySelector(`input[name="q${qIndex}"][value="${q.answer}"]`);
+                if(correctInput) {
+                    correctInput.closest('label').classList.add('bg-green-100', 'border-green-400', 'shadow-inner');
+                }
+            }
+            
+            // 鎖定選項
+            document.querySelectorAll(`input[name="q${qIndex}"]`).forEach(input => input.disabled = true);
+        });
+
+        const resultDiv = document.getElementById('quiz-result');
+        const scorePercent = Math.round((score / total) * 100);
+
+        let feedback = '';
+        if (scorePercent === 100) feedback = '太棒了！您完全掌握了本章節的核心概念 🏆';
+        else if (scorePercent >= 60) feedback = '表現不錯！可以再複習一下錯題的詳解 💪';
+        else feedback = '看來還需要多加練習，別氣餒，回到上方重新看一次核心概念吧 📖';
+
+        resultDiv.innerHTML = `
+            <h3 class="text-2xl font-bold text-stone-800 mb-2">測驗結果：${score} / ${total} 題</h3>
+            <p class="text-5xl font-bold ${scorePercent >= 60 ? 'text-purple-600' : 'text-rose-500'} mb-3">${scorePercent} 分</p>
+            <p class="text-stone-600">${feedback}</p>
+            <div class="mt-6">
+                <button onclick="document.getElementById('quiz-generator').scrollIntoView({behavior:'smooth'})" class="text-purple-600 hover:text-purple-800 underline text-sm font-medium">往上查看各題詳解</button>
+            </div>
+        `;
+        resultDiv.classList.remove('hidden');
+        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // ── 財金計算 ──
+    function calcBondPrice(FV, CouponRate, YTM, n, m) {
+      const C = (FV * CouponRate/100) / m;
+      const r = (YTM/100) / m;
+      const N = n * m;
+      const pvCoupons = r===0 ? C*N : C*((1-Math.pow(1+r,-N))/r);
+      return pvCoupons + FV/Math.pow(1+r,N);
+    }
+    function calcGGMPrice(D0, g_pct, r_pct) {
+      const g=g_pct/100, r=r_pct/100;
+      if (r<=g) return NaN;
+      return D0*(1+g)/(r-g);
+    }
+
+    // ── 計算邏輯 ──
+    function runBondValuation() {
+      const FV = parseFloat(document.getElementById('bond-face-value').value)||0;
+      const CouponRate = parseFloat(document.getElementById('bond-coupon-rate').value)||0;
+      const YTM = parseFloat(document.getElementById('bond-ytm').value)||0;
+      const n = parseFloat(document.getElementById('bond-years').value)||0;
+      const m = parseInt(document.getElementById('bond-frequency').value);
+      const isValid = FV>0 && n>0;
+      const Price = isValid ? calcBondPrice(FV,CouponRate,YTM,n,m) : 0;
+      document.getElementById('bond-price-result').textContent = formatCurrency(Price);
+
+      const note = document.getElementById('bond-premium-note');
+      note.classList.remove('bg-green-100','text-green-800','bg-red-100','text-red-800','bg-yellow-100','text-yellow-800');
+      let Status = '';
+      if (isValid) {
+        if (Price>FV)      { note.textContent='溢價債券 (Premium Bond)';  note.classList.add('bg-red-100','text-red-800');    Status='溢價'; }
+        else if (Price<FV) { note.textContent='折價債券 (Discount Bond)'; note.classList.add('bg-green-100','text-green-800'); Status='折價'; }
+        else               { note.textContent='平價債券 (Par Bond)';      note.classList.add('bg-yellow-100','text-yellow-800'); Status='平價'; }
+      } else { note.textContent='請輸入有效參數'; }
+
+      state.bond = { FV, CouponRate, YTM, n, m, Price, Status };
+      document.getElementById('bond-ai-btn').disabled = !isValid;
+      document.getElementById('bond-ai-result').classList.add('hidden');
+      renderAllMath(document.getElementById('bond-formula'));
+    }
+
+    function runGGMValuation() {
+      const D0 = parseFloat(document.getElementById('ggm-d0').value)||0;
+      const g_percent = parseFloat(document.getElementById('ggm-growth').value)||0;
+      const r_percent = parseFloat(document.getElementById('ggm-required-return').value)||0;
+      const g=g_percent/100, r=r_percent/100;
+      const D1 = D0*(1+g);
+      document.getElementById('d1-value').textContent = formatCurrency(D1,2);
+
+      const Price = calcGGMPrice(D0,g_percent,r_percent);
+      const resDiv = document.getElementById('ggm-price-result');
+      const noteDiv = document.getElementById('ggm-note');
+      const warnDiv = document.getElementById('ggm-warning');
+      noteDiv.classList.remove('text-red-600');
+      warnDiv.classList.add('hidden');
+
+      const isValid = D0>0 && r_percent>0 && r>g;
+      if (!isValid) {
+        resDiv.textContent='N/A';
+        noteDiv.textContent='請輸入有效的 D0, r, g 參數。';
+        noteDiv.classList.add('text-red-600');
+        if (r<=g && r_percent>0) warnDiv.classList.remove('hidden');
+      } else {
+        resDiv.textContent=formatCurrency(Price);
+        noteDiv.textContent=`下一期股利 D1 為 ${formatCurrency(D1,2)}。${D0===2&&g_percent===5&&r_percent===10?' (驗證教材範例 3.2)':''}`;
+      }
+
+      state.ggm = { D0, g_percent, r_percent, D1, Price };
+      document.getElementById('ggm-ai-btn').disabled = !isValid;
+      document.getElementById('ggm-ai-result').classList.add('hidden');
+      renderAllMath(document.getElementById('ggm-result-card'));
+      renderAllMath(document.getElementById('ggm-valuation'));
+    }
+
+    // ── 初始化 ──
+    document.addEventListener('DOMContentLoaded', function() {
+      renderAllMath(document.body);
+
+      document.querySelectorAll('#bond-valuation input, #bond-valuation select').forEach(el=>el.addEventListener('input',runBondValuation));
+      document.querySelectorAll('#ggm-valuation input').forEach(el=>el.addEventListener('input',runGGMValuation));
+
+      document.getElementById('load-example-3-1').addEventListener('click',()=>{
+        document.getElementById('bond-face-value').value=100000;
+        document.getElementById('bond-coupon-rate').value=4;
+        document.getElementById('bond-ytm').value=3.8;
+        document.getElementById('bond-years').value=3;
+        document.getElementById('bond-frequency').value=1;
+        runBondValuation();
+      });
+      document.getElementById('load-exercise-3-2').addEventListener('click',()=>{
+        document.getElementById('bond-face-value').value=500000;
+        document.getElementById('bond-coupon-rate').value=6;
+        document.getElementById('bond-ytm').value=7;
+        document.getElementById('bond-years').value=5;
+        document.getElementById('bond-frequency').value=1;
+        runBondValuation();
+      });
+      document.getElementById('clear-bond').addEventListener('click',()=>{
+        ['bond-face-value','bond-coupon-rate','bond-ytm','bond-years'].forEach(id=>document.getElementById(id).value='');
+        runBondValuation();
+      });
+      document.getElementById('load-example-3-2').addEventListener('click',()=>{
+        document.getElementById('ggm-d0').value=2.00;
+        document.getElementById('ggm-growth').value=5;
+        document.getElementById('ggm-required-return').value=10;
+        runGGMValuation();
+      });
+
+      document.querySelectorAll('.concept-card button').forEach(button=>{
+        button.addEventListener('click',()=>{
+          const content=button.nextElementSibling;
+          const icon=button.querySelector('span');
+          const isOpen=!content.classList.contains('hidden');
+          document.querySelectorAll('.concept-content').forEach(c=>c.classList.add('hidden'));
+          document.querySelectorAll('.concept-card button span').forEach(i=>i.textContent='+');
+          content.classList.toggle('hidden',isOpen);
+          icon.textContent=isOpen?'+':'-';
+          if(!content.classList.contains('hidden')) renderAllMath(content);
+        });
+      });
+
+      document.querySelectorAll('.quick-q').forEach(btn=>{
+        btn.addEventListener('click',()=>{ document.getElementById('chat-input').value=btn.textContent; sendChatMessage(); });
+      });
+      document.getElementById('chat-input').addEventListener('keydown',e=>{ if(e.key==='Enter') sendChatMessage(); });
+
+      const sections=document.querySelectorAll('section');
+      const navLinks=document.querySelectorAll('nav a');
+      const observer=new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting) {
+            navLinks.forEach(link=>{ link.classList.remove('active'); if(link.getAttribute('href').substring(1)===entry.target.id) link.classList.add('active'); });
+          }
+        });
+      },{rootMargin:'-50% 0px -50% 0px'});
+      sections.forEach(s=>observer.observe(s));
+      navLinks.forEach(a=>{ a.addEventListener('click',function(e){ e.preventDefault(); document.querySelector(this.getAttribute('href')).scrollIntoView({behavior:'smooth'}); }); });
+
+      runBondValuation();
+      runGGMValuation();
+    });
+  </script>
+</body>
+</html>

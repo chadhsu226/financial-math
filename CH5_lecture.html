@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第5章講義：資本預算與長期投資決策</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <style>
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;max-width:850px;margin:0 auto;padding:20px;line-height:1.6;color:#333;}
+        h1{border-bottom:2px solid #ccc;padding-bottom:5px;color:#1a1a1a;}
+        h2{color:#2a2a2a;margin-top:30px;} h3{color:#4a4a4a;} h4{color:#555;}
+        .math-block{margin:15px 0;padding:10px;background-color:#e6f9ff;overflow-x:auto;font-size:1.1em;}
+        table{width:100%;border-collapse:collapse;margin-top:15px;}
+        th,td{border:1px solid #ddd;padding:10px;text-align:center;}
+        th{background-color:#e9e9e9;}
+        ul,ol{margin-left:20px;} li{margin-bottom:5px;}
+        strong{color:#1a1a1a;}
+        hr{border:none;border-top:1px solid #eee;margin:40px 0;}
+        .decision-box{margin:20px 0;padding:15px;border:1px solid #ffcc00;background-color:#fffacd;}
+        /* ── 互動按鈕 ── */
+        .ib{margin:16px 0 8px 0;padding:12px 16px;background:linear-gradient(135deg,#FDF4FF 0%,#F0ABFC44 100%);border-left:4px solid #C026D3;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .ib .ib-text{font-size:.88rem;color:#701A75;font-weight:500;}
+        .ib .ib-text span{font-size:1.05rem;margin-right:5px;}
+        .btn-ib{display:inline-flex;align-items:center;gap:6px;background-color:#C026D3;color:white;padding:7px 15px;border-radius:6px;font-size:.83rem;font-weight:600;text-decoration:none;transition:background-color .2s,transform .1s;white-space:nowrap;}
+        .btn-ib:hover{background-color:#A21CAF;transform:translateY(-1px);}
+        .banner{background:linear-gradient(135deg,#A21CAF 0%,#C026D3 100%);color:white;padding:14px 20px;border-radius:10px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .banner p{margin:0;font-size:.88rem;opacity:.9;} .banner strong{font-size:1rem;}
+        .btn-banner{display:inline-flex;align-items:center;gap:6px;background:white;color:#A21CAF;padding:8px 16px;border-radius:6px;font-size:.83rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:opacity .2s;}
+        .btn-banner:hover{opacity:.85;}
+        .note{font-size:.9em;color:#555;margin-top:5px;}
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <div><strong>📊 第5章互動教材已備妥</strong><p>閱讀講義時，可點擊各範例下方的按鈕，在新分頁開啟互動計算機即時驗算。</p></div>
+        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> 開啟完整互動教材</a>
+    </div>
+    <h1>第五章：資本預算與長期投資決策 (Capital Budgeting and Long-Term Investment Decisions)</h1>
+    <h2>導言</h2>
+    <p>本章是將財務數學工具應用於實際決策的關鍵。資本預算是企業規劃和管理長期投資專案的過程。我們將運用 NPV 和 IRR 等指標，來評估專案的財務可行性，做出最佳的資源配置決定。</p>
+    <hr>
+    <h2>5.1 淨現值法 (Net Present Value, NPV)</h2>
+    <h3>核心概念</h3>
+    <p>淨現值法是評估專案可行性的黃金標準，衡量一個專案未來所有現金流入和流出，經過折現後在今天的淨價值。</p>
+    <div class="math-block">$$NPV = \sum_{t=0}^{n} \frac{CF_t}{(1+r)^t}$$</div>
+    <h3>1. 淨現值決策準則</h3>
+    <ul>
+        <li>若 $NPV > 0$：專案可行，將增加股東財富。</li>
+        <li>若 $NPV < 0$：專案不可行，應予拒絕。</li>
+        <li>若 $NPV = 0$：專案僅能打平成本。</li>
+    </ul>
+    <h3>2. 範例演練 5.1：NPV 計算</h3>
+    <p><strong>情境：</strong>初始投資 $\$100,000$ 元，未來三年每年淨流入 $\$40,000$ 元，資本成本 $r=10\%$。</p>
+    <div class="math-block">$$NPV = -100,000 + \frac{40,000}{1.10} + \frac{40,000}{1.10^2} + \frac{40,000}{1.10^3} \approx -525.91 \text{ 元}$$</div>
+    <p><strong>決策：</strong>由於 $NPV < 0$，該專案不可行，應予拒絕。</p>
+
+    <div class="ib">
+        <div class="ib-text"><span>🔢</span>範例 5.1：輸入現金流，即時計算 NPV 並看 AI 決策分析</div>
+        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟 NPV & IRR 分析器</a>
+    </div>
+    <hr>
+    <h2>5.2 內部報酬率法 (Internal Rate of Return, IRR)</h2>
+    <h3>核心概念</h3>
+    <p>IRR 是指使專案的 NPV 剛好等於零的折現率，代表專案預期可實現的年化回報率。</p>
+    <div class="math-block">$$\sum_{t=0}^{n} \frac{CF_t}{(1+IRR)^t} = 0$$</div>
+    <h3>決策準則</h3>
+    <ul>
+        <li>若 $IRR > r$（資本成本）：專案可行。</li>
+        <li>若 $IRR < r$（資本成本）：專案不可行。</li>
+    </ul>
+    <h3>範例演練 5.2：IRR 估算與應用</h3>
+    <p>延續範例 5.1，透過試誤法求解：</p>
+    <div class="math-block">$$IRR \approx 9.70\%$$</div>
+    <p><strong>決策：</strong>$IRR=9.70\% < r=10\%$，專案不可行，與 NPV 結論一致。</p>
+
+    <div class="ib">
+        <div class="ib-text"><span>📊</span>範例 5.2：互動計算機自動計算 IRR，並與資本成本比較</div>
+        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> 開啟 NPV & IRR 分析器</a>
+    </div>
+    <hr>
+    <h2>5.3 資本預算的輔助方法 (Supplementary Methods)</h2>
+    <h3>1. 投資回收期法 (Payback Period)</h3>
+    <ul>
+        <li>衡量收回初始投資成本所需的時間。</li>
+        <li>缺點：忽略了貨幣的時間價值。</li>
+    </ul>
+    <h3>2. 折現回收期法 (Discounted Payback Period)</h3>
+    <ul>
+        <li>考慮時間價值，衡量收回投資折現值所需時間。</li>
+    </ul>
+    <h3>3. 範例演練 5.3：回收期計算</h3>
+    <p><strong>情境：</strong>初始投資 $\$250,000$ 元，資本成本 $r=12\%$，未來四年現金流入分別為 $\$100,000$、$\$120,000$、$\$80,000$、$\$50,000$。</p>
+    <div class="math-block">$$Payback Period = 2 + \frac{30,000}{80,000} = 2.375 \text{ 年}$$</div>
+    <div class="math-block">$$Discounted Payback Period \approx 3.255 \text{ 年}$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>⏱️</span>範例 5.3：即時計算普通與折現回收期並對比</div>
+        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟回收期計算機</a>
+    </div>
+    <h3>4. 範例演練 5.4：NPV 與 IRR 衝突案例</h3>
+    <p><strong>情境：</strong>資本成本 $r=10\%$，兩個互斥專案：</p>
+    <table>
+        <thead><tr><th>專案</th><th>初始投資</th><th>第1年流入</th><th>IRR</th><th>NPV</th></tr></thead>
+        <tbody>
+            <tr><td>S (小)</td><td>$-\$100$</td><td>$\$120$</td><td>$20.00\%$</td><td>$\$9.09$</td></tr>
+            <tr><td>L (大)</td><td>$-\$1,000$</td><td>$\$1,150$</td><td>$15.00\%$</td><td>$\$45.45$</td></tr>
+        </tbody>
+    </table>
+    <div class="decision-box">
+        <strong>最終決策：應選擇專案 L。</strong> 儘管專案 S 的 IRR 更高，但專案 L 創造了更大的絕對 NPV，為股東帶來更多財富。<br>
+        <strong>決策優先順序：以 NPV 決策為準。</strong>
+    </div>
+
+    <div class="ib">
+        <div class="ib-text"><span>⚖️</span>範例 5.4：輸入兩個互斥專案參數，模擬 NPV vs. IRR 衝突</div>
+        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> 開啟決策衝突模擬器</a>
+    </div>
+    <hr>
+    <h2>綜合演練</h2>
+
+    <div class="ib">
+        <div class="ib-text"><span>✏️</span>建議先自行計算，再使用互動工具驗算，或使用 AI 動態測驗卷</div>
+        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> 開啟 AI 動態測驗卷</a>
+    </div>
+    <ol>
+        <li>初始投資 $\$250,000$ 元，未來四年流入：$\$100,000$、$\$120,000$、$\$80,000$、$\$50,000$，資本成本 $12\%$。NPV 是多少？</li>
+        <li>承接上題，投資回收期是多少年？</li>
+        <li>請解釋 NPV 和 IRR 的核心差異，並說明衝突時為何優先遵循 NPV 準則？</li>
+        <li>初始投資 $\$50,000$ 元，每年年底淨流入 $\$15,000$ 元，持續 $5$ 年，IRR 約為多少？（提示：介於 $12\%$ 至 $15\%$）</li>
+    </ol>
+
+    <div class="ib">
+        <div class="ib-text"><span>💬</span>還有疑問？到 AI 問答框即時提問本章概念</div>
+        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> 開啟 AI 概念問答</a>
+    </div>
+    <hr>
+</body></html>
