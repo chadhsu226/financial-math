@@ -55,6 +55,20 @@
     position: relative;
     z-index: 1;
   }
+  .back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: var(--gold-light);
+    text-decoration: none;
+    margin-bottom: 22px;
+    opacity: 0.85;
+    transition: opacity 0.15s, gap 0.15s;
+    position: relative;
+    z-index: 1;
+  }
+  .back-home:hover { opacity: 1; gap: 10px; }
   .course-tag {
     display: inline-block;
     font-size: 0.72rem;
@@ -213,6 +227,7 @@
 
 <header>
   <div class="header-inner">
+    <a href="https://chadhsu226.github.io/" class="back-home">← 返回首頁</a>
     <div class="course-tag">Financial Mathematics</div>
     <h1>財務<span>數學</span><br>課程講義</h1>
     <p class="subtitle">每章包含完整講義與互動練習，搭配 AI 輔助說明，幫助深化理解。</p>
