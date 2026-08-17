@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4 Lecture: Amortization and Loan Repayment</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <style>
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;max-width:850px;margin:0 auto;padding:20px;line-height:1.6;color:#333;}
+        h1{border-bottom:2px solid #ccc;padding-bottom:5px;color:#1a1a1a;}
+        h2{color:#2a2a2a;margin-top:30px;} h3{color:#4a4a4a;} h4{color:#555;}
+        .math-block{margin:15px 0;padding:10px;background-color:#e6f9ff;overflow-x:auto;font-size:1.1em;}
+        table{width:100%;border-collapse:collapse;margin-top:15px;}
+        th,td{border:1px solid #ddd;padding:10px;text-align:center;}
+        th{background-color:#e9e9e9;}
+        ul,ol{margin-left:20px;} li{margin-bottom:5px;}
+        strong{color:#1a1a1a;}
+        hr{border:none;border-top:1px solid #eee;margin:40px 0;}
+        .decision-box{margin:20px 0;padding:15px;border:1px solid #ffcc00;background-color:#fffacd;}
+        .lang-switch{margin-bottom:14px;font-size:.82rem;}
+        .lang-switch a{color:#F97316;text-decoration:none;font-weight:600;}
+        .lang-switch a:hover{text-decoration:underline;}
+        /* ── interactive button ── */
+        .ib{margin:16px 0 8px 0;padding:12px 16px;background:linear-gradient(135deg,#FFF7ED 0%,#FED7AA44 100%);border-left:4px solid #F97316;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .ib .ib-text{font-size:.88rem;color:#9A3412;font-weight:500;}
+        .ib .ib-text span{font-size:1.05rem;margin-right:5px;}
+        .btn-ib{display:inline-flex;align-items:center;gap:6px;background-color:#F97316;color:white;padding:7px 15px;border-radius:6px;font-size:.83rem;font-weight:600;text-decoration:none;transition:background-color .2s,transform .1s;white-space:nowrap;}
+        .btn-ib:hover{background-color:#EA580C;transform:translateY(-1px);}
+        .banner{background:linear-gradient(135deg,#EA580C 0%,#F97316 100%);color:white;padding:14px 20px;border-radius:10px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .banner p{margin:0;font-size:.88rem;opacity:.9;} .banner strong{font-size:1rem;}
+        .btn-banner{display:inline-flex;align-items:center;gap:6px;background:white;color:#EA580C;padding:8px 16px;border-radius:6px;font-size:.83rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:opacity .2s;}
+        .btn-banner:hover{opacity:.85;}
+        .note{font-size:.9em;color:#555;margin-top:5px;}
+    </style>
+</head>
+<body>
+    <div class="lang-switch"><a href="CH4_lecture.html">中文版 →</a></div>
+    <div class="banner">
+        <div><strong>📊 Chapter 4 interactive materials are ready</strong><p>While reading, click the button under each example to open an interactive calculator in a new tab and verify the numbers instantly.</p></div>
+        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> Open the full interactive kit</a>
+    </div>
+    <h1>Chapter 4: Amortization and Loan Repayment</h1>
+    <h2>Introduction</h2>
+    <p>This chapter applies the annuity present value concepts from Chapter 2 to real-world lending scenarios. You will learn how to calculate the fixed, equal payment amount for a loan, and how to build an <strong>amortization schedule</strong> to understand how each payment is split between interest and principal.</p>
+    <hr>
+    <h2>4.1 Determining the Loan Payment ($C$)</h2>
+    <h3>Core Concept</h3>
+    <p>The loan principal ($PV$) is, in essence, the present value today of a future series of equal payments (an ordinary annuity, $C$). We can therefore rearrange the ordinary annuity present value formula to solve for the payment amount ($C$) per period.</p>
+    <h3>1. Loan Payment Formula</h3>
+    <div class="math-block">$$C = PV_A \times \frac{r}{1 - (1+r)^{-n}}$$</div>
+    <h3>2. Worked Example 4.1: Calculating a Mortgage Payment</h3>
+    <p><strong>Scenario:</strong> A loan of $\$3{,}000{,}000$, at an annual rate of $2.4\%$, compounded monthly, over a $20$-year term ($240$ months). What is the monthly payment?</p>
+    <p>Periodic rate $r = 2.4\%/12 = 0.002$, total periods $n = 240$</p>
+    <div class="math-block">$$C = 3{,}000{,}000 \times \frac{0.002}{1 - (1.002)^{-240}} \approx 15{,}751.34$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>🏠</span>Example 4.1: Enter your loan parameters to calculate the monthly payment instantly</div>
+        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the payment calculator</a>
+    </div>
+    <hr>
+    <h2>4.2 The Amortization Schedule</h2>
+    <h3>Core Concept</h3>
+    <p>An amortization schedule details how each payment splits into interest and principal. With a fixed payment, as the balance shrinks, the <strong>interest portion decreases</strong> each period while the <strong>principal portion increases</strong>.</p>
+    <h3>Steps to Build the Schedule</h3>
+    <ul>
+        <li>Interest for the period: $Interest_t = \text{beginning balance} \times r$</li>
+        <li>Principal repaid: $Principal_t = C - Interest_t$</li>
+        <li>Ending balance: $\text{ending balance}_t = \text{beginning balance}_t - Principal_t$</li>
+    </ul>
+    <h3>Worked Example 4.2: First Three Periods of the Schedule</h3>
+    <p>Continuing Example 4.1: loan of $\$3{,}000{,}000$, monthly payment $\$15{,}751.34$, monthly rate $0.002$.</p>
+    <table>
+        <thead><tr><th>Period</th><th>Beginning Balance</th><th>Payment</th><th>Interest</th><th>Principal Repaid</th><th>Ending Balance</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>3,000,000.00</td><td>15,751.34</td><td>6,000.00</td><td>9,751.34</td><td>2,990,248.66</td></tr>
+            <tr><td>2</td><td>2,990,248.66</td><td>15,751.34</td><td>5,980.50</td><td>9,770.84</td><td>2,980,477.82</td></tr>
+            <tr><td>3</td><td>2,980,477.82</td><td>15,751.34</td><td>5,960.96</td><td>9,790.38</td><td>2,970,687.44</td></tr>
+        </tbody>
+    </table>
+
+    <div class="ib">
+        <div class="ib-text"><span>📋</span>Open the schedule and observe how the interest/principal split shifts over time</div>
+        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Open the amortization analyzer</a>
+    </div>
+    <hr>
+    <h2>4.3 Calculating the Outstanding Loan Balance</h2>
+    <h3>1. The Present Value Method</h3>
+    <p>The outstanding balance after period $k$ equals the present value of all remaining $(n-k)$ payments:</p>
+    <div class="math-block">$$\text{OLB}_k = C \times \left[ \frac{1 - (1+r)^{-(n-k)}}{r} \right]$$</div>
+    <h3>2. Worked Example 4.3: Calculating the Remaining Balance</h3>
+    <p>Continuing Example 4.1, what is the remaining loan balance after $5$ years of payments ($k=60$ periods)?</p>
+    <div class="math-block">$$\text{OLB}_{60} = 15{,}751.34 \times \left[ \frac{1 - (1.002)^{-180}}{0.002} \right] \approx 2{,}379{,}025.69$$</div>
+    <p>Even after $5$ years of payments, only about $\$620{,}974.31$ of principal has been repaid — a clear illustration that most of the early payments on a loan go toward interest.</p>
+
+    <div class="ib">
+        <div class="ib-text"><span>🔍</span>Example 4.3: Look up the remaining balance (OLB) after any given period</div>
+        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the OLB balance analyzer</a>
+    </div>
+    <hr>
+    <h2>Comprehensive Exercises</h2>
+
+    <div class="ib">
+        <div class="ib-text"><span>✏️</span>Try solving each one by hand first, then verify with the interactive tools, or use the AI dynamic quiz</div>
+        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> Open the AI dynamic quiz</a>
+    </div>
+    <ol>
+        <li>A business loan of $\$1{,}500{,}000$, at an annual rate of $4.8\%$, compounded monthly, over $5$ years. What is the monthly payment? How much of the first payment is interest, and how much is principal?</li>
+        <li>Chen borrows $\$800{,}000$ over $10$ years at an annual rate of $6\%$, paid annually. What is the annual payment? What is the outstanding balance after the $4$th year's payment?</li>
+        <li>Explain the logic of an amortization schedule — why does the interest portion of an equal payment gradually decrease?</li>
+        <li>$\$5{,}000{,}000$, $25$-year term, annual rate $3\%$, paid monthly. How much total interest has been paid after $10$ years?</li>
+    </ol>
+
+    <div class="ib">
+        <div class="ib-text"><span>💬</span>Still have questions? Ask the AI Q&A box about this chapter's concepts in real time</div>
+        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> Open the AI concept Q&A</a>
+    </div>
+    <hr>
+</body></html>

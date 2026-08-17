@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1 Lecture: Time Value of Money and Interest Fundamentals</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <style>
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;max-width:850px;margin:0 auto;padding:20px;line-height:1.6;color:#333;}
+        h1{border-bottom:2px solid #ccc;padding-bottom:5px;color:#1a1a1a;}
+        h2{color:#2a2a2a;margin-top:30px;} h3{color:#4a4a4a;} h4{color:#555;}
+        .math-block{margin:15px 0;padding:10px;background-color:#e6f9ff;overflow-x:auto;font-size:1.1em;}
+        table{width:100%;border-collapse:collapse;margin-top:15px;}
+        th,td{border:1px solid #ddd;padding:10px;text-align:center;}
+        th{background-color:#e9e9e9;}
+        ul,ol{margin-left:20px;} li{margin-bottom:5px;}
+        strong{color:#1a1a1a;}
+        hr{border:none;border-top:1px solid #eee;margin:40px 0;}
+        .decision-box{margin:20px 0;padding:15px;border:1px solid #ffcc00;background-color:#fffacd;}
+        .lang-switch{margin-bottom:14px;font-size:.82rem;}
+        .lang-switch a{color:#0D9488;text-decoration:none;font-weight:600;}
+        .lang-switch a:hover{text-decoration:underline;}
+        /* ── interactive button ── */
+        .ib{margin:16px 0 8px 0;padding:12px 16px;background:linear-gradient(135deg,#F0FDFA 0%,#99F6E444 100%);border-left:4px solid #0D9488;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .ib .ib-text{font-size:.88rem;color:#134E4A;font-weight:500;}
+        .ib .ib-text span{font-size:1.05rem;margin-right:5px;}
+        .btn-ib{display:inline-flex;align-items:center;gap:6px;background-color:#0D9488;color:white;padding:7px 15px;border-radius:6px;font-size:.83rem;font-weight:600;text-decoration:none;transition:background-color .2s,transform .1s;white-space:nowrap;}
+        .btn-ib:hover{background-color:#0F766E;transform:translateY(-1px);}
+        .banner{background:linear-gradient(135deg,#0F766E 0%,#0D9488 100%);color:white;padding:14px 20px;border-radius:10px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .banner p{margin:0;font-size:.88rem;opacity:.9;} .banner strong{font-size:1rem;}
+        .btn-banner{display:inline-flex;align-items:center;gap:6px;background:white;color:#0F766E;padding:8px 16px;border-radius:6px;font-size:.83rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:opacity .2s;}
+        .btn-banner:hover{opacity:.85;}
+        .note{font-size:.9em;color:#555;margin-top:5px;}
+    </style>
+</head>
+<body>
+    <div class="lang-switch"><a href="CH1_lecture.html">中文版 →</a></div>
+    <div class="banner">
+        <div><strong>📊 Chapter 1 interactive materials are ready</strong><p>While reading, click the button under each example to open an interactive calculator in a new tab and verify the numbers instantly.</p></div>
+        <a href="https://gemini.google.com/share/3732c5a9ec5c" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> Open the full interactive kit</a>
+    </div>
+    <h1>Chapter 1: Time Value of Money and Interest Fundamentals</h1>
+    <h2>Introduction</h2>
+    <p>Welcome to the core of financial mathematics! This chapter walks you through the starting point of every financial decision: the time value of money (TVM).</p>
+    <p>You will learn how to quantify the value of money at different points in time — the foundation for evaluating any investment, computing a loan, or planning for retirement. We will work systematically through simple and compound interest to understand how money grows, and master the key tools of present value (PV), future value (FV), and the rate used to compare offers on a like-for-like basis (the effective rate).</p>
+    <hr>
+    <h2>1.1 Simple Interest: Linear Growth</h2>
+    <h3>Core Concept</h3>
+    <p>Simple interest is the most basic way to calculate interest. Its defining feature is that interest is computed only on the original principal ($P$). Growth under simple interest is linear, and it is typically used for short-term loans or specific notes.</p>
+    <h3>Simple Interest Formulas</h3>
+    <p>Total interest ($I$):</p>
+    <div class="math-block">$$I = P \times r \times n$$</div>
+    <p>Future value ($FV$):</p>
+    <div class="math-block">$$FV = P + I = P(1+r \times n)$$</div>
+    <h3>Notation</h3>
+    <ul>
+        <li>$P$: Principal — the original amount invested or borrowed.</li>
+        <li>$r$: Annual interest rate, expressed as a decimal.</li>
+        <li>$n$: Number of periods, usually the total number of years.</li>
+    </ul>
+    <hr>
+    <h2>1.2 Compound Interest and Future Value: Exponential Growth</h2>
+    <h3>Core Concept</h3>
+    <p>Compound interest is the standard convention in modern financial markets. Its core idea is "interest on interest": the interest earned each period is added back to the principal, and the next period's interest is computed on this new, larger base. Growth under compounding is exponential, and understanding it is the key to understanding long-term investment returns.</p>
+    <h3>1. Compounding Once a Year</h3>
+    <div class="math-block">$$FV = P(1+r)^n$$</div>
+    <h3>2. Compounding Frequency</h3>
+    <p>When compounding occurs $m$ times per year:</p>
+    <div class="math-block">$$FV = P\left(1+\frac{r}{m}\right)^{mn}$$</div>
+    <h3>3. Continuous Compounding</h3>
+    <div class="math-block">$$FV = P e^{rn}$$</div>
+    <h3>Worked Example 1.1: The Effect of Compounding Frequency</h3>
+    <p>Suppose an investment has a principal of $P=8,000$, an annual rate of $r=5\%=0.05$, and a term of $n=4$ years.</p>
+    <p>Annual compounding ($m=1$):</p>
+    <div class="math-block">$$FV = 8000 \times (1+0.05)^4 \approx 9{,}724.05$$</div>
+    <p>Monthly compounding ($m=12$):</p>
+    <div class="math-block">$$FV = 8000 \times \left(1+\frac{0.05}{12}\right)^{48} \approx 9{,}767.24$$</div>
+    <p>Continuous compounding:</p>
+    <div class="math-block">$$FV = 8000 \times e^{0.05 \times 4} \approx 9{,}771.22$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>🔢</span>Example 1.1: Adjust the compounding frequency and observe how FV changes</div>
+        <a href="https://gemini.google.com/share/3732c5a9ec5c" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Open the FV compounding analyzer</a>
+    </div>
+    <hr>
+    <h2>1.3 Present Value and Discounting</h2>
+    <h3>Core Concept</h3>
+    <p>Present value (PV) is the reverse application of the time value of money. It answers the question: "How much do I need to invest today to have a certain amount ($FV$) in the future?" Converting a future value back into a present value is called discounting.</p>
+    <h3>1. Present Value Formula</h3>
+    <div class="math-block">$$PV = \frac{FV}{(1+r)^n}$$</div>
+    <h3>2. Worked Example 1.2: Present Value Calculation</h3>
+    <p>Suppose you want to have $FV=15{,}000$ in $10$ years, and the discount rate is $r=5\%$. How much do you need to deposit today?</p>
+    <div class="math-block">$$PV = \frac{15000}{(1+0.05)^{10}} \approx 9{,}208.70$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>🏦</span>Example 1.2: Enter a future target amount and calculate how much you need to invest today</div>
+        <a href="https://gemini.google.com/share/3732c5a9ec5c" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the PV calculator</a>
+    </div>
+    <hr>
+    <h2>1.4 Comparing Rates: Nominal vs. Effective Rate</h2>
+    <h3>Core Concept</h3>
+    <ul>
+        <li>Nominal rate ($r_{Nominal}$): The annual rate stated in a contract, without accounting for compounding frequency.</li>
+        <li>Effective Annual Rate (EAR): The actual annual rate earned or paid once compounding frequency ($m$) is taken into account.</li>
+    </ul>
+    <h3>1. Effective Annual Rate (EAR) Formula</h3>
+    <div class="math-block">$$EAR = \left(1+\frac{r_{Nominal}}{m}\right)^m - 1$$</div>
+    <h3>2. Worked Example 1.3: Calculating the Effective Rate</h3>
+    <p>Suppose the nominal annual rate $r_{Nominal}$ is $12\%$, compounded monthly ($m=12$). The effective annual rate (EAR) is approximately $12.68\%$.</p>
+
+    <div class="ib">
+        <div class="ib-text"><span>📊</span>Example 1.3: Compare the EAR under different compounding frequencies</div>
+        <a href="https://gemini.google.com/share/3732c5a9ec5c" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Open the EAR comparator</a>
+    </div>
+    <hr>
+    <h2>Comprehensive Exercises</h2>
+    <p>Apply everything you have learned in this chapter to answer the following questions:</p>
+
+    <div class="ib">
+        <div class="ib-text"><span>✏️</span>Try solving each one by hand first, then verify with the interactive tools, or self-test with the AI dynamic quiz</div>
+        <a href="https://gemini.google.com/share/3732c5a9ec5c" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> Open the AI dynamic quiz</a>
+    </div>
+    <ol>
+        <li>You deposit $50{,}000$ in a bank at an annual rate of $3\%$. After $10$ years, what is the amount under simple interest? What is the FV under annual compounding?</li>
+        <li>A debt of $20{,}000$ is due in $3$ years, at a discount rate of $6\%$. What is its present value?</li>
+        <li>An investment product has a nominal annual rate of $6\%$, compounded quarterly ($m=4$). What is the EAR?</li>
+        <li>A credit card has a nominal annual rate of $18\%$, compounded monthly ($m=12$). What is the effective annual rate (EAR)?</li>
+        <li>Option A (nominal $10\%$, compounded annually) vs. Option B ($9.8\%$, compounded monthly) — which has the higher EAR?</li>
+        <li>You want to have $500{,}000$ in $5$ years at an annual return of $6\%$ (compounded annually). How much principal do you need to invest today?</li>
+        <li>A nominal annual rate of $15\%$, compounded daily ($365$ days), is approximately equal to what EAR?</li>
+        <li>Discounting a future value back to a present value is most directly related to which concept: compounding, opportunity cost, or inflation?</li>
+    </ol>
+
+    <div class="ib">
+        <div class="ib-text"><span>💬</span>Still have questions? Ask the AI Q&A box about this chapter's concepts in real time</div>
+        <a href="https://gemini.google.com/share/3732c5a9ec5c" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> Open the AI concept Q&A</a>
+    </div>
+    <hr>
+</body></html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 5 Lecture: Capital Budgeting and Long-Term Investment Decisions</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <style>
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;max-width:850px;margin:0 auto;padding:20px;line-height:1.6;color:#333;}
+        h1{border-bottom:2px solid #ccc;padding-bottom:5px;color:#1a1a1a;}
+        h2{color:#2a2a2a;margin-top:30px;} h3{color:#4a4a4a;} h4{color:#555;}
+        .math-block{margin:15px 0;padding:10px;background-color:#e6f9ff;overflow-x:auto;font-size:1.1em;}
+        table{width:100%;border-collapse:collapse;margin-top:15px;}
+        th,td{border:1px solid #ddd;padding:10px;text-align:center;}
+        th{background-color:#e9e9e9;}
+        ul,ol{margin-left:20px;} li{margin-bottom:5px;}
+        strong{color:#1a1a1a;}
+        hr{border:none;border-top:1px solid #eee;margin:40px 0;}
+        .decision-box{margin:20px 0;padding:15px;border:1px solid #ffcc00;background-color:#fffacd;}
+        .lang-switch{margin-bottom:14px;font-size:.82rem;}
+        .lang-switch a{color:#C026D3;text-decoration:none;font-weight:600;}
+        .lang-switch a:hover{text-decoration:underline;}
+        /* ── interactive button ── */
+        .ib{margin:16px 0 8px 0;padding:12px 16px;background:linear-gradient(135deg,#FDF4FF 0%,#F0ABFC44 100%);border-left:4px solid #C026D3;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .ib .ib-text{font-size:.88rem;color:#701A75;font-weight:500;}
+        .ib .ib-text span{font-size:1.05rem;margin-right:5px;}
+        .btn-ib{display:inline-flex;align-items:center;gap:6px;background-color:#C026D3;color:white;padding:7px 15px;border-radius:6px;font-size:.83rem;font-weight:600;text-decoration:none;transition:background-color .2s,transform .1s;white-space:nowrap;}
+        .btn-ib:hover{background-color:#A21CAF;transform:translateY(-1px);}
+        .banner{background:linear-gradient(135deg,#A21CAF 0%,#C026D3 100%);color:white;padding:14px 20px;border-radius:10px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .banner p{margin:0;font-size:.88rem;opacity:.9;} .banner strong{font-size:1rem;}
+        .btn-banner{display:inline-flex;align-items:center;gap:6px;background:white;color:#A21CAF;padding:8px 16px;border-radius:6px;font-size:.83rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:opacity .2s;}
+        .btn-banner:hover{opacity:.85;}
+        .note{font-size:.9em;color:#555;margin-top:5px;}
+    </style>
+</head>
+<body>
+    <div class="lang-switch"><a href="CH5_lecture.html">中文版 →</a></div>
+    <div class="banner">
+        <div><strong>📊 Chapter 5 interactive materials are ready</strong><p>While reading, click the button under each example to open an interactive calculator in a new tab and verify the numbers instantly.</p></div>
+        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> Open the full interactive kit</a>
+    </div>
+    <h1>Chapter 5: Capital Budgeting and Long-Term Investment Decisions</h1>
+    <h2>Introduction</h2>
+    <p>This chapter is where financial mathematics meets real-world decision-making. Capital budgeting is the process by which firms plan and manage long-term investment projects. We will use NPV and IRR, among other metrics, to assess a project's financial viability and make sound resource-allocation decisions.</p>
+    <hr>
+    <h2>5.1 Net Present Value (NPV)</h2>
+    <h3>Core Concept</h3>
+    <p>Net present value is the gold standard for evaluating project viability: it measures a project's net value today after discounting all of its future cash inflows and outflows.</p>
+    <div class="math-block">$$NPV = \sum_{t=0}^{n} \frac{CF_t}{(1+r)^t}$$</div>
+    <h3>1. NPV Decision Rule</h3>
+    <ul>
+        <li>If $NPV > 0$: the project is viable and will increase shareholder wealth.</li>
+        <li>If $NPV < 0$: the project is not viable and should be rejected.</li>
+        <li>If $NPV = 0$: the project only breaks even.</li>
+    </ul>
+    <h3>2. Worked Example 5.1: Calculating NPV</h3>
+    <p><strong>Scenario:</strong> An initial investment of $\$100{,}000$, with net inflows of $\$40{,}000$ per year for the next three years, at a cost of capital $r=10\%$.</p>
+    <div class="math-block">$$NPV = -100{,}000 + \frac{40{,}000}{1.10} + \frac{40{,}000}{1.10^2} + \frac{40{,}000}{1.10^3} \approx -525.91$$</div>
+    <p><strong>Decision:</strong> Since $NPV < 0$, the project is not viable and should be rejected.</p>
+
+    <div class="ib">
+        <div class="ib-text"><span>🔢</span>Example 5.1: Enter cash flows to instantly compute NPV and see the AI decision analysis</div>
+        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the NPV & IRR analyzer</a>
+    </div>
+    <hr>
+    <h2>5.2 Internal Rate of Return (IRR)</h2>
+    <h3>Core Concept</h3>
+    <p>The IRR is the discount rate at which a project's NPV is exactly zero — it represents the annualized rate of return the project is expected to earn.</p>
+    <div class="math-block">$$\sum_{t=0}^{n} \frac{CF_t}{(1+IRR)^t} = 0$$</div>
+    <h3>Decision Rule</h3>
+    <ul>
+        <li>If $IRR > r$ (cost of capital): the project is viable.</li>
+        <li>If $IRR < r$ (cost of capital): the project is not viable.</li>
+    </ul>
+    <h3>Worked Example 5.2: Estimating and Applying IRR</h3>
+    <p>Continuing Example 5.1, solving by trial and error:</p>
+    <div class="math-block">$$IRR \approx 9.70\%$$</div>
+    <p><strong>Decision:</strong> $IRR=9.70\% < r=10\%$, so the project is not viable — consistent with the NPV conclusion.</p>
+
+    <div class="ib">
+        <div class="ib-text"><span>📊</span>Example 5.2: The interactive calculator computes IRR automatically and compares it to the cost of capital</div>
+        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Open the NPV & IRR analyzer</a>
+    </div>
+    <hr>
+    <h2>5.3 Supplementary Capital Budgeting Methods</h2>
+    <h3>1. Payback Period</h3>
+    <ul>
+        <li>Measures how long it takes to recover the initial investment.</li>
+        <li>Drawback: it ignores the time value of money.</li>
+    </ul>
+    <h3>2. Discounted Payback Period</h3>
+    <ul>
+        <li>Accounts for the time value of money by measuring how long it takes to recover the discounted value of the investment.</li>
+    </ul>
+    <h3>3. Worked Example 5.3: Calculating the Payback Period</h3>
+    <p><strong>Scenario:</strong> An initial investment of $\$250{,}000$, cost of capital $r=12\%$, with cash inflows over the next four years of $\$100{,}000$, $\$120{,}000$, $\$80{,}000$, and $\$50{,}000$.</p>
+    <div class="math-block">$$Payback\ Period = 2 + \frac{30{,}000}{80{,}000} = 2.375 \text{ years}$$</div>
+    <div class="math-block">$$Discounted\ Payback\ Period \approx 3.255 \text{ years}$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>⏱️</span>Example 5.3: Compute the ordinary and discounted payback periods instantly and compare them</div>
+        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the payback period calculator</a>
+    </div>
+    <h3>4. Worked Example 5.4: An NPV vs. IRR Conflict</h3>
+    <p><strong>Scenario:</strong> Cost of capital $r=10\%$, two mutually exclusive projects:</p>
+    <table>
+        <thead><tr><th>Project</th><th>Initial Investment</th><th>Year 1 Inflow</th><th>IRR</th><th>NPV</th></tr></thead>
+        <tbody>
+            <tr><td>S (Small)</td><td>$-\$100$</td><td>$\$120$</td><td>$20.00\%$</td><td>$\$9.09$</td></tr>
+            <tr><td>L (Large)</td><td>$-\$1{,}000$</td><td>$\$1{,}150$</td><td>$15.00\%$</td><td>$\$45.45$</td></tr>
+        </tbody>
+    </table>
+    <div class="decision-box">
+        <strong>Final decision: choose Project L.</strong> Even though Project S has a higher IRR, Project L generates a larger absolute NPV, which creates more wealth for shareholders.<br>
+        <strong>Decision priority: NPV takes precedence.</strong>
+    </div>
+
+    <div class="ib">
+        <div class="ib-text"><span>⚖️</span>Example 5.4: Enter the parameters of two mutually exclusive projects and simulate the NPV vs. IRR conflict</div>
+        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Open the decision conflict simulator</a>
+    </div>
+    <hr>
+    <h2>Comprehensive Exercises</h2>
+
+    <div class="ib">
+        <div class="ib-text"><span>✏️</span>Try solving each one by hand first, then verify with the interactive tools, or use the AI dynamic quiz</div>
+        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> Open the AI dynamic quiz</a>
+    </div>
+    <ol>
+        <li>An initial investment of $\$250{,}000$, with future inflows of $\$100{,}000$, $\$120{,}000$, $\$80{,}000$, $\$50{,}000$ over four years, and a cost of capital of $12\%$. What is the NPV?</li>
+        <li>Continuing the previous question, what is the payback period, in years?</li>
+        <li>Explain the core difference between NPV and IRR, and why NPV takes precedence when the two conflict.</li>
+        <li>An initial investment of $\$50{,}000$, with net inflows of $\$15{,}000$ at the end of each year for $5$ years. What is the approximate IRR? (Hint: between $12\%$ and $15\%$)</li>
+    </ol>
+
+    <div class="ib">
+        <div class="ib-text"><span>💬</span>Still have questions? Ask the AI Q&A box about this chapter's concepts in real time</div>
+        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> Open the AI concept Q&A</a>
+    </div>
+    <hr>
+</body></html>

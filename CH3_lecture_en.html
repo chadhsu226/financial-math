@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 3 Lecture: Valuation of Fixed-Income and Equity Securities</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+    <style>
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;max-width:850px;margin:0 auto;padding:20px;line-height:1.6;color:#333;}
+        h1{border-bottom:2px solid #ccc;padding-bottom:5px;color:#1a1a1a;}
+        h2{color:#2a2a2a;margin-top:30px;} h3{color:#4a4a4a;} h4{color:#555;}
+        .math-block{margin:15px 0;padding:10px;background-color:#e6f9ff;overflow-x:auto;font-size:1.1em;}
+        table{width:100%;border-collapse:collapse;margin-top:15px;}
+        th,td{border:1px solid #ddd;padding:10px;text-align:center;}
+        th{background-color:#e9e9e9;}
+        ul,ol{margin-left:20px;} li{margin-bottom:5px;}
+        strong{color:#1a1a1a;}
+        hr{border:none;border-top:1px solid #eee;margin:40px 0;}
+        .decision-box{margin:20px 0;padding:15px;border:1px solid #ffcc00;background-color:#fffacd;}
+        .lang-switch{margin-bottom:14px;font-size:.82rem;}
+        .lang-switch a{color:#9333EA;text-decoration:none;font-weight:600;}
+        .lang-switch a:hover{text-decoration:underline;}
+        /* ── interactive button ── */
+        .ib{margin:16px 0 8px 0;padding:12px 16px;background:linear-gradient(135deg,#FAF5FF 0%,#E9D5FF44 100%);border-left:4px solid #9333EA;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .ib .ib-text{font-size:.88rem;color:#581C87;font-weight:500;}
+        .ib .ib-text span{font-size:1.05rem;margin-right:5px;}
+        .btn-ib{display:inline-flex;align-items:center;gap:6px;background-color:#9333EA;color:white;padding:7px 15px;border-radius:6px;font-size:.83rem;font-weight:600;text-decoration:none;transition:background-color .2s,transform .1s;white-space:nowrap;}
+        .btn-ib:hover{background-color:#7E22CE;transform:translateY(-1px);}
+        .banner{background:linear-gradient(135deg,#7E22CE 0%,#9333EA 100%);color:white;padding:14px 20px;border-radius:10px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+        .banner p{margin:0;font-size:.88rem;opacity:.9;} .banner strong{font-size:1rem;}
+        .btn-banner{display:inline-flex;align-items:center;gap:6px;background:white;color:#7E22CE;padding:8px 16px;border-radius:6px;font-size:.83rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:opacity .2s;}
+        .btn-banner:hover{opacity:.85;}
+        .note{font-size:.9em;color:#555;margin-top:5px;}
+    </style>
+</head>
+<body>
+    <div class="lang-switch"><a href="CH3_lecture.html">中文版 →</a></div>
+    <div class="banner">
+        <div><strong>📊 Chapter 3 interactive materials are ready</strong><p>While reading, click the button under each example to open an interactive calculator in a new tab and verify the numbers instantly.</p></div>
+        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> Open the full interactive kit</a>
+    </div>
+    <h1>Chapter 3: Valuation of Fixed-Income and Equity Securities</h1>
+    <h2>Introduction</h2>
+    <p>This chapter applies the time value of money and annuity concepts to the two most common securities in financial markets: <strong>bonds</strong> and <strong>stocks</strong>. You will learn how to price these securities and understand how key factors — the market interest rate, the coupon rate, and the dividend growth rate — determine their fair value.</p>
+    <hr>
+    <h2>3.1 Bond Basics and Cash Flows</h2>
+    <h3>Core Concept</h3>
+    <p>A <strong>bond</strong> is a debt instrument. A bondholder receives two types of cash flow: <strong>periodic interest payments (coupons)</strong> and the <strong>return of principal (face value) at maturity</strong>.</p>
+    <table>
+        <thead><tr><th>Term</th><th>Definition</th><th>Symbol</th></tr></thead>
+        <tbody>
+            <tr><td>Face Value</td><td>The amount repaid to the holder at maturity</td><td>FV</td></tr>
+            <tr><td>Coupon Rate</td><td>The annual interest rate paid</td><td>C</td></tr>
+            <tr><td>Market Rate (YTM)</td><td>The return required by investors</td><td>r</td></tr>
+            <tr><td>Maturity</td><td>The point in time the bond's life ends</td><td>n</td></tr>
+        </tbody>
+    </table>
+    <hr>
+    <h2>3.2 Bond Valuation Model</h2>
+    <h3>1. Pricing Formula</h3>
+    <div class="math-block">$$Price = C \left[ \frac{1 - (1+r)^{-n}}{r} \right] + FV (1+r)^{-n}$$</div>
+    <h3>2. Worked Example 3.1: Pricing a Premium Bond</h3>
+    <p><strong>Scenario:</strong> Face value $FV=100{,}000$, coupon rate $4\%$ paid annually, maturing in three years ($n=3$), market rate $r=3.8\%$.</p>
+    <p>Coupon $C = 100{,}000 \times 4\% = 4{,}000$</p>
+    <div class="math-block">$$Price \approx 100{,}305.32 \text{ (a premium bond)}$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>🔢</span>Example 3.1: Adjust the market rate and observe how the bond price changes</div>
+        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the bond valuation analyzer</a>
+    </div>
+    <hr>
+    <h2>3.3 The Relationship Between Bond Price and Market Rate (Interest Rate Risk)</h2>
+    <h3>Core Concept</h3>
+    <p>Bond prices and market interest rates have an <strong>inverse relationship</strong>:</p>
+    <ul>
+        <li>Market rate <strong>rises</strong> → bond price <strong>falls</strong></li>
+        <li>Market rate <strong>falls</strong> → bond price <strong>rises</strong></li>
+    </ul>
+
+    <div class="ib">
+        <div class="ib-text"><span>📉</span>Try it: raise the market rate and watch a premium turn into a discount</div>
+        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Open the interest rate risk simulator</a>
+    </div>
+    <hr>
+    <h2>3.4 Stock Valuation and the Gordon Growth Model (GGM)</h2>
+    <h3>Core Concept</h3>
+    <p>The Gordon Growth Model (GGM) assumes that dividends grow forever at a constant rate ($g$), and discounts this infinite growing series of cash flows back to today's value.</p>
+    <h3>1. Pricing Formula</h3>
+    <div class="math-block">$$P_0 = \frac{D_1}{r - g}$$</div>
+    <p>where $D_1 = D_0 \times (1+g)$; $r$ is the required rate of return; $g$ is the constant dividend growth rate.</p>
+    <h3>2. Worked Example 3.2: Pricing with the Gordon Model</h3>
+    <p><strong>Scenario:</strong> $D_0=2.00$, $g=5\%$, $r=10\%$.</p>
+    <p>$D_1 = 2.00 \times 1.05 = 2.10$</p>
+    <div class="math-block">$$P_0 = \frac{2.10}{0.10 - 0.05} = 42$$</div>
+
+    <div class="ib">
+        <div class="ib-text"><span>📈</span>Example 3.2: Adjust the growth rate g and the required return r and watch the stock price change</div>
+        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the GGM stock valuation calculator</a>
+    </div>
+    <hr>
+    <h2>Comprehensive Exercises</h2>
+
+    <div class="ib">
+        <div class="ib-text"><span>✏️</span>Try solving each one by hand first, then verify with the interactive tools, or use the AI dynamic quiz</div>
+        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> Open the AI dynamic quiz</a>
+    </div>
+    <ol>
+        <li>A zero-coupon bond with a face value of $100{,}000$ matures in five years, at a market rate of $3\%$. What is its fair price?</li>
+        <li>A three-year bond with a face value of $50{,}000$ and a coupon rate of $5\%$, at a market rate of $6\%$ — what is its price?</li>
+        <li>$D_0=3$, dividends grow $4\%$ per year, required return is $10\%$. What is the fair stock price?</li>
+        <li>When the coupon rate is greater than the market rate, what happens to the bond price?</li>
+        <li>What is the main assumption behind the Gordon Growth Model?</li>
+    </ol>
+
+    <div class="ib">
+        <div class="ib-text"><span>💬</span>Still have questions? Ask the AI Q&A box about this chapter's concepts in real time</div>
+        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> Open the AI concept Q&A</a>
+    </div>
+    <hr>
+</body></html>
