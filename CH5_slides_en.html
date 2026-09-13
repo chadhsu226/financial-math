@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Chapter 5 Financial Mathematics Slides</title><style>
+*{box-sizing:border-box}body{margin:0;background:#eaf1f5;color:#132e40;font-family:Arial,"Microsoft JhengHei",sans-serif}main{height:calc(100dvh - 66px);display:grid;place-items:center;padding:16px}.slide{display:none;width:100%;max-width:1280px;height:100%;max-height:790px;background:#fff;padding:clamp(24px,4vw,64px);border-top:7px solid #167d9a;overflow:auto}.slide.active{display:flex;flex-direction:column}.eyebrow{font-size:14px;letter-spacing:2px;color:#167d9a;margin-bottom:16px}h1{font-size:clamp(42px,5.2vw,76px);line-height:1.1;margin:24px 0}h2{font-size:clamp(28px,3.1vw,44px);line-height:1.2;margin:0 0 26px}h3{font-size:25px;margin:0 0 14px}p,li{font-size:clamp(18px,1.8vw,25px);line-height:1.55}p{margin:0 0 20px}li{margin-bottom:12px}ul{padding-left:28px;margin-top:0}.lead{font-size:clamp(23px,2.5vw,34px);max-width:960px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:44px}.cols>div+div{border-left:2px solid #dce8ef;padding-left:40px}.big{font-size:clamp(40px,5vw,72px);color:#167d9a;font-weight:700;line-height:1.1;margin:12px 0 20px}.note{font-size:17px;color:#526875;margin-top:18px}.spacer{flex:1}.cover{background:#123448;color:#fff;border-color:#62c7d5}.cover .eyebrow,.cover .big{color:#82d5df}.cover .note{color:#bcd3df}.cover .names{margin-top:36px;font-size:27px}table{border-collapse:collapse;width:100%;font-size:clamp(16px,1.55vw,21px);line-height:1.38}th{text-align:left;color:#167d9a;border-bottom:2px solid #167d9a}td,th{padding:11px 12px;vertical-align:top}td{border-bottom:1px solid #dce5eb}td:first-child{white-space:nowrap;width:85px;font-weight:bold}.schedule td{padding:9px 10px}.bars{display:grid;gap:20px}.bar{display:grid;grid-template-columns:260px 1fr 80px;gap:20px;align-items:center;font-size:24px}.track{height:22px;background:#ecf2f6}.fill{height:100%;background:#167d9a}.bar:nth-child(3) .fill{background:#123448}.bar:nth-child(4) .fill{background:#da9a32}.url{font-size:clamp(19px,2.6vw,36px);overflow-wrap:anywhere;color:#167d9a}a{color:#167d9a;text-underline-offset:5px}nav{height:66px;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px;background:#123448;color:white}button,select,nav a{font:inherit;font-size:15px;padding:9px 13px;border:1px solid #668391;border-radius:4px;background:#123448;color:white;text-decoration:none;cursor:pointer}button:disabled{opacity:.35;cursor:default}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #eab95f;outline-offset:3px}select{max-width:280px}#progress{position:fixed;bottom:66px;left:0;height:4px;background:#da9a32;transition:width .15s}#status{font-size:15px;min-width:58px;text-align:center}.overview main{display:block;height:auto}.overview .slide{display:flex;height:auto;min-height:650px;margin:24px auto}.overview nav{position:sticky;bottom:0}.overview #progress{display:none}@media(max-width:700px){nav{flex-wrap:wrap;height:auto;min-height:66px}main{padding:8px;height:calc(100dvh - 100px)}#progress{display:none}.slide{padding:22px;height:100%;max-height:none}h2{margin-bottom:20px}.cols{grid-template-columns:1fr;gap:20px}.cols>div+div{border-left:0;border-top:1px solid #dce8ef;padding:20px 0 0}.bar{grid-template-columns:130px 1fr 52px;font-size:17px;gap:8px}nav{gap:5px}button,select,nav a{font-size:12px;padding:8px}select{max-width:110px}.note{font-size:15px}td,th{padding:7px 5px}#full{display:none}}@media print{@page{size:A4 landscape;margin:10mm}body{background:white}main{display:block;height:auto;padding:0}.slide,.slide.active,.overview .slide{display:flex;width:100%;height:185mm;max-height:none;min-height:0;padding:10mm;margin:0;break-after:page;overflow:visible;box-shadow:none}.slide:last-child{break-after:auto}nav,#progress{display:none}h1{font-size:48px}h2{font-size:30px}p,li{font-size:17px}table{font-size:15px}.note{font-size:13px}*{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:clamp(24px,2.7vw,38px);line-height:1.6;color:#12647c;margin:12px 0 22px;overflow-wrap:anywhere}.formula.small{font-size:28px}.answer{margin-top:20px;border-top:2px solid #dbe9ee;padding-top:15px}summary{font-size:21px;color:#12647c;cursor:pointer;padding:8px 0}details p{margin:8px 0}.timeline{display:flex;justify-content:space-between;border-top:4px solid #167d9a;margin:60px 10px 35px}.timeline div{position:relative;padding-top:22px;font-size:24px}.timeline div:before{content:"";width:16px;height:16px;border-radius:50%;background:#167d9a;position:absolute;top:-10px;left:0}.chart{width:100%;max-height:330px}label{font-size:20px;display:block;margin:10px 0}input,select.calc-select{font:inherit;width:170px;padding:7px;border:1px solid #99b5c4;border-radius:3px}.result{font-size:26px;font-weight:bold;color:#12647c;display:block;margin-top:14px}.exercise p{font-size:24px}.slide td:first-child{white-space:normal;width:auto}.note{line-height:1.45}.decision-box{margin:20px 0;padding:15px 20px;border:2px solid #da9a32;background:#fff8ea;font-size:20px}@media print{details:not([open])>*:not(summary){display:none}.formula{font-size:26px}.formula.small{font-size:22px}summary{font-size:17px}}
+</style></head><body><main>
+
+<section class="slide cover" data-title="Capital Budgeting and Long-Term Investment Decisions"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h1>Capital Budgeting and<br>Long-Term Investment Decisions</h1><p class="lead">Chapter 5 · Financial Mathematics</p><p>許智翔</p><div class="spacer"></div><p class="note">First Semester, Academic Year 115</p></section>
+
+<section class="slide" data-title="Learning objectives"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Learning objectives</h2><ul><li>Use net present value (NPV) to evaluate whether a project is worth investing in.</li><li>Use the internal rate of return (IRR) to estimate a project's annualized return and compare it with the cost of capital.</li><li>Calculate the payback period and discounted payback period, and understand their strengths and weaknesses.</li><li>Explain why NPV should take precedence when the NPV and IRR decisions conflict.</li><li>Apply these tools to make sound resource-allocation decisions on real investment projects.</li></ul></section>
+
+<section class="slide" data-title="Notation"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Notation</h2><table><thead><tr><th>Symbol</th><th>Definition</th></tr></thead><tbody><tr><td>CF<sub>t</sub></td><td>Cash flow in period t (outflows negative, inflows positive)</td></tr><tr><td>r</td><td>Cost of capital / discount rate</td></tr><tr><td>n</td><td>Number of periods in the project's life</td></tr><tr><td>NPV</td><td>Net present value: the net value of all cash flows after discounting</td></tr><tr><td>IRR</td><td>Internal rate of return: the discount rate at which NPV equals exactly zero</td></tr></tbody></table><p class="note">Capital budgeting is the process by which firms plan and manage long-term investment projects; NPV and IRR are the two most central evaluation metrics.</p></section>
+
+<section class="slide" data-title="5.1 Net Present Value"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>5.1 Net Present Value (NPV)</h2><p class="lead">Net present value is the gold standard for evaluating project feasibility: it measures the net value today of all of a project's future cash inflows and outflows after discounting.</p><div class="formula">NPV = Σ<sub>t=0</sub><sup>n</sup> CF<sub>t</sub> / (1 + r)<sup>t</sup></div></section>
+
+<section class="slide" data-title="NPV decision rule"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>NPV decision rule</h2><ul><li>If NPV &gt; 0: the project is acceptable and will increase shareholder wealth.</li><li>If NPV &lt; 0: the project is unacceptable and should be rejected.</li><li>If NPV = 0: the project only breaks even.</li></ul></section>
+
+<section class="slide" data-title="Example 5.1: Calculating NPV"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Example 5.1: Calculating NPV</h2><p>Initial investment of 100,000. Net cash inflow of 40,000 per year for the next three years. Cost of capital r = 10%.</p><div class="formula small">NPV = −100,000 + 40,000/1.10 + 40,000/1.10<sup>2</sup> + 40,000/1.10<sup>3</sup></div><div class="formula small">NPV ≈ −525.92</div><p class="note">Decision: since NPV &lt; 0, the project is unacceptable and should be rejected.</p></section>
+
+<section class="slide" data-title="5.2 Internal Rate of Return"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>5.2 Internal Rate of Return (IRR)</h2><p class="lead">IRR is the discount rate at which a project's NPV is exactly zero; it represents the annualized return the project is expected to achieve.</p><div class="formula">Σ<sub>t=0</sub><sup>n</sup> CF<sub>t</sub> / (1 + IRR)<sup>t</sup> = 0</div><ul><li>If IRR &gt; r (cost of capital): the project is acceptable.</li><li>If IRR &lt; r (cost of capital): the project is unacceptable.</li></ul></section>
+
+<section class="slide" data-title="Example 5.2: Estimating and Applying IRR"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Example 5.2: Estimating and Applying IRR</h2><p>Continuing Example 5.1 (initial investment of 100,000, with inflows of 40,000 per year for the next three years), solve by trial and error or a numerical method:</p><div class="formula">IRR ≈ 9.70%</div><p class="note">Decision: IRR = 9.70% &lt; r = 10%, so the project is unacceptable — consistent with the NPV conclusion.</p></section>
+
+<section class="slide" data-title="Class activity: NPV and IRR analyzer"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Class activity: NPV and IRR analyzer</h2><p>Enter the initial investment, the next three periods' cash inflows, and the cost of capital to calculate NPV and IRR in real time.</p><form id="npv-irr-calc" onsubmit="return false"><label>Initial investment C₀ <input name="c0" type="number" value="100000" min="0"></label><label>Year 1 inflow <input name="cf1" type="number" value="40000"></label><label>Year 2 inflow <input name="cf2" type="number" value="40000"></label><label>Year 3 inflow <input name="cf3" type="number" value="40000"></label><label>Cost of capital r (%) <input name="rate" type="number" value="10" step="0.01"></label><output class="result" aria-live="polite"></output></form><p class="note">Try raising or lowering the cost of capital and observe when NPV turns from negative to positive.</p></section>
+
+<section class="slide" data-title="5.3 Supplementary Capital Budgeting Methods"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>5.3 Supplementary Capital Budgeting Methods</h2><div class="cols"><div><h3>Payback Period Method</h3><ul><li>Measures the time required to recover the initial investment cost.</li><li>Drawback: ignores the time value of money.</li></ul></div><div><h3>Discounted Payback Period Method</h3><ul><li>Accounts for the time value of money, measuring the time needed to recover the discounted value of the investment.</li></ul></div></div></section>
+
+<section class="slide" data-title="Example 5.3: Calculating the Payback Period"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Example 5.3: Calculating the Payback Period</h2><p>Initial investment of 250,000, cost of capital r = 12%, with cash inflows over the next four years of 100,000, 120,000, 80,000, and 50,000.</p><div class="formula small">Payback Period = 2 + 30,000 / 80,000 = 2.375 years</div><div class="formula small">Discounted Payback Period ≈ 3.255 years</div><p class="note">Cumulative inflows over the first two years total 220,000, leaving 30,000 short of full recovery; the third year's inflow is 80,000, so the payback point falls at 0.375 into the third year.</p></section>
+
+<section class="slide" data-title="Class activity: Payback period calculator"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Class activity: Payback period calculator</h2><p>Enter the initial investment, discount rate, and each year's cash inflow to calculate the ordinary and discounted payback periods in real time.</p><form id="payback-calc" onsubmit="return false"><label>Initial investment <input name="investment" type="number" value="250000" min="0"></label><label>Discount rate (%) <input name="rate" type="number" value="12" step="0.01"></label><label>Year 1 inflow <input name="cf1" type="number" value="100000"></label><label>Year 2 inflow <input name="cf2" type="number" value="120000"></label><label>Year 3 inflow <input name="cf3" type="number" value="80000"></label><label>Year 4 inflow <input name="cf4" type="number" value="50000"></label><output class="result" aria-live="polite"></output></form><p class="note">If cumulative cash flow never recovers the investment within the project's life, the calculator displays "Not recovered."</p></section>
+
+<section class="slide" data-title="Example 5.4: A Case of NPV–IRR Conflict"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Example 5.4: A Case of NPV–IRR Conflict</h2><p>Cost of capital r = 10%. Two mutually exclusive projects:</p><table><thead><tr><th>Project</th><th>Initial investment</th><th>Year 1 inflow</th><th>IRR</th><th>NPV</th></tr></thead><tbody><tr><td>S (small)</td><td>−100</td><td>120</td><td>20.00%</td><td>9.09</td></tr><tr><td>L (large)</td><td>−1,000</td><td>1,150</td><td>15.00%</td><td>45.45</td></tr></tbody></table><div class="decision-box"><strong>Final decision: choose Project L.</strong> Although Project S has a higher IRR, Project L creates a larger absolute NPV and delivers more wealth to shareholders.<br><strong>Decision priority: NPV governs.</strong></div></section>
+
+<section class="slide" data-title="Class activity: NPV vs. IRR conflict simulator"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Class activity: NPV vs. IRR conflict simulator</h2><p>Enter the initial investment and Year 1 inflow for two mutually exclusive projects (single-period cash flow) to compare the decisions implied by IRR and NPV.</p><form id="conflict-calc" onsubmit="return false"><label>Cost of capital r (%) <input name="rate" type="number" value="10" step="0.01"></label><label>Project S initial investment <input name="is" type="number" value="100" min="0"></label><label>Project S Year 1 inflow <input name="cfs" type="number" value="120"></label><label>Project L initial investment <input name="il" type="number" value="1000" min="0"></label><label>Project L Year 1 inflow <input name="cfl" type="number" value="1150"></label><output class="result" aria-live="polite"></output></form><p class="note">When the two projects differ greatly in scale, the one with the higher IRR does not necessarily create more wealth — this is precisely the advantage of the NPV rule.</p></section>
+
+<section class="slide" data-title="Formula summary"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Formula selection summary</h2><table><thead><tr><th>Situation</th><th>Formula</th></tr></thead><tbody><tr><td>Net present value</td><td>NPV = Σ CF<sub>t</sub> / (1+r)<sup>t</sup></td></tr><tr><td>Internal rate of return</td><td>Σ CF<sub>t</sub> / (1+IRR)<sup>t</sup> = 0</td></tr><tr><td>Payback period</td><td>Recovery year + remaining amount / that year's inflow</td></tr><tr><td>Discounted payback period</td><td>Recovery year + remaining discounted amount / that year's discounted inflow</td></tr></tbody></table><p class="note">When NPV and IRR conclusions conflict (typically for mutually exclusive projects that differ greatly in scale), NPV always governs the decision.</p></section>
+
+<section class="slide exercise" data-title="Comprehensive Exercise 1"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Comprehensive Exercise 1</h2><p class="lead">Initial investment of 250,000, with inflows over the next four years of 100,000, 120,000, 80,000, and 50,000, and a cost of capital of 12%. What is the NPV?</p><details class="answer"><summary>Show solution</summary><div class="formula small">NPV = −250,000 + 100,000/1.12 + 120,000/1.12<sup>2</sup> + 80,000/1.12<sup>3</sup> + 50,000/1.12<sup>4</sup></div><div class="formula small">NPV ≈ 23,667.30</div><p class="note">NPV &gt; 0, so the project is acceptable.</p></details></section>
+
+<section class="slide exercise" data-title="Comprehensive Exercise 2"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Comprehensive Exercise 2</h2><p class="lead">Continuing from the previous question, what is the payback period?</p><details class="answer"><summary>Show solution</summary><p class="note">Cumulative inflows: Year 1, 100,000; Year 2, 220,000; Year 3, 300,000.</p><div class="formula small">Payback Period = 2 + 30,000 / 80,000 = 2.375 years</div><p class="note">This is the same cash flow series as Example 5.3, so the answer matches.</p></details></section>
+
+<section class="slide exercise" data-title="Comprehensive Exercise 3"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Comprehensive Exercise 3</h2><p class="lead">Explain the core difference between NPV and IRR, and why the NPV rule should take priority when the two conflict.</p><details class="answer"><summary>Show solution</summary><p>NPV measures the absolute increase in wealth a project creates (a dollar amount), while IRR measures a relative rate of return (a percentage). When comparing mutually exclusive projects that differ greatly in scale, a smaller project with a higher IRR may create far less absolute wealth than a larger project with a lower IRR. Since the ultimate goal of corporate decision-making is to maximize shareholder wealth in dollar terms rather than to maximize the percentage rate of return, NPV should govern whenever the two conflict.</p></details></section>
+
+<section class="slide exercise" data-title="Comprehensive Exercise 4"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Comprehensive Exercise 4</h2><p class="lead">Initial investment of 50,000, with a net inflow of 15,000 at the end of each year for 5 years. Approximately what is the IRR? (Hint: between 12% and 15%.)</p><details class="answer"><summary>Show solution</summary><p class="note">Let IRR = r, such that −50,000 + 15,000 × [1−(1+r)<sup>−5</sup>]/r = 0.</p><div class="formula small">Solving by trial and error or a numerical method gives IRR ≈ 15.24%.</div></details></section>
+
+<section class="slide" data-title="Chapter summary"><div class="eyebrow">FINANCIAL MATHEMATICS / CHAPTER 5</div><h2>Chapter summary</h2><ul><li>NPV is the gold standard for evaluating project feasibility: a project is acceptable only if NPV &gt; 0, and the value represents the absolute increase in shareholder wealth.</li><li>IRR is the discount rate that sets NPV to zero; it must be compared with the cost of capital, and a project is acceptable only if IRR &gt; r.</li><li>The payback period and discounted payback period are supplementary indicators that quickly gauge how fast capital is recovered, but they cannot replace NPV as the primary decision criterion.</li><li>When the NPV and IRR conclusions for mutually exclusive projects conflict, NPV always governs, because it directly measures the increase in shareholder wealth.</li></ul><p><a href="https://chadhsu226.github.io/financial-math/CH5_lecture_en.html" target="_blank" rel="noopener">Full Chapter 5 lecture</a>　 <a href="https://chadhsu226.github.io/financial-math/CH5_interactive_en.html" target="_blank" rel="noopener">Chapter 5 interactive tools</a></p><p class="note">Next chapter: Chapter 6, Return, Risk, and Quantitative Portfolio Analysis.</p></section>
+
+</main><div id="progress"></div><nav aria-label="Slide navigation"><button id="prev">Previous</button><span id="status" aria-live="polite"></span><button id="next">Next</button><select aria-label="Jump to slide"></select><button id="all" aria-pressed="false">Overview</button><button id="full">Fullscreen</button><a id="language" href="CH5_slides.html">中文</a></nav><script>
+const slides=[...document.querySelectorAll('.slide')], picker=document.querySelector('select');let index=0;
+slides.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(i+1)+'. '+s.dataset.title;picker.append(o)});
+function show(n){index=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>{s.classList.toggle('active',i===index);s.setAttribute('aria-hidden',document.body.classList.contains('overview')?'false':String(i!==index))});picker.value=index;document.querySelector('#status').textContent=(index+1)+' / '+slides.length;document.querySelector('#prev').disabled=index===0;document.querySelector('#next').disabled=index===slides.length-1;document.querySelector('#progress').style.width=((index+1)/slides.length*100)+'%';history.replaceState(null,'','#'+(index+1));}
+document.querySelector('#prev').onclick=()=>show(index-1);document.querySelector('#next').onclick=()=>show(index+1);picker.onchange=()=>show(Number(picker.value));
+document.querySelector('#all').onclick=()=>{const yes=document.body.classList.toggle('overview');document.querySelector('#all').setAttribute('aria-pressed',yes);show(index)};
+document.querySelector('#full').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){document.querySelector('#full').title='Use the browser fullscreen command (F11).'}};
+document.addEventListener('keydown',ev=>{if(/SELECT|INPUT|TEXTAREA|BUTTON|A|SUMMARY/.test(ev.target.tagName))return;if(['ArrowRight','PageDown',' '].includes(ev.key)){ev.preventDefault();show(index+1)}if(['ArrowLeft','PageUp'].includes(ev.key)){ev.preventDefault();show(index-1)}if(ev.key==='Home'){ev.preventDefault();show(0)}if(ev.key==='End'){ev.preventDefault();show(slides.length-1)}if(ev.key.toLowerCase()==='f')document.querySelector('#full').click()});
+window.addEventListener('hashchange',()=>show((parseInt(location.hash.slice(1))||1)-1));show((parseInt(location.hash.slice(1))||1)-1);
+
+const calculateNPV=(C0,CFs,r)=>CFs.reduce((acc,cf,i)=>acc+cf/Math.pow(1+r,i+1),-C0);
+const calculateIRR=(C0,CFs,guess=0.1,maxIter=1000,tol=1e-9)=>{
+  let rate=guess;
+  for(let i=0;i<maxIter;i++){
+    let npv=-C0,d=0;
+    CFs.forEach((cf,t)=>{npv+=cf/Math.pow(1+rate,t+1);d-=(t+1)*cf/Math.pow(1+rate,t+2);});
+    if(Math.abs(npv)<tol) return rate;
+    if(d===0) break;
+    rate=rate-npv/d;
+  }
+  return rate;
+};
+
+const npvIrrCalc=document.querySelector('#npv-irr-calc');
+function runNpvIrr(){
+  const c0=Number(npvIrrCalc.querySelector('[name=c0]').value);
+  const cf1=Number(npvIrrCalc.querySelector('[name=cf1]').value);
+  const cf2=Number(npvIrrCalc.querySelector('[name=cf2]').value);
+  const cf3=Number(npvIrrCalc.querySelector('[name=cf3]').value);
+  const ratePct=Number(npvIrrCalc.querySelector('[name=rate]').value);
+  const out=npvIrrCalc.querySelector('output');
+  if(![c0,cf1,cf2,cf3,ratePct].every(Number.isFinite)||c0<0){
+    out.textContent='Please enter valid values.';
+    return;
+  }
+  const r=ratePct/100;
+  const CFs=[cf1,cf2,cf3];
+  const npv=calculateNPV(c0,CFs,r);
+  const irr=calculateIRR(c0,CFs);
+  const decision=npv>0?'Acceptable':(npv<0?'Not acceptable':'Break-even');
+  out.textContent='NPV = '+npv.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'　／　IRR ≈ '+(irr*100).toFixed(2)+'%　／　Decision: '+decision;
+}
+npvIrrCalc.addEventListener('input',runNpvIrr);runNpvIrr();
+
+function calcPaybackPeriods(investment,CFs,ratePct){
+  const r=ratePct/100;
+  let cum=0, dcum=0, payback=null, discPayback=null;
+  for(let i=0;i<CFs.length;i++){
+    const cf=CFs[i];
+    const prev=cum; cum+=cf;
+    if(cum>=investment&&payback===null) payback=i+1-(cum-investment)/cf;
+    const dcf=cf/Math.pow(1+r,i+1);
+    const prevd=dcum; dcum+=dcf;
+    if(dcum>=investment&&discPayback===null) discPayback=i+1-(dcum-investment)/dcf;
+  }
+  return {payback,discPayback};
+}
+const paybackCalc=document.querySelector('#payback-calc');
+function runPayback(){
+  const investment=Number(paybackCalc.querySelector('[name=investment]').value);
+  const ratePct=Number(paybackCalc.querySelector('[name=rate]').value);
+  const cfs=[1,2,3,4].map(i=>Number(paybackCalc.querySelector('[name=cf'+i+']').value));
+  const out=paybackCalc.querySelector('output');
+  if(![investment,ratePct,...cfs].every(Number.isFinite)||investment<=0){
+    out.textContent='Please enter valid values.';
+    return;
+  }
+  const {payback,discPayback}=calcPaybackPeriods(investment,cfs,ratePct);
+  out.textContent='Payback period = '+(payback===null?'Not recovered':payback.toFixed(3)+' years')+'　／　Discounted payback period = '+(discPayback===null?'Not recovered':discPayback.toFixed(3)+' years');
+}
+paybackCalc.addEventListener('input',runPayback);runPayback();
+
+const conflictCalc=document.querySelector('#conflict-calc');
+function runConflict(){
+  const ratePct=Number(conflictCalc.querySelector('[name=rate]').value);
+  const iS=Number(conflictCalc.querySelector('[name=is]').value);
+  const cfS=Number(conflictCalc.querySelector('[name=cfs]').value);
+  const iL=Number(conflictCalc.querySelector('[name=il]').value);
+  const cfL=Number(conflictCalc.querySelector('[name=cfl]').value);
+  const out=conflictCalc.querySelector('output');
+  if(![ratePct,iS,cfS,iL,cfL].every(Number.isFinite)||iS<=0||iL<=0){
+    out.textContent='Please enter valid values.';
+    return;
+  }
+  const r=ratePct/100;
+  const npvS=-iS+cfS/(1+r), irrS=cfS/iS-1;
+  const npvL=-iL+cfL/(1+r), irrL=cfL/iL-1;
+  const winner=npvS>npvL?'S':(npvL>npvS?'L':'Tie');
+  out.textContent='S: IRR='+(irrS*100).toFixed(2)+'%, NPV='+npvS.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'　／　L: IRR='+(irrL*100).toFixed(2)+'%, NPV='+npvL.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'　／　NPV favors: '+winner;
+}
+conflictCalc.addEventListener('input',runConflict);runConflict();
+
+document.querySelector('#language').addEventListener('click',ev=>{ev.currentTarget.href=ev.currentTarget.href.split('#')[0]+'#'+(index+1)});
+</script></body></html>

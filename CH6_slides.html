@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>第六章 財務數學投影片</title><style>
+*{box-sizing:border-box}body{margin:0;background:#eaf1f5;color:#132e40;font-family:Arial,"Microsoft JhengHei",sans-serif}main{height:calc(100dvh - 66px);display:grid;place-items:center;padding:16px}.slide{display:none;width:100%;max-width:1280px;height:100%;max-height:790px;background:#fff;padding:clamp(24px,4vw,64px);border-top:7px solid #167d9a;overflow:auto}.slide.active{display:flex;flex-direction:column}.eyebrow{font-size:14px;letter-spacing:2px;color:#167d9a;margin-bottom:16px}h1{font-size:clamp(42px,5.2vw,76px);line-height:1.1;margin:24px 0}h2{font-size:clamp(28px,3.1vw,44px);line-height:1.2;margin:0 0 26px}h3{font-size:25px;margin:0 0 14px}p,li{font-size:clamp(18px,1.8vw,25px);line-height:1.55}p{margin:0 0 20px}li{margin-bottom:12px}ul{padding-left:28px;margin-top:0}.lead{font-size:clamp(23px,2.5vw,34px);max-width:960px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:44px}.cols>div+div{border-left:2px solid #dce8ef;padding-left:40px}.big{font-size:clamp(40px,5vw,72px);color:#167d9a;font-weight:700;line-height:1.1;margin:12px 0 20px}.note{font-size:17px;color:#526875;margin-top:18px}.spacer{flex:1}.cover{background:#123448;color:#fff;border-color:#62c7d5}.cover .eyebrow,.cover .big{color:#82d5df}.cover .note{color:#bcd3df}.cover .names{margin-top:36px;font-size:27px}table{border-collapse:collapse;width:100%;font-size:clamp(16px,1.55vw,21px);line-height:1.38}th{text-align:left;color:#167d9a;border-bottom:2px solid #167d9a}td,th{padding:11px 12px;vertical-align:top}td{border-bottom:1px solid #dce5eb}td:first-child{white-space:nowrap;width:85px;font-weight:bold}.schedule td{padding:9px 10px}.bars{display:grid;gap:20px}.bar{display:grid;grid-template-columns:260px 1fr 80px;gap:20px;align-items:center;font-size:24px}.track{height:22px;background:#ecf2f6}.fill{height:100%;background:#167d9a}.bar:nth-child(3) .fill{background:#123448}.bar:nth-child(4) .fill{background:#da9a32}.url{font-size:clamp(19px,2.6vw,36px);overflow-wrap:anywhere;color:#167d9a}a{color:#167d9a;text-underline-offset:5px}nav{height:66px;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px;background:#123448;color:white}button,select,nav a{font:inherit;font-size:15px;padding:9px 13px;border:1px solid #668391;border-radius:4px;background:#123448;color:white;text-decoration:none;cursor:pointer}button:disabled{opacity:.35;cursor:default}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #eab95f;outline-offset:3px}select{max-width:280px}#progress{position:fixed;bottom:66px;left:0;height:4px;background:#da9a32;transition:width .15s}#status{font-size:15px;min-width:58px;text-align:center}.overview main{display:block;height:auto}.overview .slide{display:flex;height:auto;min-height:650px;margin:24px auto}.overview nav{position:sticky;bottom:0}.overview #progress{display:none}@media(max-width:700px){nav{flex-wrap:wrap;height:auto;min-height:66px}main{padding:8px;height:calc(100dvh - 100px)}#progress{display:none}.slide{padding:22px;height:100%;max-height:none}h2{margin-bottom:20px}.cols{grid-template-columns:1fr;gap:20px}.cols>div+div{border-left:0;border-top:1px solid #dce8ef;padding:20px 0 0}.bar{grid-template-columns:130px 1fr 52px;font-size:17px;gap:8px}nav{gap:5px}button,select,nav a{font-size:12px;padding:8px}select{max-width:110px}.note{font-size:15px}td,th{padding:7px 5px}#full{display:none}}@media print{@page{size:A4 landscape;margin:10mm}body{background:white}main{display:block;height:auto;padding:0}.slide,.slide.active,.overview .slide{display:flex;width:100%;height:185mm;max-height:none;min-height:0;padding:10mm;margin:0;break-after:page;overflow:visible;box-shadow:none}.slide:last-child{break-after:auto}nav,#progress{display:none}h1{font-size:48px}h2{font-size:30px}p,li{font-size:17px}table{font-size:15px}.note{font-size:13px}*{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:clamp(24px,2.7vw,38px);line-height:1.6;color:#12647c;margin:12px 0 22px;overflow-wrap:anywhere}.formula.small{font-size:28px}.answer{margin-top:20px;border-top:2px solid #dbe9ee;padding-top:15px}summary{font-size:21px;color:#12647c;cursor:pointer;padding:8px 0}details p{margin:8px 0}.timeline{display:flex;justify-content:space-between;border-top:4px solid #167d9a;margin:60px 10px 35px}.timeline div{position:relative;padding-top:22px;font-size:24px}.timeline div:before{content:"";width:16px;height:16px;border-radius:50%;background:#167d9a;position:absolute;top:-10px;left:0}.chart{width:100%;max-height:330px}label{font-size:20px;display:block;margin:10px 0}input,select.calc-select{font:inherit;width:170px;padding:7px;border:1px solid #99b5c4;border-radius:3px}.result{font-size:26px;font-weight:bold;color:#12647c;display:block;margin-top:14px}.exercise p{font-size:24px}.slide td:first-child{white-space:normal;width:auto}.note{line-height:1.45}@media print{details:not([open])>*:not(summary){display:none}.formula{font-size:26px}.formula.small{font-size:22px}summary{font-size:17px}}
+</style></head><body><main>
+
+<section class="slide cover" data-title="報酬、風險與投資組合量化分析"><div class="eyebrow">財務數學 / 第六章</div><h1>報酬、風險與投資組合量化分析<br>Return, Risk, and Portfolio Quantification</h1><p class="lead">第六章．財務數學</p><p>許智翔</p><div class="spacer"></div><p class="note">115 學年度第一學期</p></section>
+
+<section class="slide" data-title="學習目標"><div class="eyebrow">財務數學 / 第六章</div><h2>學習目標</h2><ul><li>用機率加權方式計算單一資產的預期報酬率。</li><li>用變異數與標準差量化單一資產的風險。</li><li>計算投資組合的預期報酬率與變異數（雙資產公式）。</li><li>理解相關係數如何影響投資組合的分散風險效果。</li><li>說明為何標準差是實務上更常用的風險衡量指標。</li></ul></section>
+
+<section class="slide" data-title="符號說明"><div class="eyebrow">財務數學 / 第六章</div><h2>符號說明</h2><table><thead><tr><th>符號</th><th>定義</th></tr></thead><tbody><tr><td>P<sub>i</sub></td><td>情境 i 發生的機率</td></tr><tr><td>R<sub>i</sub></td><td>情境 i 下的報酬率</td></tr><tr><td>R̄</td><td>預期報酬率</td></tr><tr><td>σ² / σ</td><td>變異數／標準差（風險）</td></tr><tr><td>w<sub>j</sub></td><td>資產 j 在投資組合中的權重</td></tr><tr><td>ρ<sub>AB</sub></td><td>資產 A 與 B 報酬率的相關係數</td></tr></tbody></table><p class="note">前五章著重於確定性資金流動，本章導入金融市場的核心——不確定性（風險）。</p></section>
+
+<section class="slide" data-title="6.1 報酬率的衡量與預期"><div class="eyebrow">財務數學 / 第六章</div><h2>6.1 報酬率的衡量與預期（Expected Return）</h2><div class="formula">R̄ = Σ<sub>i=1</sub><sup>n</sup> P<sub>i</sub> × R<sub>i</sub></div><p class="note">預期報酬率就是把每個可能情境的報酬率，依照發生機率加權平均。</p></section>
+
+<section class="slide" data-title="範例演練 6.1：預期報酬計算"><div class="eyebrow">財務數學 / 第六章</div><h2>範例演練 6.1：預期報酬計算（資產 A）</h2><table><thead><tr><th>情境</th><th>機率 P<sub>i</sub></th><th>報酬率 R<sub>A</sub></th><th>P<sub>i</sub> × R<sub>A</sub></th></tr></thead><tbody><tr><td>繁榮</td><td>0.3</td><td>20%</td><td>0.060</td></tr><tr><td>正常</td><td>0.4</td><td>10%</td><td>0.040</td></tr><tr><td>衰退</td><td>0.3</td><td>−5%</td><td>−0.015</td></tr><tr><td><strong>總和</strong></td><td><strong>1.0</strong></td><td></td><td><strong>0.085（8.5%）</strong></td></tr></tbody></table></section>
+
+<section class="slide" data-title="6.2 風險的量化"><div class="eyebrow">財務數學 / 第六章</div><h2>6.2 風險的量化：變異數與標準差</h2><div class="formula">σ² = Σ<sub>i=1</sub><sup>n</sup> P<sub>i</sub> × (R<sub>i</sub> − R̄)²</div><div class="formula">σ = √σ²</div><p class="note">變異數衡量報酬率偏離預期值的平方期望值；標準差則把單位轉回與報酬率相同的百分比，較容易解讀。</p></section>
+
+<section class="slide" data-title="範例演練 6.2：風險計算" data-note="asset-a"><div class="eyebrow">財務數學 / 第六章</div><h2>範例演練 6.2：風險計算（資產 A）</h2><p>延續範例 6.1，R̄<sub>A</sub> = 8.5%：</p><div class="formula">σ²<sub>A</sub> = 0.3×(0.20−0.085)² + 0.4×(0.10−0.085)² + 0.3×(−0.05−0.085)²</div><div class="formula">σ²<sub>A</sub> = 0.009525</div><div class="formula">σ<sub>A</sub> = √0.009525 ≈ 9.76%</div></section>
+
+<section class="slide" data-title="課堂活動：單一資產報酬與風險分析器"><div class="eyebrow">財務數學 / 第六章</div><h2>課堂活動：單一資產報酬與風險分析器</h2><p>輸入三種情境的機率與報酬率，即時計算預期報酬率、變異數與標準差。</p><form id="asset-calc" onsubmit="return false"><label>繁榮機率 <input name="p1" type="number" value="0.3" min="0" max="1" step="0.01"></label><label>繁榮報酬率 (%) <input name="r1" type="number" value="20"></label><label>正常機率 <input name="p2" type="number" value="0.4" min="0" max="1" step="0.01"></label><label>正常報酬率 (%) <input name="r2" type="number" value="10"></label><label>衰退機率 <input name="p3" type="number" value="0.3" min="0" max="1" step="0.01"></label><label>衰退報酬率 (%) <input name="r3" type="number" value="-5"></label><output class="result" aria-live="polite"></output></form><p class="note">三個機率總和應為 1，若不為 1，計算機仍會照輸入值計算加權平均（結果僅供參考）。</p></section>
+
+<section class="slide" data-title="6.3 投資組合與分散風險"><div class="eyebrow">財務數學 / 第六章</div><h2>6.3 投資組合與分散風險（Portfolio Theory）</h2><div class="cols"><div><h3>投資組合預期報酬率</h3><div class="formula small">R̄<sub>P</sub> = Σ<sub>j=1</sub><sup>m</sup> w<sub>j</sub> × R̄<sub>j</sub></div></div><div><h3>投資組合變異數（雙資產）</h3><div class="formula small">σ²<sub>P</sub> = w²<sub>A</sub>σ²<sub>A</sub> + w²<sub>B</sub>σ²<sub>B</sub> + 2w<sub>A</sub>w<sub>B</sub>σ<sub>A</sub>σ<sub>B</sub>ρ<sub>AB</sub></div></div></div></section>
+
+<section class="slide" data-title="相關係數的意義"><div class="eyebrow">財務數學 / 第六章</div><h2>相關係數（ρ<sub>AB</sub>）的意義</h2><div class="formula">ρ<sub>AB</sub> = Cov<sub>AB</sub> / (σ<sub>A</sub> × σ<sub>B</sub>)</div><ul><li>ρ<sub>AB</sub> = +1.0：完全同向變動，無法分散風險。</li><li>ρ<sub>AB</sub> = −1.0：完全反向變動，可完全消除風險（在特定權重下）。</li><li>ρ<sub>AB</sub> = 0：資產無關，具有顯著的分散效果。</li></ul></section>
+
+<section class="slide" data-title="分散效果示例"><div class="eyebrow">財務數學 / 第六章</div><h2>分散效果示例</h2><p>兩資產各佔 50%（皆與資產 A 同分佈），ρ<sub>AB</sub> = 0（完全獨立）：</p><div class="formula small">σ²<sub>P</sub> = 0.5² × 0.009525 + 0.5² × 0.009525 + 0 = 0.0047625</div><div class="formula small">σ<sub>P</sub> = √0.0047625 ≈ 6.90% &lt; σ<sub>A</sub> = 9.76%</div><p class="note">在保持預期報酬 8.5% 不變的情況下，風險從 9.76% 降低到 6.90%，證明了分散風險的有效性。</p></section>
+
+<section class="slide" data-title="課堂活動：投資組合分散模擬器"><div class="eyebrow">財務數學 / 第六章</div><h2>課堂活動：投資組合分散模擬器</h2><p>輸入兩資產的預期報酬、標準差、投資權重與相關係數，即時計算投資組合的預期報酬與風險。</p><form id="portfolio-calc" onsubmit="return false"><label>資產 A 權重 w<sub>A</sub> <input name="wa" type="number" value="0.5" min="0" max="1" step="0.01"></label><label>資產 A 預期報酬 (%) <input name="ra" type="number" value="8.5"></label><label>資產 A 標準差 (%) <input name="sa" type="number" value="9.76" min="0"></label><label>資產 B 預期報酬 (%) <input name="rb" type="number" value="8.5"></label><label>資產 B 標準差 (%) <input name="sb" type="number" value="9.76" min="0"></label><label>相關係數 ρ<sub>AB</sub> <input name="rho" type="number" value="0" min="-1" max="1" step="0.01"></label><output class="result" aria-live="polite"></output></form><p class="note">資產 B 權重會自動設為 1 − w<sub>A</sub>。試著把 ρ 從 0 拉到 −1，觀察組合標準差如何下降。</p></section>
+
+<section class="slide" data-title="公式總表"><div class="eyebrow">財務數學 / 第六章</div><h2>公式選用總表</h2><table><thead><tr><th>情境</th><th>公式</th></tr></thead><tbody><tr><td>預期報酬率</td><td>R̄ = Σ P<sub>i</sub>R<sub>i</sub></td></tr><tr><td>變異數</td><td>σ² = Σ P<sub>i</sub>(R<sub>i</sub>−R̄)²</td></tr><tr><td>標準差</td><td>σ = √σ²</td></tr><tr><td>組合預期報酬</td><td>R̄<sub>P</sub> = Σ w<sub>j</sub>R̄<sub>j</sub></td></tr><tr><td>組合變異數（雙資產）</td><td>σ²<sub>P</sub> = w²<sub>A</sub>σ²<sub>A</sub>+w²<sub>B</sub>σ²<sub>B</sub>+2w<sub>A</sub>w<sub>B</sub>σ<sub>A</sub>σ<sub>B</sub>ρ<sub>AB</sub></td></tr></tbody></table><p class="note">相關係數 ρ 愈接近 −1，分散風險的效果愈明顯；ρ = +1 時完全沒有分散效果。</p></section>
+
+<section class="slide exercise" data-title="綜合演練 1"><div class="eyebrow">財務數學 / 第六章</div><h2>綜合演練 1</h2><p class="lead">資產 A 的預期報酬率為 20%（機率 0.6）和 −10%（機率 0.4）。R̄<sub>A</sub> 是多少？</p><details class="answer"><summary>顯示解答</summary><div class="formula small">R̄<sub>A</sub> = 0.6 × 20% + 0.4 × (−10%) = 8.00%</div></details></section>
+
+<section class="slide exercise" data-title="綜合演練 2"><div class="eyebrow">財務數學 / 第六章</div><h2>綜合演練 2</h2><p class="lead">延續第 1 題，計算 σ²<sub>A</sub> 和 σ<sub>A</sub>。</p><details class="answer"><summary>顯示解答</summary><div class="formula small">σ²<sub>A</sub> = 0.6×(20%−8%)² + 0.4×(−10%−8%)² = 0.0216</div><div class="formula small">σ<sub>A</sub> = √0.0216 ≈ 14.70%</div></details></section>
+
+<section class="slide exercise" data-title="綜合演練 3"><div class="eyebrow">財務數學 / 第六章</div><h2>綜合演練 3</h2><p class="lead">投資組合 P：70% 投資於 R̄<sub>A</sub>=8% 的資產 A，30% 投資於 R̄<sub>B</sub>=5% 的資產 B。R̄<sub>P</sub> 是多少？</p><details class="answer"><summary>顯示解答</summary><div class="formula small">R̄<sub>P</sub> = 0.7 × 8% + 0.3 × 5% = 7.10%</div></details></section>
+
+<section class="slide exercise" data-title="綜合演練 4"><div class="eyebrow">財務數學 / 第六章</div><h2>綜合演練 4</h2><p class="lead">延續第 3 題，σ<sub>A</sub>=14.70%、σ<sub>B</sub>=10%、ρ<sub>AB</sub>=+1.0，σ<sub>P</sub> 是多少？</p><details class="answer"><summary>顯示解答</summary><div class="formula small">σ²<sub>P</sub> = 0.7²×14.70%² + 0.3²×10%² + 2×0.7×0.3×14.70%×10%×1.0 = 1.7649%</div><div class="formula small">σ<sub>P</sub> = √1.7649% ≈ 13.29%</div><p class="note">ρ=+1 時，σ<sub>P</sub> 剛好等於各資產標準差的加權平均（0.7×14.70%+0.3×10%=13.29%），完全沒有分散效果。</p></details></section>
+
+<section class="slide exercise" data-title="綜合演練 5"><div class="eyebrow">財務數學 / 第六章</div><h2>綜合演練 5</h2><p class="lead">延續第 3 題，若 ρ<sub>AB</sub>=−1.0，σ<sub>P</sub> 是多少？</p><details class="answer"><summary>顯示解答</summary><div class="formula small">σ²<sub>P</sub> = 0.7²×14.70%² + 0.3²×10%² + 2×0.7×0.3×14.70%×10%×(−1.0) = 0.5314%</div><div class="formula small">σ<sub>P</sub> = √0.5314% ≈ 7.29%</div><p class="note">相關係數愈負，分散效果愈強；當 ρ=−1 時風險降幅最大。</p></details></section>
+
+<section class="slide exercise" data-title="綜合演練 6"><div class="eyebrow">財務數學 / 第六章</div><h2>綜合演練 6</h2><p class="lead">在計算投資組合總風險時，哪個因子衡量兩資產變動的關聯性？若為負值，對整體風險有何影響？</p><details class="answer"><summary>顯示解答</summary><p>衡量兩資產變動關聯性的因子是相關係數 ρ<sub>AB</sub>（或共變異數 Cov<sub>AB</sub>）。當 ρ<sub>AB</sub> 為負值時，代表兩資產報酬率傾向反向變動：一個上漲時另一個容易下跌。這會使投資組合變異數公式中的交叉項（2w<sub>A</sub>w<sub>B</sub>σ<sub>A</sub>σ<sub>B</sub>ρ<sub>AB</sub>）變成負數，抵銷部分個別資產的風險，因此整體投資組合的風險（標準差）會比任一資產單獨持有時更低，這正是分散投資的核心原理。</p></details></section>
+
+<section class="slide" data-title="本章重點整理"><div class="eyebrow">財務數學 / 第六章</div><h2>本章重點整理</h2><ul><li>預期報酬率是各情境報酬率的機率加權平均；變異數與標準差則衡量報酬率偏離預期值的程度（風險）。</li><li>標準差比變異數更實用，因為它的單位與報酬率相同，較容易直接解讀與比較。</li><li>投資組合的風險不只取決於個別資產的風險，也取決於資產之間的相關係數：相關係數愈低（尤其接近 −1），分散風險的效果愈明顯。</li><li>完成以上六題練習，並嘗試用投資組合分散模擬器驗證 ρ 對組合風險的影響方向。</li></ul><p><a href="https://chadhsu226.github.io/financial-math/CH6_lecture_en.html" target="_blank" rel="noopener">第六章完整講義（英文線上版）</a>　<a href="https://chadhsu226.github.io/financial-math/CH6_interactive_en.html" target="_blank" rel="noopener">第六章互動教材（英文線上版）</a></p><p class="note">本學期課程內容至此告一段落，請善用互動教材與 AI 動態測驗卷複習各章重點。</p></section>
+
+</main><div id="progress"></div><nav aria-label="投影片導覽"><button id="prev">上一頁</button><span id="status" aria-live="polite"></span><button id="next">下一頁</button><select aria-label="跳到指定投影片"></select><button id="all" aria-pressed="false">總覽</button><button id="full">全螢幕</button><a id="language" href="CH6_slides_en.html">English</a></nav><script>
+const slides=[...document.querySelectorAll('.slide')], picker=document.querySelector('select');let index=0;
+slides.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(i+1)+'. '+s.dataset.title;picker.append(o)});
+function show(n){index=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>{s.classList.toggle('active',i===index);s.setAttribute('aria-hidden',document.body.classList.contains('overview')?'false':String(i!==index))});picker.value=index;document.querySelector('#status').textContent=(index+1)+' / '+slides.length;document.querySelector('#prev').disabled=index===0;document.querySelector('#next').disabled=index===slides.length-1;document.querySelector('#progress').style.width=((index+1)/slides.length*100)+'%';history.replaceState(null,'','#'+(index+1));}
+document.querySelector('#prev').onclick=()=>show(index-1);document.querySelector('#next').onclick=()=>show(index+1);picker.onchange=()=>show(Number(picker.value));
+document.querySelector('#all').onclick=()=>{const yes=document.body.classList.toggle('overview');document.querySelector('#all').setAttribute('aria-pressed',yes);show(index)};
+document.querySelector('#full').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){document.querySelector('#full').title='請使用瀏覽器的全螢幕功能（F11）。'}};
+document.addEventListener('keydown',ev=>{if(/SELECT|INPUT|TEXTAREA|BUTTON|A|SUMMARY/.test(ev.target.tagName))return;if(['ArrowRight','PageDown',' '].includes(ev.key)){ev.preventDefault();show(index+1)}if(['ArrowLeft','PageUp'].includes(ev.key)){ev.preventDefault();show(index-1)}if(ev.key==='Home'){ev.preventDefault();show(0)}if(ev.key==='End'){ev.preventDefault();show(slides.length-1)}if(ev.key.toLowerCase()==='f')document.querySelector('#full').click()});
+window.addEventListener('hashchange',()=>show((parseInt(location.hash.slice(1))||1)-1));show((parseInt(location.hash.slice(1))||1)-1);
+
+const assetCalc=document.querySelector('#asset-calc');
+function runAssetCalc(){
+  const p1=Number(assetCalc.querySelector('[name=p1]').value);
+  const r1=Number(assetCalc.querySelector('[name=r1]').value)/100;
+  const p2=Number(assetCalc.querySelector('[name=p2]').value);
+  const r2=Number(assetCalc.querySelector('[name=r2]').value)/100;
+  const p3=Number(assetCalc.querySelector('[name=p3]').value);
+  const r3=Number(assetCalc.querySelector('[name=r3]').value)/100;
+  const out=assetCalc.querySelector('output');
+  if(![p1,r1,p2,r2,p3,r3].every(Number.isFinite)||p1<0||p2<0||p3<0){
+    out.textContent='請輸入正確的數值（機率不可為負）。';
+    return;
+  }
+  const eR=p1*r1+p2*r2+p3*r3;
+  const variance=p1*Math.pow(r1-eR,2)+p2*Math.pow(r2-eR,2)+p3*Math.pow(r3-eR,2);
+  const sigma=Math.sqrt(variance);
+  out.textContent='R̄ = '+(eR*100).toFixed(3)+'%　／　σ² = '+variance.toFixed(6)+'　／　σ = '+(sigma*100).toFixed(2)+'%';
+}
+assetCalc.addEventListener('input',runAssetCalc);runAssetCalc();
+
+const portfolioCalc=document.querySelector('#portfolio-calc');
+function runPortfolioCalc(){
+  const wa=Number(portfolioCalc.querySelector('[name=wa]').value);
+  const ra=Number(portfolioCalc.querySelector('[name=ra]').value)/100;
+  const sa=Number(portfolioCalc.querySelector('[name=sa]').value)/100;
+  const rb=Number(portfolioCalc.querySelector('[name=rb]').value)/100;
+  const sb=Number(portfolioCalc.querySelector('[name=sb]').value)/100;
+  const rho=Number(portfolioCalc.querySelector('[name=rho]').value);
+  const out=portfolioCalc.querySelector('output');
+  if(![wa,ra,sa,rb,sb,rho].every(Number.isFinite)||wa<0||wa>1||sa<0||sb<0||rho<-1||rho>1){
+    out.textContent='請輸入正確的數值（0≤w≤1，標準差不可為負，−1≤ρ≤1）。';
+    return;
+  }
+  const wb=1-wa;
+  const rP=wa*ra+wb*rb;
+  const varP=Math.pow(wa,2)*Math.pow(sa,2)+Math.pow(wb,2)*Math.pow(sb,2)+2*wa*wb*sa*sb*rho;
+  const sigmaP=Math.sqrt(Math.max(varP,0));
+  out.textContent='w_B = '+(wb*100).toFixed(1)+'%　／　R̄_P = '+(rP*100).toFixed(2)+'%　／　σ_P = '+(sigmaP*100).toFixed(2)+'%';
+}
+portfolioCalc.addEventListener('input',runPortfolioCalc);runPortfolioCalc();
+
+document.querySelector('#language').addEventListener('click',ev=>{ev.currentTarget.href=ev.currentTarget.href.split('#')[0]+'#'+(index+1)});
+</script></body></html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>第五章 財務數學投影片</title><style>
+*{box-sizing:border-box}body{margin:0;background:#eaf1f5;color:#132e40;font-family:Arial,"Microsoft JhengHei",sans-serif}main{height:calc(100dvh - 66px);display:grid;place-items:center;padding:16px}.slide{display:none;width:100%;max-width:1280px;height:100%;max-height:790px;background:#fff;padding:clamp(24px,4vw,64px);border-top:7px solid #167d9a;overflow:auto}.slide.active{display:flex;flex-direction:column}.eyebrow{font-size:14px;letter-spacing:2px;color:#167d9a;margin-bottom:16px}h1{font-size:clamp(42px,5.2vw,76px);line-height:1.1;margin:24px 0}h2{font-size:clamp(28px,3.1vw,44px);line-height:1.2;margin:0 0 26px}h3{font-size:25px;margin:0 0 14px}p,li{font-size:clamp(18px,1.8vw,25px);line-height:1.55}p{margin:0 0 20px}li{margin-bottom:12px}ul{padding-left:28px;margin-top:0}.lead{font-size:clamp(23px,2.5vw,34px);max-width:960px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:44px}.cols>div+div{border-left:2px solid #dce8ef;padding-left:40px}.big{font-size:clamp(40px,5vw,72px);color:#167d9a;font-weight:700;line-height:1.1;margin:12px 0 20px}.note{font-size:17px;color:#526875;margin-top:18px}.spacer{flex:1}.cover{background:#123448;color:#fff;border-color:#62c7d5}.cover .eyebrow,.cover .big{color:#82d5df}.cover .note{color:#bcd3df}.cover .names{margin-top:36px;font-size:27px}table{border-collapse:collapse;width:100%;font-size:clamp(16px,1.55vw,21px);line-height:1.38}th{text-align:left;color:#167d9a;border-bottom:2px solid #167d9a}td,th{padding:11px 12px;vertical-align:top}td{border-bottom:1px solid #dce5eb}td:first-child{white-space:nowrap;width:85px;font-weight:bold}.schedule td{padding:9px 10px}.bars{display:grid;gap:20px}.bar{display:grid;grid-template-columns:260px 1fr 80px;gap:20px;align-items:center;font-size:24px}.track{height:22px;background:#ecf2f6}.fill{height:100%;background:#167d9a}.bar:nth-child(3) .fill{background:#123448}.bar:nth-child(4) .fill{background:#da9a32}.url{font-size:clamp(19px,2.6vw,36px);overflow-wrap:anywhere;color:#167d9a}a{color:#167d9a;text-underline-offset:5px}nav{height:66px;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px;background:#123448;color:white}button,select,nav a{font:inherit;font-size:15px;padding:9px 13px;border:1px solid #668391;border-radius:4px;background:#123448;color:white;text-decoration:none;cursor:pointer}button:disabled{opacity:.35;cursor:default}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #eab95f;outline-offset:3px}select{max-width:280px}#progress{position:fixed;bottom:66px;left:0;height:4px;background:#da9a32;transition:width .15s}#status{font-size:15px;min-width:58px;text-align:center}.overview main{display:block;height:auto}.overview .slide{display:flex;height:auto;min-height:650px;margin:24px auto}.overview nav{position:sticky;bottom:0}.overview #progress{display:none}@media(max-width:700px){nav{flex-wrap:wrap;height:auto;min-height:66px}main{padding:8px;height:calc(100dvh - 100px)}#progress{display:none}.slide{padding:22px;height:100%;max-height:none}h2{margin-bottom:20px}.cols{grid-template-columns:1fr;gap:20px}.cols>div+div{border-left:0;border-top:1px solid #dce8ef;padding:20px 0 0}.bar{grid-template-columns:130px 1fr 52px;font-size:17px;gap:8px}nav{gap:5px}button,select,nav a{font-size:12px;padding:8px}select{max-width:110px}.note{font-size:15px}td,th{padding:7px 5px}#full{display:none}}@media print{@page{size:A4 landscape;margin:10mm}body{background:white}main{display:block;height:auto;padding:0}.slide,.slide.active,.overview .slide{display:flex;width:100%;height:185mm;max-height:none;min-height:0;padding:10mm;margin:0;break-after:page;overflow:visible;box-shadow:none}.slide:last-child{break-after:auto}nav,#progress{display:none}h1{font-size:48px}h2{font-size:30px}p,li{font-size:17px}table{font-size:15px}.note{font-size:13px}*{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:clamp(24px,2.7vw,38px);line-height:1.6;color:#12647c;margin:12px 0 22px;overflow-wrap:anywhere}.formula.small{font-size:28px}.answer{margin-top:20px;border-top:2px solid #dbe9ee;padding-top:15px}summary{font-size:21px;color:#12647c;cursor:pointer;padding:8px 0}details p{margin:8px 0}.timeline{display:flex;justify-content:space-between;border-top:4px solid #167d9a;margin:60px 10px 35px}.timeline div{position:relative;padding-top:22px;font-size:24px}.timeline div:before{content:"";width:16px;height:16px;border-radius:50%;background:#167d9a;position:absolute;top:-10px;left:0}.chart{width:100%;max-height:330px}label{font-size:20px;display:block;margin:10px 0}input,select.calc-select{font:inherit;width:170px;padding:7px;border:1px solid #99b5c4;border-radius:3px}.result{font-size:26px;font-weight:bold;color:#12647c;display:block;margin-top:14px}.exercise p{font-size:24px}.slide td:first-child{white-space:normal;width:auto}.note{line-height:1.45}.decision-box{margin:20px 0;padding:15px 20px;border:2px solid #da9a32;background:#fff8ea;font-size:20px}@media print{details:not([open])>*:not(summary){display:none}.formula{font-size:26px}.formula.small{font-size:22px}summary{font-size:17px}}
+</style></head><body><main>
+
+<section class="slide cover" data-title="資本預算與長期投資決策"><div class="eyebrow">財務數學 / 第五章</div><h1>資本預算與長期投資決策<br>Capital Budgeting and Long-Term Investment Decisions</h1><p class="lead">第五章．財務數學</p><p>許智翔</p><div class="spacer"></div><p class="note">115 學年度第一學期</p></section>
+
+<section class="slide" data-title="學習目標"><div class="eyebrow">財務數學 / 第五章</div><h2>學習目標</h2><ul><li>用淨現值法（NPV）評估專案是否值得投資。</li><li>用內部報酬率法（IRR）估算專案的年化報酬率，並與資本成本比較。</li><li>計算投資回收期與折現回收期，理解其優缺點。</li><li>當 NPV 與 IRR 的決策結論衝突時，說明為何應以 NPV 為準。</li><li>應用以上工具，對實際投資案做出合理的資源配置決定。</li></ul></section>
+
+<section class="slide" data-title="符號說明"><div class="eyebrow">財務數學 / 第五章</div><h2>符號說明</h2><table><thead><tr><th>符號</th><th>定義</th></tr></thead><tbody><tr><td>CF<sub>t</sub></td><td>第 t 期現金流量（投入為負，流入為正）</td></tr><tr><td>r</td><td>資本成本／折現率</td></tr><tr><td>n</td><td>專案存續期數</td></tr><tr><td>NPV</td><td>淨現值：所有現金流折現後的淨值</td></tr><tr><td>IRR</td><td>內部報酬率：使 NPV 剛好等於 0 的折現率</td></tr></tbody></table><p class="note">資本預算是企業規劃與管理長期投資專案的過程，NPV 與 IRR 是最核心的兩項評估指標。</p></section>
+
+<section class="slide" data-title="5.1 淨現值法"><div class="eyebrow">財務數學 / 第五章</div><h2>5.1 淨現值法（Net Present Value, NPV）</h2><p class="lead">淨現值法是評估專案可行性的黃金標準，衡量一個專案未來所有現金流入和流出，經過折現後在今天的淨價值。</p><div class="formula">NPV = Σ<sub>t=0</sub><sup>n</sup> CF<sub>t</sub> / (1 + r)<sup>t</sup></div></section>
+
+<section class="slide" data-title="NPV 決策準則"><div class="eyebrow">財務數學 / 第五章</div><h2>NPV 決策準則</h2><ul><li>若 NPV &gt; 0：專案可行，將增加股東財富。</li><li>若 NPV &lt; 0：專案不可行，應予拒絕。</li><li>若 NPV = 0：專案僅能打平成本。</li></ul></section>
+
+<section class="slide" data-title="範例演練 5.1：NPV 計算"><div class="eyebrow">財務數學 / 第五章</div><h2>範例演練 5.1：NPV 計算</h2><p>初始投資 100,000 元，未來三年每年淨流入 40,000 元，資本成本 r = 10%。</p><div class="formula small">NPV = −100,000 + 40,000/1.10 + 40,000/1.10<sup>2</sup> + 40,000/1.10<sup>3</sup></div><div class="formula small">NPV ≈ −525.92 元</div><p class="note">決策：由於 NPV &lt; 0，該專案不可行，應予拒絕。</p></section>
+
+<section class="slide" data-title="5.2 內部報酬率法"><div class="eyebrow">財務數學 / 第五章</div><h2>5.2 內部報酬率法（Internal Rate of Return, IRR）</h2><p class="lead">IRR 是指使專案的 NPV 剛好等於零的折現率，代表專案預期可實現的年化回報率。</p><div class="formula">Σ<sub>t=0</sub><sup>n</sup> CF<sub>t</sub> / (1 + IRR)<sup>t</sup> = 0</div><ul><li>若 IRR &gt; r（資本成本）：專案可行。</li><li>若 IRR &lt; r（資本成本）：專案不可行。</li></ul></section>
+
+<section class="slide" data-title="範例演練 5.2：IRR 估算與應用"><div class="eyebrow">財務數學 / 第五章</div><h2>範例演練 5.2：IRR 估算與應用</h2><p>延續範例 5.1（初始投資 100,000 元，未來三年每年流入 40,000 元），透過試誤法／數值方法求解：</p><div class="formula">IRR ≈ 9.70%</div><p class="note">決策：IRR = 9.70% &lt; r = 10%，專案不可行，與 NPV 結論一致。</p></section>
+
+<section class="slide" data-title="課堂活動：NPV 與 IRR 分析器"><div class="eyebrow">財務數學 / 第五章</div><h2>課堂活動：NPV 與 IRR 分析器</h2><p>輸入初始投資、未來三期現金流入與資本成本，即時計算 NPV 與 IRR。</p><form id="npv-irr-calc" onsubmit="return false"><label>初始投資 C₀ <input name="c0" type="number" value="100000" min="0"></label><label>第 1 年流入 <input name="cf1" type="number" value="40000"></label><label>第 2 年流入 <input name="cf2" type="number" value="40000"></label><label>第 3 年流入 <input name="cf3" type="number" value="40000"></label><label>資本成本 r (%) <input name="rate" type="number" value="10" step="0.01"></label><output class="result" aria-live="polite"></output></form><p class="note">試著調高或調低資本成本，觀察 NPV 何時由負轉正。</p></section>
+
+<section class="slide" data-title="5.3 資本預算的輔助方法"><div class="eyebrow">財務數學 / 第五章</div><h2>5.3 資本預算的輔助方法</h2><div class="cols"><div><h3>投資回收期法（Payback Period）</h3><ul><li>衡量收回初始投資成本所需的時間。</li><li>缺點：忽略了貨幣的時間價值。</li></ul></div><div><h3>折現回收期法（Discounted Payback Period）</h3><ul><li>考慮時間價值，衡量收回投資折現值所需時間。</li></ul></div></div></section>
+
+<section class="slide" data-title="範例演練 5.3：回收期計算"><div class="eyebrow">財務數學 / 第五章</div><h2>範例演練 5.3：回收期計算</h2><p>初始投資 250,000 元，資本成本 r = 12%，未來四年現金流入分別為 100,000、120,000、80,000、50,000。</p><div class="formula small">Payback Period = 2 + 30,000 / 80,000 = 2.375 年</div><div class="formula small">Discounted Payback Period ≈ 3.255 年</div><p class="note">前兩年累積流入 220,000，尚差 30,000 才回本，第三年流入 80,000，故回收期落在第三年的 0.375 處。</p></section>
+
+<section class="slide" data-title="課堂活動：回收期計算機"><div class="eyebrow">財務數學 / 第五章</div><h2>課堂活動：回收期計算機</h2><p>輸入初始投資、折現率與各年現金流入，即時計算普通與折現回收期。</p><form id="payback-calc" onsubmit="return false"><label>初始投資 <input name="investment" type="number" value="250000" min="0"></label><label>折現率 (%) <input name="rate" type="number" value="12" step="0.01"></label><label>第 1 年流入 <input name="cf1" type="number" value="100000"></label><label>第 2 年流入 <input name="cf2" type="number" value="120000"></label><label>第 3 年流入 <input name="cf3" type="number" value="80000"></label><label>第 4 年流入 <input name="cf4" type="number" value="50000"></label><output class="result" aria-live="polite"></output></form><p class="note">若累積現金流在專案存續期內都無法回本，計算機會顯示「未回本」。</p></section>
+
+<section class="slide" data-title="範例演練 5.4：NPV 與 IRR 衝突案例"><div class="eyebrow">財務數學 / 第五章</div><h2>範例演練 5.4：NPV 與 IRR 衝突案例</h2><p>資本成本 r = 10%，兩個互斥專案：</p><table><thead><tr><th>專案</th><th>初始投資</th><th>第1年流入</th><th>IRR</th><th>NPV</th></tr></thead><tbody><tr><td>S（小）</td><td>−100</td><td>120</td><td>20.00%</td><td>9.09</td></tr><tr><td>L（大）</td><td>−1,000</td><td>1,150</td><td>15.00%</td><td>45.45</td></tr></tbody></table><div class="decision-box"><strong>最終決策：應選擇專案 L。</strong> 儘管專案 S 的 IRR 更高，但專案 L 創造了更大的絕對 NPV，為股東帶來更多財富。<br><strong>決策優先順序：以 NPV 決策為準。</strong></div></section>
+
+<section class="slide" data-title="課堂活動：NPV vs. IRR 衝突模擬器"><div class="eyebrow">財務數學 / 第五章</div><h2>課堂活動：NPV vs. IRR 衝突模擬器</h2><p>輸入兩個互斥專案（單期現金流）的初始投資與第一年流入，比較 IRR 與 NPV 的決策結論。</p><form id="conflict-calc" onsubmit="return false"><label>資本成本 r (%) <input name="rate" type="number" value="10" step="0.01"></label><label>專案 S 初始投資 <input name="is" type="number" value="100" min="0"></label><label>專案 S 第1年流入 <input name="cfs" type="number" value="120"></label><label>專案 L 初始投資 <input name="il" type="number" value="1000" min="0"></label><label>專案 L 第1年流入 <input name="cfl" type="number" value="1150"></label><output class="result" aria-live="polite"></output></form><p class="note">當兩專案規模差異很大時，IRR 較高的專案未必創造較多財富，這正是 NPV 準則的優勢所在。</p></section>
+
+<section class="slide" data-title="公式總表"><div class="eyebrow">財務數學 / 第五章</div><h2>公式選用總表</h2><table><thead><tr><th>情境</th><th>公式</th></tr></thead><tbody><tr><td>淨現值</td><td>NPV = Σ CF<sub>t</sub> / (1+r)<sup>t</sup></td></tr><tr><td>內部報酬率</td><td>Σ CF<sub>t</sub> / (1+IRR)<sup>t</sup> = 0</td></tr><tr><td>投資回收期</td><td>回本年 + 尚缺金額 / 該年流入</td></tr><tr><td>折現回收期</td><td>回本年 + 尚缺折現金額 / 該年折現流入</td></tr></tbody></table><p class="note">當 NPV 與 IRR 結論衝突（多為互斥專案且規模差異大時），一律以 NPV 為決策依據。</p></section>
+
+<section class="slide exercise" data-title="綜合演練 1"><div class="eyebrow">財務數學 / 第五章</div><h2>綜合演練 1</h2><p class="lead">初始投資 250,000 元，未來四年流入：100,000、120,000、80,000、50,000，資本成本 12%。NPV 是多少？</p><details class="answer"><summary>顯示解答</summary><div class="formula small">NPV = −250,000 + 100,000/1.12 + 120,000/1.12<sup>2</sup> + 80,000/1.12<sup>3</sup> + 50,000/1.12<sup>4</sup></div><div class="formula small">NPV ≈ 23,667.30 元</div><p class="note">NPV &gt; 0，專案可行。</p></details></section>
+
+<section class="slide exercise" data-title="綜合演練 2"><div class="eyebrow">財務數學 / 第五章</div><h2>綜合演練 2</h2><p class="lead">承接上題，投資回收期是多少年？</p><details class="answer"><summary>顯示解答</summary><p class="note">累積流入：第1年100,000；第2年220,000；第3年300,000。</p><div class="formula small">Payback Period = 2 + 30,000 / 80,000 = 2.375 年</div><p class="note">與範例 5.3 是同一組現金流，因此答案相同。</p></details></section>
+
+<section class="slide exercise" data-title="綜合演練 3"><div class="eyebrow">財務數學 / 第五章</div><h2>綜合演練 3</h2><p class="lead">請解釋 NPV 和 IRR 的核心差異，並說明衝突時為何優先遵循 NPV 準則？</p><details class="answer"><summary>顯示解答</summary><p>NPV 衡量的是專案創造的「絕對財富增量」（金額），而 IRR 衡量的是「相對報酬率」（百分比）。當比較規模差異很大的互斥專案時，IRR 較高的小規模專案，其創造的絕對財富可能遠低於 IRR 較低但規模較大的專案。由於企業決策的最終目標是最大化股東財富（金額），而非追求最高的報酬率百分比，因此發生衝突時應以 NPV 為準。</p></details></section>
+
+<section class="slide exercise" data-title="綜合演練 4"><div class="eyebrow">財務數學 / 第五章</div><h2>綜合演練 4</h2><p class="lead">初始投資 50,000 元，每年年底淨流入 15,000 元，持續 5 年，IRR 約為多少？（提示：介於 12% 至 15%）</p><details class="answer"><summary>顯示解答</summary><p class="note">令 IRR = r，使 −50,000 + 15,000 × [1−(1+r)<sup>−5</sup>]/r = 0。</p><div class="formula small">以試誤法／數值方法求解，可得 IRR ≈ 15.24%</div></details></section>
+
+<section class="slide" data-title="本章重點整理"><div class="eyebrow">財務數學 / 第五章</div><h2>本章重點整理</h2><ul><li>NPV 是評估專案可行性的黃金標準：NPV &gt; 0 才可行，數值代表股東財富的絕對增量。</li><li>IRR 是使 NPV 為零的折現率，須與資本成本比較，IRR &gt; r 才可行。</li><li>投資回收期與折現回收期是輔助指標，能快速衡量資金回收速度，但不能取代 NPV 作為主要決策依據。</li><li>當互斥專案的 NPV 與 IRR 結論衝突時，一律以 NPV 為準，因為它直接衡量股東財富的增量。</li></ul><p><a href="https://chadhsu226.github.io/financial-math/CH5_lecture_en.html" target="_blank" rel="noopener">第五章完整講義（英文線上版）</a>　<a href="https://chadhsu226.github.io/financial-math/CH5_interactive_en.html" target="_blank" rel="noopener">第五章互動教材（英文線上版）</a></p><p class="note">下一章：CH6 報酬、風險與投資組合量化分析。</p></section>
+
+</main><div id="progress"></div><nav aria-label="投影片導覽"><button id="prev">上一頁</button><span id="status" aria-live="polite"></span><button id="next">下一頁</button><select aria-label="跳到指定投影片"></select><button id="all" aria-pressed="false">總覽</button><button id="full">全螢幕</button><a id="language" href="CH5_slides_en.html">English</a></nav><script>
+const slides=[...document.querySelectorAll('.slide')], picker=document.querySelector('select');let index=0;
+slides.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(i+1)+'. '+s.dataset.title;picker.append(o)});
+function show(n){index=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>{s.classList.toggle('active',i===index);s.setAttribute('aria-hidden',document.body.classList.contains('overview')?'false':String(i!==index))});picker.value=index;document.querySelector('#status').textContent=(index+1)+' / '+slides.length;document.querySelector('#prev').disabled=index===0;document.querySelector('#next').disabled=index===slides.length-1;document.querySelector('#progress').style.width=((index+1)/slides.length*100)+'%';history.replaceState(null,'','#'+(index+1));}
+document.querySelector('#prev').onclick=()=>show(index-1);document.querySelector('#next').onclick=()=>show(index+1);picker.onchange=()=>show(Number(picker.value));
+document.querySelector('#all').onclick=()=>{const yes=document.body.classList.toggle('overview');document.querySelector('#all').setAttribute('aria-pressed',yes);show(index)};
+document.querySelector('#full').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){document.querySelector('#full').title='請使用瀏覽器的全螢幕功能（F11）。'}};
+document.addEventListener('keydown',ev=>{if(/SELECT|INPUT|TEXTAREA|BUTTON|A|SUMMARY/.test(ev.target.tagName))return;if(['ArrowRight','PageDown',' '].includes(ev.key)){ev.preventDefault();show(index+1)}if(['ArrowLeft','PageUp'].includes(ev.key)){ev.preventDefault();show(index-1)}if(ev.key==='Home'){ev.preventDefault();show(0)}if(ev.key==='End'){ev.preventDefault();show(slides.length-1)}if(ev.key.toLowerCase()==='f')document.querySelector('#full').click()});
+window.addEventListener('hashchange',()=>show((parseInt(location.hash.slice(1))||1)-1));show((parseInt(location.hash.slice(1))||1)-1);
+
+const calculateNPV=(C0,CFs,r)=>CFs.reduce((acc,cf,i)=>acc+cf/Math.pow(1+r,i+1),-C0);
+const calculateIRR=(C0,CFs,guess=0.1,maxIter=1000,tol=1e-9)=>{
+  let rate=guess;
+  for(let i=0;i<maxIter;i++){
+    let npv=-C0,d=0;
+    CFs.forEach((cf,t)=>{npv+=cf/Math.pow(1+rate,t+1);d-=(t+1)*cf/Math.pow(1+rate,t+2);});
+    if(Math.abs(npv)<tol) return rate;
+    if(d===0) break;
+    rate=rate-npv/d;
+  }
+  return rate;
+};
+
+const npvIrrCalc=document.querySelector('#npv-irr-calc');
+function runNpvIrr(){
+  const c0=Number(npvIrrCalc.querySelector('[name=c0]').value);
+  const cf1=Number(npvIrrCalc.querySelector('[name=cf1]').value);
+  const cf2=Number(npvIrrCalc.querySelector('[name=cf2]').value);
+  const cf3=Number(npvIrrCalc.querySelector('[name=cf3]').value);
+  const ratePct=Number(npvIrrCalc.querySelector('[name=rate]').value);
+  const out=npvIrrCalc.querySelector('output');
+  if(![c0,cf1,cf2,cf3,ratePct].every(Number.isFinite)||c0<0){
+    out.textContent='請輸入正確的數值。';
+    return;
+  }
+  const r=ratePct/100;
+  const CFs=[cf1,cf2,cf3];
+  const npv=calculateNPV(c0,CFs,r);
+  const irr=calculateIRR(c0,CFs);
+  const decision=npv>0?'可行':(npv<0?'不可行':'打平');
+  out.textContent='NPV = '+npv.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'　／　IRR ≈ '+(irr*100).toFixed(2)+'%　／　決策：'+decision;
+}
+npvIrrCalc.addEventListener('input',runNpvIrr);runNpvIrr();
+
+function calcPaybackPeriods(investment,CFs,ratePct){
+  const r=ratePct/100;
+  let cum=0, dcum=0, payback=null, discPayback=null;
+  for(let i=0;i<CFs.length;i++){
+    const cf=CFs[i];
+    const prev=cum; cum+=cf;
+    if(cum>=investment&&payback===null) payback=i+1-(cum-investment)/cf;
+    const dcf=cf/Math.pow(1+r,i+1);
+    const prevd=dcum; dcum+=dcf;
+    if(dcum>=investment&&discPayback===null) discPayback=i+1-(dcum-investment)/dcf;
+  }
+  return {payback,discPayback};
+}
+const paybackCalc=document.querySelector('#payback-calc');
+function runPayback(){
+  const investment=Number(paybackCalc.querySelector('[name=investment]').value);
+  const ratePct=Number(paybackCalc.querySelector('[name=rate]').value);
+  const cfs=[1,2,3,4].map(i=>Number(paybackCalc.querySelector('[name=cf'+i+']').value));
+  const out=paybackCalc.querySelector('output');
+  if(![investment,ratePct,...cfs].every(Number.isFinite)||investment<=0){
+    out.textContent='請輸入正確的數值。';
+    return;
+  }
+  const {payback,discPayback}=calcPaybackPeriods(investment,cfs,ratePct);
+  out.textContent='投資回收期 = '+(payback===null?'未回本':payback.toFixed(3)+' 年')+'　／　折現回收期 = '+(discPayback===null?'未回本':discPayback.toFixed(3)+' 年');
+}
+paybackCalc.addEventListener('input',runPayback);runPayback();
+
+const conflictCalc=document.querySelector('#conflict-calc');
+function runConflict(){
+  const ratePct=Number(conflictCalc.querySelector('[name=rate]').value);
+  const iS=Number(conflictCalc.querySelector('[name=is]').value);
+  const cfS=Number(conflictCalc.querySelector('[name=cfs]').value);
+  const iL=Number(conflictCalc.querySelector('[name=il]').value);
+  const cfL=Number(conflictCalc.querySelector('[name=cfl]').value);
+  const out=conflictCalc.querySelector('output');
+  if(![ratePct,iS,cfS,iL,cfL].every(Number.isFinite)||iS<=0||iL<=0){
+    out.textContent='請輸入正確的數值。';
+    return;
+  }
+  const r=ratePct/100;
+  const npvS=-iS+cfS/(1+r), irrS=cfS/iS-1;
+  const npvL=-iL+cfL/(1+r), irrL=cfL/iL-1;
+  const winner=npvS>npvL?'S':(npvL>npvS?'L':'兩者相同');
+  out.textContent='S：IRR='+(irrS*100).toFixed(2)+'%、NPV='+npvS.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'　／　L：IRR='+(irrL*100).toFixed(2)+'%、NPV='+npvL.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'　／　依 NPV 應選：'+winner;
+}
+conflictCalc.addEventListener('input',runConflict);runConflict();
+
+document.querySelector('#language').addEventListener('click',ev=>{ev.currentTarget.href=ev.currentTarget.href.split('#')[0]+'#'+(index+1)});
+</script></body></html>

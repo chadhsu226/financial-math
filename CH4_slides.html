@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>第四章 財務數學投影片</title><style>
+*{box-sizing:border-box}body{margin:0;background:#eaf1f5;color:#132e40;font-family:Arial,"Microsoft JhengHei",sans-serif}main{height:calc(100dvh - 66px);display:grid;place-items:center;padding:16px}.slide{display:none;width:100%;max-width:1280px;height:100%;max-height:790px;background:#fff;padding:clamp(24px,4vw,64px);border-top:7px solid #167d9a;overflow:auto}.slide.active{display:flex;flex-direction:column}.eyebrow{font-size:14px;letter-spacing:2px;color:#167d9a;margin-bottom:16px}h1{font-size:clamp(42px,5.2vw,76px);line-height:1.1;margin:24px 0}h2{font-size:clamp(28px,3.1vw,44px);line-height:1.2;margin:0 0 26px}h3{font-size:25px;margin:0 0 14px}p,li{font-size:clamp(18px,1.8vw,25px);line-height:1.55}p{margin:0 0 20px}li{margin-bottom:12px}ul{padding-left:28px;margin-top:0}.lead{font-size:clamp(23px,2.5vw,34px);max-width:960px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:44px}.cols>div+div{border-left:2px solid #dce8ef;padding-left:40px}.big{font-size:clamp(40px,5vw,72px);color:#167d9a;font-weight:700;line-height:1.1;margin:12px 0 20px}.note{font-size:17px;color:#526875;margin-top:18px}.spacer{flex:1}.cover{background:#123448;color:#fff;border-color:#62c7d5}.cover .eyebrow,.cover .big{color:#82d5df}.cover .note{color:#bcd3df}.cover .names{margin-top:36px;font-size:27px}table{border-collapse:collapse;width:100%;font-size:clamp(16px,1.55vw,21px);line-height:1.38}th{text-align:left;color:#167d9a;border-bottom:2px solid #167d9a}td,th{padding:11px 12px;vertical-align:top}td{border-bottom:1px solid #dce5eb}td:first-child{white-space:nowrap;width:85px;font-weight:bold}.schedule td{padding:9px 10px}.bars{display:grid;gap:20px}.bar{display:grid;grid-template-columns:260px 1fr 80px;gap:20px;align-items:center;font-size:24px}.track{height:22px;background:#ecf2f6}.fill{height:100%;background:#167d9a}.bar:nth-child(3) .fill{background:#123448}.bar:nth-child(4) .fill{background:#da9a32}.url{font-size:clamp(19px,2.6vw,36px);overflow-wrap:anywhere;color:#167d9a}a{color:#167d9a;text-underline-offset:5px}nav{height:66px;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px;background:#123448;color:white}button,select,nav a{font:inherit;font-size:15px;padding:9px 13px;border:1px solid #668391;border-radius:4px;background:#123448;color:white;text-decoration:none;cursor:pointer}button:disabled{opacity:.35;cursor:default}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #eab95f;outline-offset:3px}select{max-width:280px}#progress{position:fixed;bottom:66px;left:0;height:4px;background:#da9a32;transition:width .15s}#status{font-size:15px;min-width:58px;text-align:center}.overview main{display:block;height:auto}.overview .slide{display:flex;height:auto;min-height:650px;margin:24px auto}.overview nav{position:sticky;bottom:0}.overview #progress{display:none}@media(max-width:700px){nav{flex-wrap:wrap;height:auto;min-height:66px}main{padding:8px;height:calc(100dvh - 100px)}#progress{display:none}.slide{padding:22px;height:100%;max-height:none}h2{margin-bottom:20px}.cols{grid-template-columns:1fr;gap:20px}.cols>div+div{border-left:0;border-top:1px solid #dce8ef;padding:20px 0 0}.bar{grid-template-columns:130px 1fr 52px;font-size:17px;gap:8px}nav{gap:5px}button,select,nav a{font-size:12px;padding:8px}select{max-width:110px}.note{font-size:15px}td,th{padding:7px 5px}#full{display:none}}@media print{@page{size:A4 landscape;margin:10mm}body{background:white}main{display:block;height:auto;padding:0}.slide,.slide.active,.overview .slide{display:flex;width:100%;height:185mm;max-height:none;min-height:0;padding:10mm;margin:0;break-after:page;overflow:visible;box-shadow:none}.slide:last-child{break-after:auto}nav,#progress{display:none}h1{font-size:48px}h2{font-size:30px}p,li{font-size:17px}table{font-size:15px}.note{font-size:13px}*{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+
+.formula{font-family:Cambria,"Times New Roman",serif;font-size:clamp(24px,2.7vw,38px);line-height:1.6;color:#12647c;margin:12px 0 22px;overflow-wrap:anywhere}.formula.small{font-size:28px}.answer{margin-top:20px;border-top:2px solid #dbe9ee;padding-top:15px}summary{font-size:21px;color:#12647c;cursor:pointer;padding:8px 0}details p{margin:8px 0}.timeline{display:flex;justify-content:space-between;border-top:4px solid #167d9a;margin:60px 10px 35px}.timeline div{position:relative;padding-top:22px;font-size:24px}.timeline div:before{content:"";width:16px;height:16px;border-radius:50%;background:#167d9a;position:absolute;top:-10px;left:0}.chart{width:100%;max-height:330px}label{font-size:20px;display:block;margin:10px 0}input,select.calc-select{font:inherit;width:170px;padding:7px;border:1px solid #99b5c4;border-radius:3px}.result{font-size:26px;font-weight:bold;color:#12647c;display:block;margin-top:14px}.exercise p{font-size:24px}.slide td:first-child{white-space:normal;width:auto}.note{line-height:1.45}@media print{details:not([open])>*:not(summary){display:none}.formula{font-size:26px}.formula.small{font-size:22px}summary{font-size:17px}}
+</style></head><body><main>
+
+<section class="slide cover" data-title="分期償還與貸款攤銷"><div class="eyebrow">財務數學 / 第四章</div><h1>分期償還與貸款攤銷<br>Amortization and Loan Repayment</h1><p class="lead">第四章．財務數學</p><p>許智翔</p><div class="spacer"></div><p class="note">115 學年度第一學期</p></section>
+
+<section class="slide" data-title="學習目標"><div class="eyebrow">財務數學 / 第四章</div><h2>學習目標</h2><ul><li>用年金現值公式反推每期等額還款金額（貸款月付金）。</li><li>製作貸款攤銷表，理解每期還款如何拆解為利息與本金。</li><li>說明為何等額還款下，利息比例隨時間遞減、本金比例遞增。</li><li>計算貸款在任一期後的未償餘額（Outstanding Loan Balance, OLB）。</li><li>應用以上工具分析房貸、企業貸款等實際還款情境。</li></ul></section>
+
+<section class="slide" data-title="符號說明"><div class="eyebrow">財務數學 / 第四章</div><h2>符號說明</h2><table><thead><tr><th>符號</th><th>定義</th></tr></thead><tbody><tr><td>PV</td><td>貸款本金總額</td></tr><tr><td>C</td><td>每期等額還款金額</td></tr><tr><td>r</td><td>每期利率（年利率／每年複利次數）</td></tr><tr><td>n（或 N）</td><td>總還款期數</td></tr><tr><td>k</td><td>已繳期數</td></tr><tr><td>OLB<sub>k</sub></td><td>第 k 期繳款後的未償貸款餘額</td></tr></tbody></table><p class="note">貸款本金 PV，本質上就是未來一系列等額還款（普通年金 C）在今天的現值總和。</p></section>
+
+<section class="slide" data-title="4.1 貸款還款金額的確定"><div class="eyebrow">財務數學 / 第四章</div><h2>4.1 貸款還款金額的確定</h2><p class="lead">貸款本金總額（PV）本質上就是未來一系列等額還款（普通年金 C）在今天的現值總和。因此可利用普通年金現值公式反推每期還款金額 C。</p></section>
+
+<section class="slide" data-title="貸款還款金額公式"><div class="eyebrow">財務數學 / 第四章</div><h2>貸款還款金額公式</h2><div class="formula">C = PV × r / [1 − (1 + r)<sup>−n</sup>]</div><p class="note">把普通年金現值公式 PV = C × [1−(1+r)<sup>−n</sup>]/r 反過來解 C 即得此式。</p></section>
+
+<section class="slide" data-title="範例演練 4.1：房貸月付金計算"><div class="eyebrow">財務數學 / 第四章</div><h2>範例演練 4.1：房貸月付金計算</h2><p>貸款 3,000,000 元，年利率 2.4%，每月複利，還款期限 20 年（240 個月）。每個月需償還多少？</p><p class="note">每期利率 r = 2.4% / 12 = 0.002，總期數 n = 240</p><div class="formula small">C = 3,000,000 × 0.002 / [1 − (1.002)<sup>−240</sup>]</div><div class="formula small">C ≈ 15,751.34 元</div></section>
+
+<section class="slide" data-title="課堂活動：貸款月付金計算機"><div class="eyebrow">財務數學 / 第四章</div><h2>課堂活動：貸款月付金計算機</h2><p>輸入貸款本金、年利率、還款年限與複利頻率，即時計算每期還款金額。</p><form id="loan-calc" onsubmit="return false"><label>貸款本金 PV <input name="pv" type="number" value="3000000" min="0"></label><label>年利率 (%) <input name="rate" type="number" value="2.4" min="0" step="0.01"></label><label>還款年限 <input name="years" type="number" value="20" min="0" step="1"></label><label>每年複利次數 <select name="freq" class="calc-select"><option value="12" selected>12（每月）</option><option value="4">4（每季）</option><option value="1">1（每年）</option></select></label><output class="result" aria-live="polite"></output></form><p class="note">將「每年複利次數」改成 1，即可模擬每年還款一次的貸款。</p></section>
+
+<section class="slide" data-title="4.2 貸款攤銷表"><div class="eyebrow">財務數學 / 第四章</div><h2>4.2 貸款攤銷表（Amortization Schedule）</h2><p class="lead">貸款攤銷表詳細記錄每期還款如何拆解為利息和本金。在定額還款模式下，由於本金逐漸減少，每期利息遞減，而本金償還遞增。</p><ul><li>當期利息：Interest<sub>t</sub> = 期初餘額 × r</li><li>本金償還：Principal<sub>t</sub> = C − Interest<sub>t</sub></li><li>期末餘額：期末餘額<sub>t</sub> = 期初餘額<sub>t</sub> − Principal<sub>t</sub></li></ul></section>
+
+<section class="slide" data-title="範例演練 4.2：攤銷表前三期"><div class="eyebrow">財務數學 / 第四章</div><h2>範例演練 4.2：攤銷表前三期</h2><p>延續範例 4.1：貸款 3,000,000 元，月付金 15,751.34 元，月利率 0.002。</p><table class="schedule"><thead><tr><th>期數</th><th>期初餘額</th><th>月付金</th><th>當期利息</th><th>償還本金</th><th>期末餘額</th></tr></thead><tbody><tr><td>1</td><td>3,000,000.00</td><td>15,751.34</td><td>6,000.00</td><td>9,751.34</td><td>2,990,248.66</td></tr><tr><td>2</td><td>2,990,248.66</td><td>15,751.34</td><td>5,980.50</td><td>9,770.84</td><td>2,980,477.82</td></tr><tr><td>3</td><td>2,980,477.82</td><td>15,751.34</td><td>5,960.96</td><td>9,790.38</td><td>2,970,687.44</td></tr></tbody></table><p class="note">利息隨餘額下降而逐期遞減，本金償還則逐期遞增，但每期還款總額固定不變。</p></section>
+
+<section class="slide" data-title="4.3 貸款未償餘額的計算"><div class="eyebrow">財務數學 / 第四章</div><h2>4.3 貸款未償餘額的計算</h2><p class="lead">第 k 期結束後的未償餘額，等於剩下所有 (n−k) 期還款的現值總和：</p><div class="formula">OLB<sub>k</sub> = C × [1 − (1 + r)<sup>−(n−k)</sup>] / r</div><p class="note">這是「現值法」：把尚未償還的未來付款，重新折現回第 k 期當下。</p></section>
+
+<section class="slide" data-title="範例演練 4.3：計算剩餘餘額"><div class="eyebrow">財務數學 / 第四章</div><h2>範例演練 4.3：計算剩餘餘額</h2><p>延續範例 4.1，在繳款滿 5 年（k = 60 期）後，剩餘貸款餘額是多少？</p><div class="formula small">OLB<sub>60</sub> = 15,751.34 × [1 − (1.002)<sup>−180</sup>] / 0.002</div><div class="formula small">OLB<sub>60</sub> ≈ 2,379,025.69 元</div><p class="note">雖然已繳了 5 年，但只償還了約 620,974.31 元本金，體現了貸款初期大部分還款用於支付利息的現象。</p></section>
+
+<section class="slide" data-title="課堂活動：攤銷與未償餘額探索器"><div class="eyebrow">財務數學 / 第四章</div><h2>課堂活動：攤銷與未償餘額探索器</h2><p>輸入貸款本金、每期利率、總期數與想查詢的期數 k，即時計算該期的利息、本金與未償餘額。</p><form id="amort-calc" onsubmit="return false"><label>貸款本金 PV <input name="pv" type="number" value="3000000" min="0"></label><label>每期利率 (%) <input name="rate" type="number" value="0.2" min="0" step="0.001"></label><label>總期數 N <input name="n" type="number" value="240" min="1" step="1"></label><label>查詢期數 k <input name="k" type="number" value="60" min="1" step="1"></label><output class="result" aria-live="polite"></output></form><p class="note">計算機會先用 PV、r、N 反推每期還款金額 C，再算出第 k 期的利息、本金與期末餘額 OLB。</p></section>
+
+<section class="slide" data-title="公式總表"><div class="eyebrow">財務數學 / 第四章</div><h2>公式選用總表</h2><table><thead><tr><th>情境</th><th>公式</th></tr></thead><tbody><tr><td>還款金額</td><td>C = PV × r / [1−(1+r)<sup>−n</sup>]</td></tr><tr><td>當期利息</td><td>Interest<sub>t</sub> = 期初餘額 × r</td></tr><tr><td>當期本金</td><td>Principal<sub>t</sub> = C − Interest<sub>t</sub></td></tr><tr><td>未償餘額</td><td>OLB<sub>k</sub> = C × [1−(1+r)<sup>−(n−k)</sup>]/r</td></tr></tbody></table><p class="note">還款金額公式其實就是年金現值公式反推 C；未償餘額公式則是把剩餘期數的年金現值再算一次。</p></section>
+
+<section class="slide exercise" data-title="綜合演練 1"><div class="eyebrow">財務數學 / 第四章</div><h2>綜合演練 1</h2><p class="lead">企業貸款 1,500,000 元，年利率 4.8%，每月複利，還款期 5 年。月付金為多少？第一期利息與本金各為多少？</p><details class="answer"><summary>顯示解答</summary><p class="note">r = 4.8%/12 = 0.004，N = 60</p><div class="formula small">C = 1,500,000 × 0.004 / [1 − (1.004)<sup>−60</sup>] ≈ 28,169.61 元</div><p class="note">第一期利息 = 1,500,000 × 0.004 = 6,000.00 元</p><p class="note">第一期本金 = 28,169.61 − 6,000.00 = 22,169.61 元</p></details></section>
+
+<section class="slide exercise" data-title="綜合演練 2"><div class="eyebrow">財務數學 / 第四章</div><h2>綜合演練 2</h2><p class="lead">小陳借 800,000 元，10 年期，年利率 6%，每年還款一次。年付金為多少？繳完第 4 年後剩餘未償餘額為多少？</p><details class="answer"><summary>顯示解答</summary><div class="formula small">C = 800,000 × 0.06 / [1 − (1.06)<sup>−10</sup>] ≈ 108,694.37 元</div><div class="formula small">OLB<sub>4</sub> = 108,694.37 × [1 − (1.06)<sup>−6</sup>] / 0.06 ≈ 534,485.45 元</div></details></section>
+
+<section class="slide exercise" data-title="綜合演練 3"><div class="eyebrow">財務數學 / 第四章</div><h2>綜合演練 3</h2><p class="lead">請說明貸款攤銷表的原理，為何等額還款中利息部分會逐漸減少？</p><details class="answer"><summary>顯示解答</summary><p>因為每期利息是「期初餘額 × r」計算出來的，而每期還款會先償還當期利息，剩下的部分才拿去償還本金。由於本金餘額會隨每次還款而減少，之後每一期的利息基礎（期初餘額）也跟著變小，所以在還款總額固定不變的前提下，利息占比會逐期下降，本金占比則逐期上升。</p></details></section>
+
+<section class="slide exercise" data-title="綜合演練 4"><div class="eyebrow">財務數學 / 第四章</div><h2>綜合演練 4</h2><p class="lead">5,000,000 元，25 年期，年利率 3%，每月還款。貸款滿 10 年後總共支付了多少利息？</p><details class="answer"><summary>顯示解答</summary><p class="note">r = 3%/12 = 0.0025，N = 300，k = 120</p><div class="formula small">C = 5,000,000 × 0.0025 / [1 − (1.0025)<sup>−300</sup>] ≈ 23,710.57 元</div><p class="note">10 年共繳款 23,710.57 × 120 ≈ 2,845,267.88 元</p><p class="note">OLB<sub>120</sub> ≈ 3,433,419.64 元，已償還本金 ≈ 5,000,000 − 3,433,419.64 = 1,566,580.36 元</p><div class="formula small">總利息 ≈ 2,845,267.88 − 1,566,580.36 ≈ 1,278,687.53 元</div></details></section>
+
+<section class="slide" data-title="本章重點整理"><div class="eyebrow">財務數學 / 第四章</div><h2>本章重點整理</h2><ul><li>貸款還款金額 C 是把年金現值公式反過來解，讓未來所有等額還款的現值總和等於貸款本金。</li><li>攤銷表顯示每期還款如何拆解為利息與本金：利息隨餘額遞減，本金隨之遞增，但每期還款總額不變。</li><li>未償餘額 OLB 可視為「剩餘期數的年金現值」，用來計算任一時點提前還款或再融資時應償還的金額。</li><li>完成以上四題練習，並嘗試自行畫出攤銷表驗證利息與本金的變化趨勢。</li></ul><p><a href="https://chadhsu226.github.io/financial-math/CH4_lecture_en.html" target="_blank" rel="noopener">第四章完整講義（英文線上版）</a>　<a href="https://chadhsu226.github.io/financial-math/CH4_interactive_en.html" target="_blank" rel="noopener">第四章互動教材（英文線上版）</a></p><p class="note">下一章：CH5 資本預算與長期投資決策。</p></section>
+
+</main><div id="progress"></div><nav aria-label="投影片導覽"><button id="prev">上一頁</button><span id="status" aria-live="polite"></span><button id="next">下一頁</button><select aria-label="跳到指定投影片"></select><button id="all" aria-pressed="false">總覽</button><button id="full">全螢幕</button><a id="language" href="CH4_slides_en.html">English</a></nav><script>
+const slides=[...document.querySelectorAll('.slide')], picker=document.querySelector('select');let index=0;
+slides.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(i+1)+'. '+s.dataset.title;picker.append(o)});
+function show(n){index=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>{s.classList.toggle('active',i===index);s.setAttribute('aria-hidden',document.body.classList.contains('overview')?'false':String(i!==index))});picker.value=index;document.querySelector('#status').textContent=(index+1)+' / '+slides.length;document.querySelector('#prev').disabled=index===0;document.querySelector('#next').disabled=index===slides.length-1;document.querySelector('#progress').style.width=((index+1)/slides.length*100)+'%';history.replaceState(null,'','#'+(index+1));}
+document.querySelector('#prev').onclick=()=>show(index-1);document.querySelector('#next').onclick=()=>show(index+1);picker.onchange=()=>show(Number(picker.value));
+document.querySelector('#all').onclick=()=>{const yes=document.body.classList.toggle('overview');document.querySelector('#all').setAttribute('aria-pressed',yes);show(index)};
+document.querySelector('#full').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){document.querySelector('#full').title='請使用瀏覽器的全螢幕功能（F11）。'}};
+document.addEventListener('keydown',ev=>{if(/SELECT|INPUT|TEXTAREA|BUTTON|A|SUMMARY/.test(ev.target.tagName))return;if(['ArrowRight','PageDown',' '].includes(ev.key)){ev.preventDefault();show(index+1)}if(['ArrowLeft','PageUp'].includes(ev.key)){ev.preventDefault();show(index-1)}if(ev.key==='Home'){ev.preventDefault();show(0)}if(ev.key==='End'){ev.preventDefault();show(slides.length-1)}if(ev.key.toLowerCase()==='f')document.querySelector('#full').click()});
+window.addEventListener('hashchange',()=>show((parseInt(location.hash.slice(1))||1)-1));show((parseInt(location.hash.slice(1))||1)-1);
+
+function calcLoanPayment(PV,r,N){ if(r===0) return PV/N; return PV*r/(1-Math.pow(1+r,-N)); }
+function calcOLB(C,r,N,k){ const rem=N-k; if(rem<=0) return 0; if(r===0) return C*rem; return C*(1-Math.pow(1+r,-rem))/r; }
+
+const loanCalc=document.querySelector('#loan-calc');
+function runLoanCalc(){
+  const pv=Number(loanCalc.querySelector('[name=pv]').value);
+  const ratePct=Number(loanCalc.querySelector('[name=rate]').value);
+  const years=Number(loanCalc.querySelector('[name=years]').value);
+  const freq=Number(loanCalc.querySelector('[name=freq]').value);
+  const out=loanCalc.querySelector('output');
+  if(![pv,ratePct,years,freq].every(Number.isFinite)||pv<=0||ratePct<0||years<=0||freq<=0){
+    out.textContent='請輸入正確的數值（本金與年限需大於 0，利率不可為負）。';
+    return;
+  }
+  const r=ratePct/100/freq, N=Math.round(years*freq);
+  const C=calcLoanPayment(pv,r,N);
+  out.textContent='每期還款 C = '+C.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'　／　總期數 N = '+N+'　／　每期利率 = '+(r*100).toFixed(4)+'%';
+}
+loanCalc.addEventListener('input',runLoanCalc);runLoanCalc();
+
+const amortCalc=document.querySelector('#amort-calc');
+function runAmortCalc(){
+  const pv=Number(amortCalc.querySelector('[name=pv]').value);
+  const ratePct=Number(amortCalc.querySelector('[name=rate]').value);
+  const N=Number(amortCalc.querySelector('[name=n]').value);
+  const k=Number(amortCalc.querySelector('[name=k]').value);
+  const out=amortCalc.querySelector('output');
+  if(![pv,ratePct,N,k].every(Number.isFinite)||pv<=0||ratePct<0||N<=0||k<1||k>N){
+    out.textContent='請輸入正確的數值（0 &lt; k ≤ N，本金需大於 0，利率不可為負）。';
+    return;
+  }
+  const r=ratePct/100;
+  const C=calcLoanPayment(pv,r,N);
+  const balanceBefore=(k===1)?pv:calcOLB(C,r,N,k-1);
+  const interest=balanceBefore*r;
+  const principal=C-interest;
+  const olb=calcOLB(C,r,N,k);
+  out.textContent='每期還款 C = '+C.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'　／　第 '+k+' 期利息 = '+interest.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'　／　第 '+k+' 期本金 = '+principal.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'　／　期末未償餘額 OLB = '+olb.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+amortCalc.addEventListener('input',runAmortCalc);runAmortCalc();
+
+document.querySelector('#language').addEventListener('click',ev=>{ev.currentTarget.href=ev.currentTarget.href.split('#')[0]+'#'+(index+1)});
+</script></body></html>
