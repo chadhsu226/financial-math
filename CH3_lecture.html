@@ -53,24 +53,37 @@
         <thead><tr><th>術語</th><th>定義</th><th>符號</th></tr></thead>
         <tbody>
             <tr><td>面額 (Face Value)</td><td>到期時償還給持有人的金額</td><td>FV</td></tr>
-            <tr><td>票面利率 (Coupon Rate)</td><td>每年支付的利息率</td><td>C</td></tr>
+            <tr><td>票面利率 (Coupon Rate)</td><td>每年支付的利息率（占面額的比例）</td><td>$r_c$</td></tr>
             <tr><td>市場利率 (YTM)</td><td>投資人要求的回報率</td><td>r</td></tr>
             <tr><td>到期日 (Maturity)</td><td>債券生命週期結束的時間點</td><td>n</td></tr>
         </tbody>
     </table>
+    <p><strong>關係式：</strong>每期票息金額 $C = FV \times \text{票面利率}$（即 $C = FV \times r_c$）。注意 $C$ 是<strong>金額</strong>，票面利率 $r_c$ 是<strong>比率</strong>。</p>
     <hr>
     <h2>3.2 債券定價模型 (Bond Valuation Model)</h2>
     <h3>1. 定價公式</h3>
     <div class="math-block">$$Price = C \left[ \frac{1 - (1+r)^{-n}}{r} \right] + FV (1+r)^{-n}$$</div>
     <h3>2. 範例演練 3.1：溢價債券定價</h3>
-    <p><strong>情境：</strong>面額 $FV=100,000$ 元，票面利率 $4\%$，每年付息，三年後到期 ($n=3$)，市場利率 $r=3.8\%$。</p>
-    <p>票息 $C = 100,000 \times 4\% = 4,000$ 元</p>
+    <p><strong>情境：</strong>面額 $FV=100,000$ 元，票面利率 $r_c=4\%$，每年付息，三年後到期 ($n=3$)，市場利率 $r=3.8\%$。</p>
+    <p>票息 $C = FV \times r_c = 100,000 \times 4\% = 4,000$ 元</p>
     <div class="math-block">$$Price \approx 100,557.13 \text{ 元（溢價債券）}$$</div>
 
     <div class="ib">
         <div class="ib-text"><span>🔢</span>範例 3.1：調整市場利率，觀察債券價格如何變化</div>
         <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟債券評價分析器</a>
     </div>
+    <h3>3. 溢價、折價與平價債券 (Premium, Discount and Par Bonds)</h3>
+    <p>債券價格相對於面額的高低，取決於<strong>票面利率 $r_c$</strong> 與<strong>市場利率 $r$</strong> 的相對大小：</p>
+    <table>
+        <thead><tr><th>債券類型</th><th>利率條件</th><th>價格與面額</th></tr></thead>
+        <tbody>
+            <tr><td>溢價債券 (Premium Bond)</td><td>$r_c &gt; r$</td><td>$Price &gt; FV$</td></tr>
+            <tr><td>平價債券 (Par Bond)</td><td>$r_c = r$</td><td>$Price = FV$</td></tr>
+            <tr><td>折價債券 (Discount Bond)</td><td>$r_c &lt; r$</td><td>$Price &lt; FV$</td></tr>
+        </tbody>
+    </table>
+    <p><strong>直覺：</strong>票面利率高於市場利率時，這張債券每期付的票息比市場上同等風險的投資更優渥，投資人願意多付一點（溢價）來買；反之票息偏低，就必須降價（折價）才賣得出去；兩者相等時，價格剛好等於面額（平價）。</p>
+    <p>以範例 3.1 為例：$r_c = 4\% &gt; r = 3.8\%$，因此價格 $100,557.13$ 元高於面額 $100,000$ 元，為<strong>溢價債券</strong>。</p>
     <hr>
     <h2>3.3 債券價格與市場利率的關係 (Interest Rate Risk)</h2>
     <h3>核心概念</h3>
