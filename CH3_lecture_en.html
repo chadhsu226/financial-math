@@ -40,7 +40,7 @@
     <div class="lang-switch"><a href="CH3_lecture.html">中文版 →</a></div>
     <div class="banner">
         <div><strong>📊 Chapter 3 interactive materials are ready</strong><p>While reading, click the button under each example to open an interactive calculator in a new tab and verify the numbers instantly.</p></div>
-        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> Open the full interactive kit</a>
+        <a href="CH3_interactive_en.html" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> Open the full interactive kit</a>
     </div>
     <h1>Chapter 3: Valuation of Fixed-Income and Equity Securities</h1>
     <h2>Introduction</h2>
@@ -70,7 +70,7 @@
 
     <div class="ib">
         <div class="ib-text"><span>🔢</span>Example 3.1: Adjust the market rate and observe how the bond price changes</div>
-        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the bond valuation analyzer</a>
+        <a href="CH3_interactive_en.html#bond-valuation" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the bond valuation analyzer</a>
     </div>
     <h3>3. Premium, Discount and Par Bonds</h3>
     <p>Whether a bond is priced above or below its face value depends on the relative size of the <strong>coupon rate $r_c$</strong> and the <strong>market rate $r$</strong>:</p>
@@ -87,50 +87,141 @@
     <hr>
     <h2>3.3 The Relationship Between Bond Price and Market Rate (Interest Rate Risk)</h2>
     <h3>Core Concept</h3>
-    <p>Bond prices and market interest rates have an <strong>inverse relationship</strong>:</p>
+    <p>Once a bond is issued, its coupon $C$ and face value $FV$ are fixed, but the market rate $r$ moves with economic conditions. A bond's price is obtained by discounting these fixed cash flows at the <strong>market rate</strong>, so the two move in <strong>opposite directions</strong>:</p>
     <ul>
-        <li>Market rate <strong>rises</strong> → bond price <strong>falls</strong></li>
-        <li>Market rate <strong>falls</strong> → bond price <strong>rises</strong></li>
+        <li>Market rate <strong>rises</strong> → larger discount rate → bond price <strong>falls</strong></li>
+        <li>Market rate <strong>falls</strong> → smaller discount rate → bond price <strong>rises</strong></li>
     </ul>
+    <p>The risk that bond prices fluctuate because market rates change is called <strong>interest rate risk</strong>. Even if the issuer never defaults, an investor who sells before maturity can still lose money if rates have risen.</p>
+    <h3>1. One Bond at Different Market Rates</h3>
+    <p>Take the bond from Example 3.1 (face value $100{,}000$, coupon rate $r_c=4\%$, annual coupons, $3$ years to maturity):</p>
+    <table>
+        <thead><tr><th>Market rate $r$</th><th>Bond price</th><th>Bond type</th></tr></thead>
+        <tbody>
+            <tr><td>$3\%$</td><td>$102{,}828.61$</td><td>Premium</td></tr>
+            <tr><td>$3.8\%$</td><td>$100{,}557.13$</td><td>Premium (Example 3.1)</td></tr>
+            <tr><td>$4\%$</td><td>$100{,}000.00$</td><td>Par</td></tr>
+            <tr><td>$5\%$</td><td>$97{,}276.75$</td><td>Discount</td></tr>
+            <tr><td>$6\%$</td><td>$94{,}653.98$</td><td>Discount</td></tr>
+        </tbody>
+    </table>
+    <p class="note">As the market rate goes up, the price goes down; once the market rate passes the $4\%$ coupon rate, the bond turns from a premium bond into a discount bond.</p>
+    <h3>2. Worked Example 3.2: Maturity and Interest Rate Risk</h3>
+    <p><strong>Scenario:</strong> The market rate rises from $4\%$ to $5\%$. How much does the price of each of the following bonds change? All have a face value of $100{,}000$ and pay annual coupons.</p>
+    <table>
+        <thead><tr><th>Bond</th><th>Price at $r=4\%$</th><th>Price at $r=5\%$</th><th>Price change</th></tr></thead>
+        <tbody>
+            <tr><td>A: 3-year, coupon rate $4\%$</td><td>$100{,}000.00$</td><td>$97{,}276.75$</td><td>$-2.72\%$</td></tr>
+            <tr><td>B: 10-year, coupon rate $4\%$</td><td>$100{,}000.00$</td><td>$92{,}278.27$</td><td>$-7.72\%$</td></tr>
+            <tr><td>C: 10-year zero-coupon bond</td><td>$67{,}556.42$</td><td>$61{,}391.33$</td><td>$-9.13\%$</td></tr>
+        </tbody>
+    </table>
+    <p>Bonds A and B are priced with the formula in Section 3.2; bond C pays no coupons ($C=0$), so only the face value is discounted:</p>
+    <div class="math-block">$$Price_{C} = \frac{100{,}000}{(1.05)^{10}} \approx 61{,}391.33$$</div>
+    <p><strong>Takeaways:</strong></p>
+    <ul>
+        <li><strong>The longer the maturity, the greater the interest rate risk:</strong> A and B have the same coupon rate, yet the 10-year bond falls almost three times as much as the 3-year bond — cash flows further in the future are discounted over more periods, so they are more sensitive to rate changes.</li>
+        <li><strong>The lower the coupon rate, the greater the interest rate risk:</strong> B and C both mature in 10 years, but the zero-coupon bond's entire cash flow arrives in year 10, so it falls the most.</li>
+    </ul>
+    <p class="note">Note: if the market rate instead falls from $4\%$ to $3\%$, bond B rises to $108{,}530.20$ ($+8.53\%$) — a larger gain than the $-7.72\%$ loss from a 1% rate rise. Duration, the standard measure of a bond's price sensitivity to rates, is covered in later fixed-income courses.</p>
 
     <div class="ib">
-        <div class="ib-text"><span>📉</span>Try it: raise the market rate and watch a premium turn into a discount</div>
-        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Open the interest rate risk simulator</a>
+        <div class="ib-text"><span>📉</span>Example 3.2: Set your own rate change and compare how bonds of different maturities respond</div>
+        <a href="CH3_interactive_en.html#rate-risk" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Open the interest rate risk comparator</a>
     </div>
     <hr>
-    <h2>3.4 Stock Valuation and the Gordon Growth Model (GGM)</h2>
+    <h2>3.4 Stock Valuation: The Dividend Discount Model and the Gordon Growth Model</h2>
     <h3>Core Concept</h3>
-    <p>The Gordon Growth Model (GGM) assumes that dividends grow forever at a constant rate ($g$), and discounts this infinite growing series of cash flows back to today's value.</p>
-    <h3>1. Pricing Formula</h3>
-    <div class="math-block">$$P_0 = \frac{D_1}{r - g}$$</div>
-    <p>where $D_1 = D_0 \times (1+g)$; $r$ is the required rate of return; $g$ is the constant dividend growth rate.</p>
-    <h3>2. Worked Example 3.2: Pricing with the Gordon Model</h3>
-    <p><strong>Scenario:</strong> $D_0=2.00$, $g=5\%$, $r=10\%$.</p>
+    <p>Just like a bond, a stock is worth the <strong>present value of the future cash flows</strong> it provides. For a common shareholder, those cash flows come from two sources: the <strong>dividends</strong> received while holding the stock, and the <strong>price at which the stock is later sold</strong>.</p>
+    <h3>1. Starting with a One-Year Holding Period</h3>
+    <p>Suppose an investor buys the stock today, holds it for one year, receives a dividend $D_1$ at year-end and then sells at price $P_1$. With a required return of $r$, today's fair price is:</p>
+    <div class="math-block">$$P_0 = \frac{D_1 + P_1}{1+r}$$</div>
+    <p>But the price one year from now, $P_1$, itself depends on the year-2 dividend $D_2$ and the selling price $P_2$; $P_2$ depends on $D_3$ and $P_3$; and so on.</p>
+    <h3>2. The Dividend Discount Model (DDM)</h3>
+    <p>Pushing this logic forward forever, the final selling price is discounted to almost nothing, and the stock price equals the present value of <strong>all</strong> future dividends:</p>
+    <div class="math-block">$$P_0 = \frac{D_1}{1+r} + \frac{D_2}{(1+r)^2} + \frac{D_3}{(1+r)^3} + \cdots = \sum_{t=1}^{\infty} \frac{D_t}{(1+r)^t}$$</div>
+    <p>The difficulty is that a stock has no maturity date and its future dividends are uncertain, so they cannot be forecast one by one. In practice we make simplifying assumptions about how dividends evolve. The two most common special cases follow.</p>
+    <h3>3. Stocks Compared with Bonds</h3>
+    <table>
+        <thead><tr><th>Item</th><th>Bond</th><th>Common stock</th></tr></thead>
+        <tbody>
+            <tr><td>Periodic cash flow</td><td>Coupon $C$, fixed amount</td><td>Dividend $D_t$, set by the company, uncertain</td></tr>
+            <tr><td>Maturity</td><td>Yes (matures after $n$ periods)</td><td>None — exists indefinitely</td></tr>
+            <tr><td>Repayment at maturity</td><td>Face value $FV$</td><td>None</td></tr>
+            <tr><td>Discount rate</td><td>Market rate $r$ (YTM)</td><td>Investor's required return $r$</td></tr>
+            <tr><td>Valuation</td><td>PV of coupon annuity + PV of face value</td><td>Discount dividends, after assuming how they evolve</td></tr>
+        </tbody>
+    </table>
+    <h3>4. Special Case 1: The Zero-Growth Model (a Perpetuity)</h3>
+    <p>If the dividend is a fixed amount $D$ every year and never changes ($g=0$), the dividend discount model is simply the <strong>perpetuity</strong> from Chapter 2:</p>
+    <div class="math-block">$$P_0 = \frac{D}{r}$$</div>
+    <p>This model fits <strong>preferred stock</strong>, which pays a fixed dividend every year and has no maturity date.</p>
+    <h3>5. Worked Example 3.3: Valuing Preferred Stock</h3>
+    <p><strong>Scenario:</strong> A preferred stock pays a fixed dividend of $D=5$ at the end of every year and has no maturity date. If investors require a return of $r=8\%$, what is its fair price?</p>
+    <div class="math-block">$$P_0 = \frac{D}{r} = \frac{5}{0.08} = 62.5$$</div>
+    <p><strong>Intuition:</strong> buy at $62.5$, collect $5$ every year, and your return is exactly $5 / 62.5 = 8\%$. This is the same logic as the scholarship foundation in Chapter 2, Example 2.4.</p>
+    <h3>6. Special Case 2: Constant Growth — the Gordon Growth Model (GGM)</h3>
+    <p>If dividends grow forever at a constant rate $g$, so that $D_1 = D_0(1+g)$, $D_2 = D_0(1+g)^2$, …, the dividend discount model simplifies to a <strong>growing perpetuity</strong> (the inflation-adjusted scholarship in the "Further thinking" part of Chapter 2, Example 2.4):</p>
+    <div class="math-block">$$P_0 = \frac{D_1}{r-g} = \frac{D_0(1+g)}{r-g}$$</div>
+    <p>Here $D_0$ is the dividend just paid, $D_1$ is next period's (one year from now) dividend, $r$ is the required return, and $g$ is the perpetual dividend growth rate. When using the GGM, keep in mind:</p>
+    <ul>
+        <li><strong>Constant, perpetual growth:</strong> dividends are assumed to grow at the same rate $g$ forever.</li>
+        <li><strong>$r$ must exceed $g$:</strong> if $g \ge r$, the denominator $r-g \le 0$, the present value of future dividends does not converge, and the formula breaks down.</li>
+        <li><strong>The numerator is $D_1$, not $D_0$:</strong> if a problem gives the dividend "just paid" or "paid this year" ($D_0$), multiply by $(1+g)$ first. This is the most common mistake.</li>
+        <li><strong>Where it applies:</strong> mature companies with stable growth that pay dividends consistently.</li>
+    </ul>
+    <h3>7. Worked Example 3.4: Pricing with the Gordon Model</h3>
+    <p><strong>Scenario:</strong> A company has just paid a dividend of $D_0=2.00$. Dividends are expected to grow at $g=5\%$ a year, and investors require a return of $r=10\%$.</p>
     <p>$D_1 = 2.00 \times 1.05 = 2.10$</p>
     <div class="math-block">$$P_0 = \frac{2.10}{0.10 - 0.05} = 42$$</div>
+    <h3>8. What Makes Up the Required Return: Dividend Yield + Capital Gains Yield</h3>
+    <p>Rearranging the GGM gives:</p>
+    <div class="math-block">$$r = \frac{D_1}{P_0} + g$$</div>
+    <ul>
+        <li>$D_1 / P_0$: the <strong>dividend yield</strong> — the return that comes from dividends.</li>
+        <li>$g$: the <strong>capital gains yield</strong> — the return that comes from the rising share price. Under the GGM the price also grows at rate $g$: $P_1 = P_0(1+g)$.</li>
+    </ul>
+    <p>Check with Example 3.4: dividend yield $2.10 / 42 = 5\%$, capital gains yield $g = 5\%$, total $10\% = r$. The price one year later is $P_1 = 42 \times 1.05 = 44.10$; plugging into the one-period formula gives $(2.10 + 44.10) / 1.10 = 42$, matching the GGM result.</p>
+    <h3>9. Worked Example 3.5: How the Required Return and Growth Rate Affect the Price</h3>
+    <p><strong>Scenario:</strong> Continue Example 3.4 ($D_0=2.00$).</p>
+    <ul>
+        <li>If the required return rises from $10\%$ to $12\%$ ($g$ stays at $5\%$): $P_0 = \dfrac{2.10}{0.12 - 0.05} = 30$, a drop of about $28.6\%$.</li>
+        <li>If the growth rate rises from $5\%$ to $6\%$ ($r$ stays at $10\%$): $D_1 = 2.00 \times 1.06 = 2.12$, $P_0 = \dfrac{2.12}{0.10 - 0.06} = 53$, a rise of about $26.2\%$.</li>
+    </ul>
+    <p>A higher required return lowers the stock price — the same logic as "a higher market rate lowers the bond price" in Section 3.3. Because the GGM denominator $r-g$ is usually small, even a small change in $r$ or $g$ moves the price a lot.</p>
 
     <div class="ib">
-        <div class="ib-text"><span>📈</span>Example 3.2: Adjust the growth rate g and the required return r and watch the stock price change</div>
-        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the GGM stock valuation calculator</a>
+        <div class="ib-text"><span>📈</span>Examples 3.3–3.5: Adjust the dividend, growth rate g and required return r, and watch the stock price change</div>
+        <a href="CH3_interactive_en.html#ggm-valuation" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the stock valuation calculator</a>
     </div>
+    <h3>10. Supplement: Limitations of the Model</h3>
+    <ul>
+        <li>Companies that pay no dividends (for example, many high-growth tech stocks) cannot be valued directly with the dividend discount model.</li>
+        <li>During a high-growth phase, a company's growth rate may temporarily exceed $r$. A <strong>two-stage growth model</strong> is then used: discount the high-growth dividends year by year, then use the GGM for the value once growth becomes stable.</li>
+        <li>In practice, analysts also use <strong>relative valuation</strong>, such as price-to-earnings (P/E) ratios compared with peers.</li>
+    </ul>
     <hr>
     <h2>Comprehensive Exercises</h2>
 
     <div class="ib">
         <div class="ib-text"><span>✏️</span>Try solving each one by hand first, then verify with the interactive tools, or use the AI dynamic quiz</div>
-        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> Open the AI dynamic quiz</a>
+        <a href="CH3_interactive_en.html#quiz-generator" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> Open the AI dynamic quiz</a>
     </div>
     <ol>
         <li>A zero-coupon bond with a face value of $100{,}000$ matures in five years, at a market rate of $3\%$. What is its fair price?</li>
         <li>A three-year bond with a face value of $50{,}000$ and a coupon rate of $5\%$, at a market rate of $6\%$ — what is its price?</li>
-        <li>$D_0=3$, dividends grow $4\%$ per year, required return is $10\%$. What is the fair stock price?</li>
         <li>When the coupon rate is greater than the market rate, what happens to the bond price?</li>
-        <li>What is the main assumption behind the Gordon Growth Model?</li>
+        <li>A six-year bond has a face value of $100{,}000$ and a coupon rate of $3.5\%$, paid annually. If the market rate rises from $3.5\%$ to $4.5\%$, what is the new price, and by roughly what percentage does it fall?</li>
+        <li>All else equal, is interest rate risk greatest for a long-term bond, a short-term bond, or a zero-coupon bond? Explain why.</li>
+        <li>A preferred stock pays a fixed dividend of $4.5$ a year and has no maturity date. If the required return is $9\%$, what is its fair price?</li>
+        <li>$D_0=3$, dividends grow $4\%$ a year, and the required return is $10\%$. What is the fair share price?</li>
+        <li>A stock trades at $50$. Next year's dividend is expected to be $D_1=2$, and dividends grow $4\%$ a year forever. What required return does this price imply? How much of it is dividend yield and how much is capital gains yield?</li>
+        <li>What are the main assumptions of the Gordon Growth Model? If a company's dividend growth rate exceeds investors' required return, can the GGM be used?</li>
     </ol>
 
     <div class="ib">
         <div class="ib-text"><span>💬</span>Still have questions? Ask the AI Q&A box about this chapter's concepts in real time</div>
-        <a href="https://gemini.google.com/share/b1725d3802c0" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> Open the AI concept Q&A</a>
+        <a href="CH3_interactive_en.html#ai-chatbox" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> Open the AI concept Q&A</a>
     </div>
     <hr>
 </body></html>
