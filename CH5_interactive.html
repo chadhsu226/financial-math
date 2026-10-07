@@ -106,6 +106,7 @@
               </div>
               <div class="flex space-x-2 pt-2">
                 <button id="load-example-1" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">載入範例 5.1</button>
+                <button id="load-exercise-1" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">載入綜合演練 1</button>
                 <button id="clear-analyzer" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">清除</button>
               </div>
             </div>
@@ -147,6 +148,15 @@
             <div class="mt-8">
               <h3 class="text-xl font-bold mb-4 text-center">折現現金流量視覺化</h3>
               <div class="chart-container"><canvas id="npvChart"></canvas></div>
+            </div>
+            <div class="mt-8">
+              <h3 class="text-xl font-bold mb-2 text-center">NPV 曲線（NPV Profile）</h3>
+              <p class="text-sm text-stone-500 text-center mb-3">NPV 隨折現率上升而下降；曲線與 NPV＝0 的交點即為 IRR。</p>
+              <div class="chart-container"><canvas id="npvProfileChart"></canvas></div>
+            </div>
+            <div class="mt-8 overflow-x-auto">
+              <h3 class="text-xl font-bold mb-3 text-center">逐期折現明細</h3>
+              <table class="min-w-full divide-y divide-stone-200 text-sm"><thead class="bg-stone-50"><tr><th class="px-3 py-2 text-right text-xs font-medium text-stone-500">年 t</th><th class="px-3 py-2 text-right text-xs font-medium text-stone-500">現金流量 CF</th><th class="px-3 py-2 text-right text-xs font-medium text-stone-500">折現因子</th><th class="px-3 py-2 text-right text-xs font-medium text-stone-500">現值</th></tr></thead><tbody id="npv-table-body" class="divide-y divide-stone-100"></tbody></table>
             </div>
           </div>
         </div>
@@ -296,6 +306,17 @@
       <div class="space-y-4 max-w-4xl mx-auto">
         <div class="concept-card card overflow-hidden">
           <button class="w-full text-left p-4 bg-white hover:bg-stone-50 transition flex justify-between items-center">
+            <h3 class="text-lg font-bold">現金流量與資本成本</h3>
+            <span class="text-fuchsia-600 text-2xl font-light">+</span>
+          </button>
+          <div class="concept-content p-4 pt-0 text-stone-700 hidden">
+            <p><strong>現金流量 $CF_t$：</strong>第 $t$ 期期末的淨現金流量。$t=0$ 為期初投資（流出，記為負）；營運期間為增加的現金收入減去增加的現金支出；期末可能有殘值。</p>
+            <p class="mt-2"><strong>資本成本 $r$：</strong>公司對專案要求的最低報酬率，也是機會成本——把錢投資在同等風險的其他機會可賺到的報酬率。</p>
+            <p class="mt-2"><strong>第一步：</strong>先畫出現金流量時間線，再折現。</p>
+          </div>
+        </div>
+        <div class="concept-card card overflow-hidden">
+          <button class="w-full text-left p-4 bg-white hover:bg-stone-50 transition flex justify-between items-center">
             <h3 class="text-lg font-bold">淨現值法 (NPV)</h3>
             <span class="text-fuchsia-600 text-2xl font-light">+</span>
           </button>
@@ -311,7 +332,8 @@
             <span class="text-fuchsia-600 text-2xl font-light">+</span>
           </button>
           <div class="concept-content p-4 pt-0 text-stone-700 hidden">
-            <p><strong>核心：</strong>使 $\text{NPV}$ 等於零的折現率，代表專案預期可實現的年化回報率。</p>
+            <p><strong>核心：</strong>使 $\text{NPV}$ 等於零的折現率，代表專案預期可實現的年化回報率，也是 NPV 曲線與橫軸的交點。</p>
+            <p class="mt-2"><strong>手算：</strong>試誤找出 NPV 由正轉負的兩個利率，再用線性內插估計。</p>
             <p class="mt-2"><strong>準則：</strong> $\text{IRR} > \text{r}$ (資本成本) 則接受。</p>
             <p class="mt-2 text-sm text-red-600">注意：與 $\text{NPV}$ 衝突時（如互斥專案），應優先 $\text{NPV}$。</p>
           </div>
@@ -342,6 +364,8 @@
           <div class="flex flex-wrap gap-2">
             <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">NPV > 0 為什麼就應接受專案？</button>
             <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">IRR 的侷限性是什麼？</button>
+            <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">資本成本為什麼是一種機會成本？</button>
+            <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">怎麼用內插法估計 IRR？</button>
             <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">普通回收期和折現回收期差在哪？</button>
             <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">互斥專案為什麼要用 NPV 而非 IRR？</button>
           </div>
@@ -502,7 +526,7 @@
 
     // ── 問答框 ──
     const chatHistory=[];
-    const CHAT_SYSTEM_PROMPT=`你是「財務數學 CH5」的 AI 學習助理，專門回答資本預算相關問題，包含：淨現值(NPV)、內部報酬率(IRR)、投資回收期(Payback Period)、折現回收期(Discounted Payback)、NPV vs. IRR 衝突、資本成本等概念。
+    const CHAT_SYSTEM_PROMPT=`你是「財務數學 CH5」的 AI 學習助理，專門回答資本預算相關問題，包含：淨現值(NPV)、內部報酬率(IRR)、投資回收期(Payback Period)、折現回收期(Discounted Payback)、NPV vs. IRR 衝突、資本成本（機會成本）、專案現金流量與時間線、逐期折現、NPV 曲線、以試誤法與內插法估計 IRR 等概念。
 規則：
 1. 只回答 CH5 資本預算相關問題。
 2. 若超出範圍，禮貌說明「這超出 CH5 範圍，建議參考其他章節」。
@@ -534,7 +558,7 @@
     // =============================================
     let currentQuizData = [];
 
-    const QUIZ_SYSTEM_PROMPT = `你是大學財務管理教授。請根據「資本預算與長期投資決策（包含淨現值 NPV、內部報酬率 IRR、普通與折現回收期、互斥專案與 NPV/IRR 決策衝突）」出 10 題單選題。
+    const QUIZ_SYSTEM_PROMPT = `你是大學財務管理教授。請根據「資本預算與長期投資決策（包含專案現金流量與時間線、資本成本（機會成本）、淨現值 NPV 與逐期折現、內部報酬率 IRR、NPV 曲線、試誤法與內插法估計 IRR、普通與折現回收期、互斥專案與 NPV/IRR 決策衝突）。金額單位一律用「元」」出 10 題單選題。
     請嚴格以 JSON 陣列格式回傳，絕對不要有任何其他文字說明或 Markdown 標記，格式如下：
     [
       {
@@ -706,6 +730,29 @@
       });
     }
 
+    let npvProfileChart;
+    function updateNPVDetail(C0,CFs,r,irr){
+      const body=document.getElementById('npv-table-body'); if(!body) return;
+      let last=CFs.length; while(last>0&&!CFs[last-1]) last--;
+      const rows=[[0,-C0,1]].concat(CFs.slice(0,last).map((cf,i)=>[i+1,cf,1/Math.pow(1+r,i+1)]));
+      let tot=0;
+      body.innerHTML=rows.map(([t,cf,df])=>{const pv=cf*df; tot+=pv; return `<tr><td class="px-3 py-2 text-right">${t}</td><td class="px-3 py-2 text-right ${cf<0?'text-red-600':''}">${cf.toLocaleString()}</td><td class="px-3 py-2 text-right">${df.toFixed(4)}</td><td class="px-3 py-2 text-right ${pv<0?'text-red-600':''}">${pv.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td></tr>`;}).join('')
+        + `<tr class="font-bold"><td class="px-3 py-2 text-right" colspan="3">合計（NPV）</td><td class="px-3 py-2 text-right ${tot<0?'text-red-600':'text-green-700'}">${tot.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td></tr>`;
+      const canvas=document.getElementById('npvProfileChart'); if(!canvas) return;
+      if(npvProfileChart) npvProfileChart.destroy();
+      const hi=Math.max(20, Math.ceil(((isFinite(irr)?irr:0.1)*100*2)/5)*5, Math.ceil(r*100*1.5/5)*5);
+      const xs=[]; for(let k=0;k<=hi*2;k++) xs.push(k/2);
+      const ys=xs.map(x=>calculateNPV(C0,CFs,x/100));
+      const pts=[];
+      if(isFinite(irr)&&irr>=0&&irr*100<=hi) pts.push({x:irr*100,y:0,label:'IRR '+(irr*100).toFixed(2)+'%',c:'#16A34A'});
+      pts.push({x:r*100,y:calculateNPV(C0,CFs,r),label:'資本成本 r = '+(r*100).toFixed(2)+'%',c:'#DC2626'});
+      npvProfileChart=new Chart(canvas.getContext('2d'),{type:'line',data:{datasets:[
+        {label:'NPV',data:xs.map((x,i)=>({x,y:ys[i]})),borderColor:'#2563EB',pointRadius:0,borderWidth:2,tension:0.2},
+        ...pts.map(p=>({label:p.label,data:[{x:p.x,y:p.y}],borderColor:p.c,backgroundColor:p.c,pointRadius:6,showLine:false}))]},
+        options:{responsive:true,maintainAspectRatio:false,parsing:true,scales:{x:{type:'linear',title:{display:true,text:'折現率 (%)'}},y:{ticks:{callback:v=>formatCurrency(v).replace('NT$ ','')}}},
+        plugins:{tooltip:{callbacks:{label:c=>`${c.dataset.label}: r = ${c.raw.x.toFixed(2)}%, NPV = ${formatCurrency(c.raw.y)}`}}}}});
+    }
+
     // ── 計算邏輯 ──
     function runAnalyzer(){
       const C0=parseFloat(document.getElementById('initial-investment').value)||0;
@@ -723,11 +770,14 @@
         else if(npv<0){decisionText.textContent=`專案不可行，建議拒絕。(NPV < 0，IRR ${formatPercent(irr)} < ${rPct}%)`;decisionCard.classList.add('npv-negative');decision='拒絕';}
         else{decisionText.textContent='專案損益兩平。(NPV = 0)';decisionCard.classList.add('npv-neutral');decision='損益兩平';}
         updateNPVChart(C0,CFs,r);
+        updateNPVDetail(C0,CFs,r,irr);
         state.npv={C0,rPct,CFs,npv,irr,decision};
         document.getElementById('npv-ai-btn').disabled=false;
       } else {
         decisionText.textContent='請輸入有效的初始投資和現金流入。'; decisionCard.classList.add('npv-neutral');
         if(npvChart) npvChart.destroy();
+        if(npvProfileChart) npvProfileChart.destroy();
+        document.getElementById('npv-table-body').innerHTML='';
         document.getElementById('npv-ai-btn').disabled=true;
         document.getElementById('npv-ai-result').classList.add('hidden');
       }
@@ -798,6 +848,11 @@
       document.getElementById('load-example-1').addEventListener('click',()=>{
         document.getElementById('initial-investment').value=100000; document.getElementById('discount-rate').value=10;
         const cfs=[40000,40000,40000]; document.querySelectorAll('#analyzer .cashflow-input').forEach((inp,i)=>inp.value=cfs[i]??''); runAnalyzer();
+      });
+      document.getElementById('load-exercise-1').addEventListener('click',()=>{
+        while(document.querySelectorAll('#analyzer .cashflow-input').length<4) document.getElementById('add-cashflow').click();
+        document.getElementById('initial-investment').value=60000; document.getElementById('discount-rate').value=8;
+        const cfs=[20000,20000,20000,20000]; document.querySelectorAll('#analyzer .cashflow-input').forEach((inp,i)=>inp.value=cfs[i]??''); runAnalyzer();
       });
       document.getElementById('clear-analyzer').addEventListener('click',()=>{
         document.getElementById('initial-investment').value=''; document.getElementById('discount-rate').value='';
