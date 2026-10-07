@@ -34,58 +34,137 @@
         .btn-banner{display:inline-flex;align-items:center;gap:6px;background:white;color:#A21CAF;padding:8px 16px;border-radius:6px;font-size:.83rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:opacity .2s;}
         .btn-banner:hover{opacity:.85;}
         .note{font-size:.9em;color:#555;margin-top:5px;}
+        .cf-figure{margin:16px 0;padding:12px 10px 8px;background:#fafafa;border:1px solid #e5e5e5;border-radius:8px;}
+        .cf-figure svg{display:block;width:100%;max-width:640px;height:auto;margin:0 auto;}
+        .cf-figure figcaption{text-align:center;font-size:.85em;color:#666;margin-top:6px;}
     </style>
 </head>
 <body>
     <div class="lang-switch"><a href="CH5_lecture.html">中文版 →</a></div>
     <div class="banner">
         <div><strong>📊 Chapter 5 interactive materials are ready</strong><p>While reading, click the button under each example to open an interactive calculator in a new tab and verify the numbers instantly.</p></div>
-        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> Open the full interactive kit</a>
+        <a href="CH5_interactive_en.html" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> Open the full interactive kit</a>
     </div>
     <h1>Chapter 5: Capital Budgeting and Long-Term Investment Decisions</h1>
     <h2>Introduction</h2>
-    <p>This chapter is where financial mathematics meets real-world decision-making. Capital budgeting is the process by which firms plan and manage long-term investment projects. We will use NPV and IRR, among other metrics, to assess a project's financial viability and make sound resource-allocation decisions.</p>
+    <p>Businesses constantly face "should we invest?" decisions: buy a new machine, build a factory, open a new branch, or launch a product line. The process of planning and evaluating such <strong>long-term investment projects</strong> is called <strong>capital budgeting</strong>.</p>
+    <p>Capital budgeting decisions share three features: <strong>large amounts of money</strong>, <strong>long-lasting effects</strong>, and <strong>being hard to reverse</strong>. Most importantly, the investment is paid <strong>today</strong>, while the payoffs arrive <strong>over many future years</strong>. Money at different points in time cannot simply be added up; we must use the <strong>present value</strong> ideas from Chapters 1 and 2 to bring future cash flows back to today. This is the Chapter 3 idea — an asset's value is the present value of its future cash flows — applied to a company's investment projects.</p>
+    <p>The chapter proceeds as follows:</p>
+    <ol>
+        <li><strong>5.1</strong>: project cash flows and the cost of capital, and how to draw a project's cash flow timeline.</li>
+        <li><strong>5.2 Net Present Value (NPV)</strong>: discount all cash flows to today to see whether the project creates value.</li>
+        <li><strong>5.3 Internal Rate of Return (IRR)</strong>: find the project's own rate of return and compare it with the cost of capital.</li>
+        <li><strong>5.4 Payback methods</strong>: a supporting view based on "how long until we get our money back".</li>
+        <li><strong>5.5 Conflicts between NPV and IRR</strong>: when the two rules disagree, which one should we follow?</li>
+    </ol>
     <hr>
-    <h2>5.1 Net Present Value (NPV)</h2>
+    <h2>5.1 Project Cash Flows and the Cost of Capital</h2>
+    <h3>1. A Project's Cash Flows $CF_t$</h3>
+    <p>The first step in evaluating a project is to list the <strong>cash flow (CF)</strong> it generates in each period. $CF_t$ denotes the net cash flow at the end of period $t$:</p>
+    <table>
+        <thead><tr><th>Time</th><th>Cash flow</th><th>What it includes</th><th>Sign</th></tr></thead>
+        <tbody>
+            <tr><td>$t=0$ (today)</td><td>Initial investment $CF_0$</td><td>Buying equipment, fit-out, up-front costs</td><td>Outflow, negative</td></tr>
+            <tr><td>$t=1, 2, \ldots, n$</td><td>Operating net cash flows</td><td>The project's additional cash revenue minus its additional cash costs</td><td>Usually positive</td></tr>
+            <tr><td>$t=n$ (end)</td><td>Salvage value</td><td>Proceeds from selling the equipment when the project ends (if any)</td><td>Inflow, positive</td></tr>
+        </tbody>
+    </table>
+    <p class="note">The sign convention matches Chapter 2: from the investor's (the company's) point of view, <strong>inflows are positive and outflows are negative</strong>. Unless stated otherwise, operating cash flows are assumed to occur at the <strong>end</strong> of each period.</p>
+    <h3>2. The Cost of Capital $r$</h3>
+    <p>The <strong>cost of capital</strong> is the <strong>minimum return</strong> a company requires from a project, and it is the discount rate $r$ used to discount the project's future cash flows. It is an <strong>opportunity cost</strong>: the return the company could earn by investing the same money in other opportunities of similar risk instead. If a project cannot even earn its cost of capital, the money is better used elsewhere.</p>
+    <h3>3. The Example 5.1 Scenario: Should the Bakery Buy a New Oven?</h3>
+    <p><strong>Scenario:</strong> Lin runs a bakery and is thinking about spending $100{,}000$ on a large oven. With the new oven he can bake one more batch of bread a day; after the extra costs of flour, butter, electricity and packaging, he expects an additional net cash inflow of $40{,}000$ at the end of each year. The oven lasts $3$ years and has no salvage value.</p>
+    <p>If Lin does not buy the oven, he can invest the money elsewhere at similar risk and earn $10\%$ a year, so he sets the cost of capital at $r=10\%$.</p>
+    <p>As cash flows: $CF_0 = -100{,}000$, $CF_1 = CF_2 = CF_3 = 40{,}000$. The timeline is:</p>
+    <figure class="cf-figure"><svg viewBox="0 0 600 115" role="img" aria-label="Figure 5.1  Cash flow timeline of the bakery oven in Example 5.1 (negative = outflow)" style="font-family:inherit"><line x1="40" y1="60" x2="540" y2="60" stroke="#333" stroke-width="1.5"/><polygon points="540,55 550,60 540,65" fill="#333"/><text x="562" y="83" font-style="italic" font-size="15" fill="#333">t</text><line x1="90" y1="54" x2="90" y2="66" stroke="#333" stroke-width="1.5"/><text x="90" y="83" text-anchor="middle" font-size="15" fill="#333">0</text><text x="90" y="42" text-anchor="middle" font-size="15" font-weight="600" fill="#DC2626">−100,000</text><line x1="210" y1="54" x2="210" y2="66" stroke="#333" stroke-width="1.5"/><text x="210" y="83" text-anchor="middle" font-size="15" fill="#333">1</text><text x="210" y="42" text-anchor="middle" font-size="15" font-weight="600" fill="#2563EB">+40,000</text><line x1="330" y1="54" x2="330" y2="66" stroke="#333" stroke-width="1.5"/><text x="330" y="83" text-anchor="middle" font-size="15" fill="#333">2</text><text x="330" y="42" text-anchor="middle" font-size="15" font-weight="600" fill="#2563EB">+40,000</text><line x1="450" y1="54" x2="450" y2="66" stroke="#333" stroke-width="1.5"/><text x="450" y="83" text-anchor="middle" font-size="15" fill="#333">3</text><text x="450" y="42" text-anchor="middle" font-size="15" font-weight="600" fill="#2563EB">+40,000</text><text x="90" y="104" text-anchor="middle" font-size="12" fill="#888">(today)</text></svg><figcaption>Figure 5.1  Cash flow timeline of the bakery oven in Example 5.1 (negative = outflow)</figcaption></figure>
+    <p class="note">Simply adding them up, the three inflows total $120{,}000$ — $20{,}000$ more than the $100{,}000$ invested, which looks profitable. But the three amounts arrive at different times and cannot be added directly; the next section uses NPV to bring them back to today first.</p>
+    <hr>
+    <h2>5.2 Net Present Value (NPV)</h2>
     <h3>Core Concept</h3>
-    <p>Net present value is the gold standard for evaluating project viability: it measures a project's net value today after discounting all of its future cash inflows and outflows.</p>
-    <div class="math-block">$$NPV = \sum_{t=0}^{n} \frac{CF_t}{(1+r)^t}$$</div>
+    <p><strong>Net present value (NPV)</strong> discounts all of a project's cash flows (including the initial investment) to today at the cost of capital $r$ and adds them up. It measures <strong>how much value the project adds to the company today</strong>:</p>
+    <div class="math-block">$$NPV = \sum_{t=0}^{n} \frac{CF_t}{(1+r)^t} = CF_0 + \frac{CF_1}{1+r} + \frac{CF_2}{(1+r)^2} + \cdots + \frac{CF_n}{(1+r)^n}$$</div>
+    <p>Because $CF_0$ is the (negative) initial investment, NPV can also be read as "the present value of future inflows" minus "the initial investment". NPV is considered the <strong>gold standard</strong> of capital budgeting because it directly measures the wealth a project creates for shareholders.</p>
     <h3>1. NPV Decision Rule</h3>
     <ul>
-        <li>If $NPV > 0$: the project is viable and will increase shareholder wealth.</li>
-        <li>If $NPV < 0$: the project is not viable and should be rejected.</li>
-        <li>If $NPV = 0$: the project only breaks even.</li>
+        <li>If $NPV > 0$: the project earns more than its cost of capital; accept it — it increases shareholder wealth.</li>
+        <li>If $NPV < 0$: the project earns less than its cost of capital; reject it.</li>
+        <li>If $NPV = 0$: the project earns exactly its cost of capital; accepting or rejecting makes no difference.</li>
     </ul>
-    <h3>2. Worked Example 5.1: Calculating NPV</h3>
-    <p><strong>Scenario:</strong> An initial investment of $\$100{,}000$, with net inflows of $\$40{,}000$ per year for the next three years, at a cost of capital $r=10\%$.</p>
+    <h3>2. Worked Example 5.1: NPV of the Bakery's New Oven</h3>
+    <p>Continuing the scenario in Section 5.1, discount each cash flow at $r=10\%$:</p>
+    <table>
+        <thead><tr><th>Year $t$</th><th>Cash flow $CF_t$</th><th>Discount factor $1/(1.10)^t$</th><th>Present value</th></tr></thead>
+        <tbody>
+            <tr><td>$0$</td><td>$-100{,}000$</td><td>$1.0000$</td><td>$-100{,}000.00$</td></tr>
+            <tr><td>$1$</td><td>$40{,}000$</td><td>$0.9091$</td><td>$36{,}363.64$</td></tr>
+            <tr><td>$2$</td><td>$40{,}000$</td><td>$0.8264$</td><td>$33{,}057.85$</td></tr>
+            <tr><td>$3$</td><td>$40{,}000$</td><td>$0.7513$</td><td>$30{,}052.59$</td></tr>
+            <tr><td colspan="3"><strong>Total (NPV)</strong></td><td><strong>$-525.92$</strong></td></tr>
+        </tbody>
+    </table>
     <div class="math-block">$$NPV = -100{,}000 + \frac{40{,}000}{1.10} + \frac{40{,}000}{1.10^2} + \frac{40{,}000}{1.10^3} \approx -525.92$$</div>
-    <p><strong>Decision:</strong> Since $NPV < 0$, the project is not viable and should be rejected.</p>
+    <p><strong>Annuity shortcut:</strong> the three inflows are equal, so they form an ordinary annuity from Chapter 2 and we can use the annuity present value formula directly:</p>
+    <div class="math-block">$$NPV = -100{,}000 + 40{,}000 \times \left[\frac{1 - (1.10)^{-3}}{0.10}\right] = -100{,}000 + 99{,}474.08 \approx -525.92$$</div>
+    <p><strong>Decision:</strong> $NPV < 0$, so buying is not recommended. The inflows total $120{,}000$, but in today's money they are worth only $99{,}474.08$ — less than the oven's $100{,}000$ price. In other words, the oven earns slightly less than the $10\%$ Lin requires; he is better off putting the money into another $10\%$ opportunity.</p>
+    <p class="note">Think about it: if the annual net inflow were $41{,}000$ instead, NPV would be $41{,}000 \times 2.4869 - 100{,}000 \approx 1{,}960.93$ and the decision would flip to "buy". NPV is sensitive to the cash flow forecasts, which is why practitioners estimate cash flows carefully.</p>
 
     <div class="ib">
-        <div class="ib-text"><span>🔢</span>Example 5.1: Enter cash flows to instantly compute NPV and see the AI decision analysis</div>
-        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the NPV & IRR analyzer</a>
+        <div class="ib-text"><span>🔢</span>Example 5.1: Enter cash flows to compute NPV period by period and see the AI decision analysis</div>
+        <a href="CH5_interactive_en.html#analyzer" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the NPV & IRR analyzer</a>
     </div>
     <hr>
-    <h2>5.2 Internal Rate of Return (IRR)</h2>
+    <h2>5.3 Internal Rate of Return (IRR)</h2>
     <h3>Core Concept</h3>
-    <p>The IRR is the discount rate at which a project's NPV is exactly zero — it represents the annualized rate of return the project is expected to earn.</p>
+    <p>NPV tells us "how much money" a project makes, but many managers prefer to ask, "What is this investment's <strong>rate of return</strong>?" The <strong>internal rate of return (IRR)</strong> is the project's own annual return, defined as <strong>the discount rate that makes NPV exactly zero</strong>:</p>
     <div class="math-block">$$\sum_{t=0}^{n} \frac{CF_t}{(1+IRR)^t} = 0$$</div>
-    <h3>Decision Rule</h3>
+    <p>"Internal" means the IRR depends only on the project's own cash flows, not on the external cost of capital. You can also think of the IRR as the project's <strong>break-even discount rate</strong>: the project is worthwhile when the cost of capital is below the IRR, and not when it is above.</p>
+    <h3>1. Decision Rule</h3>
     <ul>
-        <li>If $IRR > r$ (cost of capital): the project is viable.</li>
-        <li>If $IRR < r$ (cost of capital): the project is not viable.</li>
+        <li>If $IRR > r$ (cost of capital): the project's return beats the requirement; accept it.</li>
+        <li>If $IRR < r$ (cost of capital): the project's return falls short; reject it.</li>
     </ul>
-    <h3>Worked Example 5.2: Estimating and Applying IRR</h3>
-    <p>Continuing Example 5.1, solving by trial and error:</p>
-    <div class="math-block">$$IRR \approx 9.70\%$$</div>
-    <p><strong>Decision:</strong> $IRR=9.70\% < r=10\%$, so the project is not viable — consistent with the NPV conclusion.</p>
+    <h3>2. The NPV Profile: Where Is the IRR?</h3>
+    <p>Using the oven from Example 5.1, compute NPV at different discount rates:</p>
+    <table>
+        <thead><tr><th>Discount rate $r$</th><th>$0\%$</th><th>$5\%$</th><th>$8\%$</th><th>$9\%$</th><th>$10\%$</th><th>$12\%$</th><th>$15\%$</th></tr></thead>
+        <tbody>
+            <tr><td>NPV</td><td>$20{,}000.00$</td><td>$8{,}929.92$</td><td>$3{,}083.88$</td><td>$1{,}251.79$</td><td>$-525.92$</td><td>$-3{,}926.75$</td><td>$-8{,}671.00$</td></tr>
+        </tbody>
+    </table>
+    <figure class="cf-figure"><svg viewBox="0 0 600 300" role="img" aria-label="Figure 5.2  NPV profile for Example 5.1: NPV falls as the discount rate rises; it crosses zero at the IRR" style="font-family:inherit"><line x1="70" y1="250.0" x2="560" y2="250.0" stroke="#e5e5e5" stroke-width="1"/><text x="62" y="254.0" text-anchor="end" font-size="12" fill="#666">-15,000</text><line x1="70" y1="217.1" x2="560" y2="217.1" stroke="#e5e5e5" stroke-width="1"/><text x="62" y="221.1" text-anchor="end" font-size="12" fill="#666">-10,000</text><line x1="70" y1="184.3" x2="560" y2="184.3" stroke="#e5e5e5" stroke-width="1"/><text x="62" y="188.3" text-anchor="end" font-size="12" fill="#666">-5,000</text><line x1="70" y1="151.4" x2="560" y2="151.4" stroke="#333" stroke-width="1.5"/><text x="62" y="155.4" text-anchor="end" font-size="12" fill="#666">0</text><line x1="70" y1="118.6" x2="560" y2="118.6" stroke="#e5e5e5" stroke-width="1"/><text x="62" y="122.6" text-anchor="end" font-size="12" fill="#666">5,000</text><line x1="70" y1="85.7" x2="560" y2="85.7" stroke="#e5e5e5" stroke-width="1"/><text x="62" y="89.7" text-anchor="end" font-size="12" fill="#666">10,000</text><line x1="70" y1="52.9" x2="560" y2="52.9" stroke="#e5e5e5" stroke-width="1"/><text x="62" y="56.9" text-anchor="end" font-size="12" fill="#666">15,000</text><line x1="70" y1="20.0" x2="560" y2="20.0" stroke="#e5e5e5" stroke-width="1"/><text x="62" y="24.0" text-anchor="end" font-size="12" fill="#666">20,000</text><line x1="70.0" y1="250" x2="70.0" y2="255" stroke="#333"/><text x="70.0" y="270" text-anchor="middle" font-size="12" fill="#666">0%</text><line x1="192.5" y1="250" x2="192.5" y2="255" stroke="#333"/><text x="192.5" y="270" text-anchor="middle" font-size="12" fill="#666">5%</text><line x1="315.0" y1="250" x2="315.0" y2="255" stroke="#333"/><text x="315.0" y="270" text-anchor="middle" font-size="12" fill="#666">10%</text><line x1="437.5" y1="250" x2="437.5" y2="255" stroke="#333"/><text x="437.5" y="270" text-anchor="middle" font-size="12" fill="#666">15%</text><line x1="560.0" y1="250" x2="560.0" y2="255" stroke="#333"/><text x="560.0" y="270" text-anchor="middle" font-size="12" fill="#666">20%</text><line x1="70" y1="20" x2="70" y2="250" stroke="#333"/><line x1="70" y1="250" x2="560" y2="250" stroke="#333"/><text x="315.0" y="290" text-anchor="middle" font-size="13" fill="#333">Discount rate r</text><text x="15" y="14" font-size="13" fill="#333">NPV</text><polyline points="70.0,20.0 74.9,23.1 79.8,26.3 84.7,29.4 89.6,32.5 94.5,35.5 99.4,38.6 104.3,41.6 109.2,44.6 114.1,47.6 119.0,50.5 123.9,53.5 128.8,56.4 133.7,59.3 138.6,62.2 143.5,65.1 148.4,67.9 153.3,70.7 158.2,73.5 163.1,76.3 168.0,79.1 172.9,81.9 177.8,84.6 182.7,87.3 187.6,90.1 192.5,92.7 197.4,95.4 202.3,98.1 207.2,100.7 212.1,103.3 217.0,106.0 221.9,108.5 226.8,111.1 231.7,113.7 236.6,116.2 241.5,118.8 246.4,121.3 251.3,123.8 256.2,126.2 261.1,128.7 266.0,131.2 270.9,133.6 275.8,136.0 280.7,138.4 285.6,140.8 290.5,143.2 295.4,145.6 300.3,147.9 305.2,150.3 310.1,152.6 315.0,154.9 319.9,157.2 324.8,159.5 329.7,161.7 334.6,164.0 339.5,166.2 344.4,168.5 349.3,170.7 354.2,172.9 359.1,175.1 364.0,177.2 368.9,179.4 373.8,181.5 378.7,183.7 383.6,185.8 388.5,187.9 393.4,190.0 398.3,192.1 403.2,194.2 408.1,196.3 413.0,198.3 417.9,200.4 422.8,202.4 427.7,204.4 432.6,206.4 437.5,208.4 442.4,210.4 447.3,212.4 452.2,214.3 457.1,216.3 462.0,218.2 466.9,220.2 471.8,222.1 476.7,224.0 481.6,225.9 486.5,227.8 491.4,229.6 496.3,231.5 501.2,233.4 506.1,235.2 511.0,237.0 515.9,238.9 520.8,240.7 525.7,242.5 530.6,244.3 535.5,246.1 540.4,247.9 545.3,249.6 550.2,251.4 555.1,253.1 560.0,254.9" fill="none" stroke="#2563EB" stroke-width="2.5"/><circle cx="307.7" cy="151.4" r="5" fill="#16A34A"/><text x="297.7" y="175.4" text-anchor="end" font-size="13" font-weight="600" fill="#16A34A">IRR ≈ 9.70%</text><circle cx="315.0" cy="154.9" r="5" fill="#DC2626"/><text x="325.0" y="137.4" font-size="13" font-weight="600" fill="#DC2626">r = 10%, NPV = −525.92</text><circle cx="70.0" cy="20.0" r="4" fill="#2563EB"/><text x="106.8" y="24.6" font-size="12" fill="#2563EB">r = 0%, NPV = 20,000</text></svg><figcaption>Figure 5.2  NPV profile for Example 5.1: NPV falls as the discount rate rises; it crosses zero at the IRR</figcaption></figure>
+    <p>The higher the discount rate, the smaller the present value of future cash flows and the lower the NPV. Connecting these points gives the <strong>NPV profile</strong>; where it crosses the horizontal axis ($NPV=0$) is the IRR. At $r=0\%$ the NPV is simply the undiscounted net inflow, $120{,}000 - 100{,}000 = 20{,}000$.</p>
+    <h3>3. Worked Example 5.2: Estimating IRR by Trial and Error and Interpolation</h3>
+    <p>The IRR equation usually cannot be solved directly. We use trial and error to find where NPV turns from positive to negative, then estimate by <strong>linear interpolation</strong>:</p>
+    <ol>
+        <li><strong>Try $r=9\%$:</strong> $NPV = 40{,}000 \times \left[\dfrac{1-(1.09)^{-3}}{0.09}\right] - 100{,}000 \approx 1{,}251.79 > 0$, so the IRR is above $9\%$.</li>
+        <li><strong>Try $r=10\%$:</strong> $NPV \approx -525.92 < 0$, so the IRR is below $10\%$. The IRR therefore lies between $9\%$ and $10\%$.</li>
+        <li><strong>Interpolate:</strong> NPV falls from $1{,}251.79$ to $-525.92$, a drop of $1{,}777.71$; reaching $0$ requires $1{,}251.79$ of that drop:</li>
+    </ol>
+    <div class="math-block">$$IRR \approx 9\% + \frac{1{,}251.79}{1{,}251.79 - (-525.92)} \times (10\% - 9\%) \approx 9\% + 0.70\% = 9.70\%$$</div>
+    <p class="note">The exact value from Excel's IRR function or a financial calculator is about $9.701\%$, almost identical to the interpolated estimate. Interpolation approximates the curved NPV profile with a straight line; the closer the two trial rates, the more accurate the estimate.</p>
+    <p><strong>Intuition for IRR:</strong> imagine Lin deposits $100{,}000$ in an account paying $9.70\%$ a year and withdraws $40{,}000$ at the end of each year:</p>
+    <table>
+        <thead><tr><th>Year</th><th>Opening balance</th><th>Interest ($9.70\%$)</th><th>Withdrawal</th><th>Closing balance</th></tr></thead>
+        <tbody>
+            <tr><td>$1$</td><td>$100{,}000.00$</td><td>$9{,}701.03$</td><td>$40{,}000$</td><td>$69{,}701.03$</td></tr>
+            <tr><td>$2$</td><td>$69{,}701.03$</td><td>$6{,}761.71$</td><td>$40{,}000$</td><td>$36{,}462.74$</td></tr>
+            <tr><td>$3$</td><td>$36{,}462.74$</td><td>$3{,}537.26$</td><td>$40{,}000$</td><td>$0.00$</td></tr>
+        </tbody>
+    </table>
+    <p>After three years the account is exactly empty. So the oven is equivalent to an investment earning $9.70\%$ a year.</p>
+    <p><strong>Decision:</strong> $IRR \approx 9.70\% < r = 10\%$, so buying is not recommended — the same conclusion as NPV.</p>
+    <h3>4. How NPV and IRR Relate</h3>
+    <ul>
+        <li>For a conventional project (invest first, receive later), the NPV profile slopes downward, so <strong>$IRR > r$ and $NPV > 0$ are the same statement</strong>; the two rules give the same accept/reject decision for a single project.</li>
+        <li>When comparing <strong>mutually exclusive projects</strong> (only one can be chosen), the two rules can disagree, and a project whose cash flows change sign more than once can have several IRRs. These cases are discussed in Section 5.5.</li>
+    </ul>
 
     <div class="ib">
-        <div class="ib-text"><span>📊</span>Example 5.2: The interactive calculator computes IRR automatically and compares it to the cost of capital</div>
-        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Open the NPV & IRR analyzer</a>
+        <div class="ib-text"><span>📊</span>Example 5.2: The calculator computes the IRR automatically and plots the NPV profile</div>
+        <a href="CH5_interactive_en.html#analyzer" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the NPV & IRR analyzer</a>
     </div>
     <hr>
-    <h2>5.3 Supplementary Capital Budgeting Methods</h2>
+    <h2>5.4 Supplementary Methods: Payback Period</h2>
     <h3>1. Payback Period</h3>
     <ul>
         <li>Measures how long it takes to recover the initial investment.</li>
@@ -96,21 +175,24 @@
         <li>Accounts for the time value of money by measuring how long it takes to recover the discounted value of the investment.</li>
     </ul>
     <h3>3. Worked Example 5.3: Calculating the Payback Period</h3>
-    <p><strong>Scenario:</strong> An initial investment of $\$250{,}000$, cost of capital $r=12\%$, with cash inflows over the next four years of $\$100{,}000$, $\$120{,}000$, $\$80{,}000$, and $\$50{,}000$.</p>
+    <p><strong>Scenario:</strong> An initial investment of $250{,}000$, cost of capital $r=12\%$, with cash inflows over the next four years of $100{,}000$, $120{,}000$, $80{,}000$, and $50{,}000$.</p>
     <div class="math-block">$$Payback\ Period = 2 + \frac{30{,}000}{80{,}000} = 2.375 \text{ years}$$</div>
     <div class="math-block">$$Discounted\ Payback\ Period \approx 3.255 \text{ years}$$</div>
 
     <div class="ib">
         <div class="ib-text"><span>⏱️</span>Example 5.3: Compute the ordinary and discounted payback periods instantly and compare them</div>
-        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the payback period calculator</a>
+        <a href="CH5_interactive_en.html#payback" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the payback period calculator</a>
     </div>
-    <h3>4. Worked Example 5.4: An NPV vs. IRR Conflict</h3>
+    <hr>
+    <h2>5.5 Conflicts Between NPV and IRR</h2>
+    <p>For a single project, NPV and IRR reach the same conclusion. But when choosing among <strong>mutually exclusive projects</strong> (only one can be chosen), the two rules can disagree. Common causes are differences in project <strong>scale</strong> or in the <strong>timing</strong> of cash flows.</p>
+    <h3>Worked Example 5.4: An NPV vs. IRR Conflict</h3>
     <p><strong>Scenario:</strong> Cost of capital $r=10\%$, two mutually exclusive projects:</p>
     <table>
         <thead><tr><th>Project</th><th>Initial Investment</th><th>Year 1 Inflow</th><th>IRR</th><th>NPV</th></tr></thead>
         <tbody>
-            <tr><td>S (Small)</td><td>$-\$100$</td><td>$\$120$</td><td>$20.00\%$</td><td>$\$9.09$</td></tr>
-            <tr><td>L (Large)</td><td>$-\$1{,}000$</td><td>$\$1{,}150$</td><td>$15.00\%$</td><td>$\$45.45$</td></tr>
+            <tr><td>S (Small)</td><td>$-100$</td><td>$120$</td><td>$20.00\%$</td><td>$9.09$</td></tr>
+            <tr><td>L (Large)</td><td>$-1{,}000$</td><td>$1{,}150$</td><td>$15.00\%$</td><td>$45.45$</td></tr>
         </tbody>
     </table>
     <div class="decision-box">
@@ -120,25 +202,27 @@
 
     <div class="ib">
         <div class="ib-text"><span>⚖️</span>Example 5.4: Enter the parameters of two mutually exclusive projects and simulate the NPV vs. IRR conflict</div>
-        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Open the decision conflict simulator</a>
+        <a href="CH5_interactive_en.html#conflict" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> Open the decision conflict simulator</a>
     </div>
     <hr>
     <h2>Comprehensive Exercises</h2>
 
     <div class="ib">
         <div class="ib-text"><span>✏️</span>Try solving each one by hand first, then verify with the interactive tools, or use the AI dynamic quiz</div>
-        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> Open the AI dynamic quiz</a>
+        <a href="CH5_interactive_en.html#quiz-generator" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> Open the AI dynamic quiz</a>
     </div>
     <ol>
-        <li>An initial investment of $\$250{,}000$, with future inflows of $\$100{,}000$, $\$120{,}000$, $\$80{,}000$, $\$50{,}000$ over four years, and a cost of capital of $12\%$. What is the NPV?</li>
+        <li>A tutoring center is considering spending $60{,}000$ on online teaching equipment. It expects an additional net cash inflow of $20{,}000$ at the end of each of the next $4$ years, with no salvage value, and its cost of capital is $8\%$. (a) Draw the cash flow timeline; (b) compute the NPV and decide whether to buy.</li>
+        <li>Continuing the previous question, compute the NPV at discount rates of $12\%$ and $13\%$, then estimate the IRR by interpolation. Does the IRR rule agree with the NPV rule?</li>
+        <li>An initial investment of $50{,}000$ returns a net inflow of $15{,}000$ at the end of each year for $5$ years. What is the IRR, approximately? (Hint: it lies between $15\%$ and $16\%$.)</li>
+        <li>An initial investment of $250{,}000$, with future inflows of $100{,}000$, $120{,}000$, $80{,}000$ and $50{,}000$ over four years, and a cost of capital of $12\%$. What is the NPV?</li>
         <li>Continuing the previous question, what is the payback period, in years?</li>
         <li>Explain the core difference between NPV and IRR, and why NPV takes precedence when the two conflict.</li>
-        <li>An initial investment of $\$50{,}000$, with net inflows of $\$15{,}000$ at the end of each year for $5$ years. What is the approximate IRR? (Hint: between $12\%$ and $15\%$)</li>
     </ol>
 
     <div class="ib">
         <div class="ib-text"><span>💬</span>Still have questions? Ask the AI Q&A box about this chapter's concepts in real time</div>
-        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> Open the AI concept Q&A</a>
+        <a href="CH5_interactive_en.html#ai-chatbox" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> Open the AI concept Q&A</a>
     </div>
     <hr>
 </body></html>
