@@ -106,6 +106,7 @@
               </div>
               <div class="flex space-x-2 pt-2">
                 <button id="load-example-1" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">Load Example 5.1</button>
+                <button id="load-exercise-1" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">Load Exercise 1</button>
                 <button id="clear-analyzer" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">Clear</button>
               </div>
             </div>
@@ -147,6 +148,15 @@
             <div class="mt-8">
               <h3 class="text-xl font-bold mb-4 text-center">Discounted Cash Flow Visualization</h3>
               <div class="chart-container"><canvas id="npvChart"></canvas></div>
+            </div>
+            <div class="mt-8">
+              <h3 class="text-xl font-bold mb-2 text-center">NPV Profile</h3>
+              <p class="text-sm text-stone-500 text-center mb-3">NPV falls as the discount rate rises; the curve crosses NPV = 0 at the IRR.</p>
+              <div class="chart-container"><canvas id="npvProfileChart"></canvas></div>
+            </div>
+            <div class="mt-8 overflow-x-auto">
+              <h3 class="text-xl font-bold mb-3 text-center">Period-by-period discounting</h3>
+              <table class="min-w-full divide-y divide-stone-200 text-sm"><thead class="bg-stone-50"><tr><th class="px-3 py-2 text-right text-xs font-medium text-stone-500">Year t</th><th class="px-3 py-2 text-right text-xs font-medium text-stone-500">Cash flow CF</th><th class="px-3 py-2 text-right text-xs font-medium text-stone-500">Discount factor</th><th class="px-3 py-2 text-right text-xs font-medium text-stone-500">Present value</th></tr></thead><tbody id="npv-table-body" class="divide-y divide-stone-100"></tbody></table>
             </div>
           </div>
         </div>
@@ -296,6 +306,17 @@
       <div class="space-y-4 max-w-4xl mx-auto">
         <div class="concept-card card overflow-hidden">
           <button class="w-full text-left p-4 bg-white hover:bg-stone-50 transition flex justify-between items-center">
+            <h3 class="text-lg font-bold">Cash Flows and the Cost of Capital</h3>
+            <span class="text-fuchsia-600 text-2xl font-light">+</span>
+          </button>
+          <div class="concept-content p-4 pt-0 text-stone-700 hidden">
+            <p><strong>Cash flow $CF_t$:</strong> the net cash flow at the end of period $t$. $t=0$ is the initial investment (an outflow, negative); operating cash flows are additional cash revenue minus additional cash costs; there may be a salvage value at the end.</p>
+            <p class="mt-2"><strong>Cost of capital $r$:</strong> the minimum return the company requires — an opportunity cost: what the money could earn in other investments of similar risk.</p>
+            <p class="mt-2"><strong>First step:</strong> draw the cash flow timeline, then discount.</p>
+          </div>
+        </div>
+        <div class="concept-card card overflow-hidden">
+          <button class="w-full text-left p-4 bg-white hover:bg-stone-50 transition flex justify-between items-center">
             <h3 class="text-lg font-bold">Net Present Value (NPV)</h3>
             <span class="text-fuchsia-600 text-2xl font-light">+</span>
           </button>
@@ -311,7 +332,8 @@
             <span class="text-fuchsia-600 text-2xl font-light">+</span>
           </button>
           <div class="concept-content p-4 pt-0 text-stone-700 hidden">
-            <p><strong>Core idea:</strong> The discount rate that makes $\text{NPV}$ equal to zero, representing the annualized rate of return the project is expected to achieve.</p>
+            <p><strong>Core idea:</strong> The discount rate that makes $\text{NPV}$ equal to zero, representing the annualized rate of return the project is expected to achieve — where the NPV profile crosses the horizontal axis.</p>
+            <p class="mt-2"><strong>By hand:</strong> find two rates where NPV changes from positive to negative by trial and error, then interpolate linearly.</p>
             <p class="mt-2"><strong>Criterion:</strong> Accept if $\text{IRR} > \text{r}$ (cost of capital).</p>
             <p class="mt-2 text-sm text-red-600">Note: When it conflicts with $\text{NPV}$ (e.g. for mutually exclusive projects), $\text{NPV}$ should take priority.</p>
           </div>
@@ -342,6 +364,8 @@
           <div class="flex flex-wrap gap-2">
             <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">Why should a project be accepted when NPV > 0?</button>
             <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">What are the limitations of IRR?</button>
+            <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">Why is the cost of capital an opportunity cost?</button>
+            <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">How do I estimate IRR by interpolation?</button>
             <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">What's the difference between the regular payback period and the discounted payback period?</button>
             <button class="quick-q text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200 rounded-full px-3 py-1 transition">Why should mutually exclusive projects use NPV instead of IRR?</button>
           </div>
@@ -502,7 +526,7 @@
 
     // ── Q&A box ──
     const chatHistory=[];
-    const CHAT_SYSTEM_PROMPT=`You are the AI learning assistant for "Financial Mathematics CH5", specializing in answering capital budgeting questions, including: Net Present Value (NPV), Internal Rate of Return (IRR), Payback Period, Discounted Payback Period, NPV vs. IRR conflicts, cost of capital, and related concepts.
+    const CHAT_SYSTEM_PROMPT=`You are the AI learning assistant for "Financial Mathematics CH5", specializing in answering capital budgeting questions, including: Net Present Value (NPV), Internal Rate of Return (IRR), Payback Period, Discounted Payback Period, NPV vs. IRR conflicts, the cost of capital (as an opportunity cost), project cash flows and timelines, period-by-period discounting, the NPV profile, estimating IRR by trial and error and interpolation, and related concepts.
 Rules:
 1. Only answer questions related to CH5 capital budgeting.
 2. If a question is out of scope, politely explain "This is beyond the scope of CH5; please refer to other chapters."
@@ -534,7 +558,7 @@ Rules:
     // =============================================
     let currentQuizData = [];
 
-    const QUIZ_SYSTEM_PROMPT = `You are a university finance management professor. Please write 10 multiple-choice questions based on "Capital Budgeting and Long-Term Investment Decisions (including Net Present Value NPV, Internal Rate of Return IRR, regular and discounted payback periods, mutually exclusive projects, and NPV/IRR decision conflicts)".
+    const QUIZ_SYSTEM_PROMPT = `You are a university finance management professor. Please write 10 multiple-choice questions based on "Capital Budgeting and Long-Term Investment Decisions (including Net Present Value NPV, Internal Rate of Return IRR, regular and discounted payback periods, mutually exclusive projects, and NPV/IRR decision conflicts; also project cash flows and timelines, the cost of capital as an opportunity cost, period-by-period discounting, the NPV profile, and estimating IRR by trial and error and interpolation)".
     Return the result strictly as a JSON array, with absolutely no other explanatory text or Markdown formatting, in the following format:
     [
       {
@@ -707,6 +731,29 @@ Rules:
     }
 
     // ── Calculation logic ──
+    let npvProfileChart;
+    function updateNPVDetail(C0,CFs,r,irr){
+      const body=document.getElementById('npv-table-body'); if(!body) return;
+      let last=CFs.length; while(last>0&&!CFs[last-1]) last--;
+      const rows=[[0,-C0,1]].concat(CFs.slice(0,last).map((cf,i)=>[i+1,cf,1/Math.pow(1+r,i+1)]));
+      let tot=0;
+      body.innerHTML=rows.map(([t,cf,df])=>{const pv=cf*df; tot+=pv; return `<tr><td class="px-3 py-2 text-right">${t}</td><td class="px-3 py-2 text-right ${cf<0?'text-red-600':''}">${cf.toLocaleString()}</td><td class="px-3 py-2 text-right">${df.toFixed(4)}</td><td class="px-3 py-2 text-right ${pv<0?'text-red-600':''}">${pv.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td></tr>`;}).join('')
+        + `<tr class="font-bold"><td class="px-3 py-2 text-right" colspan="3">Total (NPV)</td><td class="px-3 py-2 text-right ${tot<0?'text-red-600':'text-green-700'}">${tot.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td></tr>`;
+      const canvas=document.getElementById('npvProfileChart'); if(!canvas) return;
+      if(npvProfileChart) npvProfileChart.destroy();
+      const hi=Math.max(20, Math.ceil(((isFinite(irr)?irr:0.1)*100*2)/5)*5, Math.ceil(r*100*1.5/5)*5);
+      const xs=[]; for(let k=0;k<=hi*2;k++) xs.push(k/2);
+      const ys=xs.map(x=>calculateNPV(C0,CFs,x/100));
+      const pts=[];
+      if(isFinite(irr)&&irr>=0&&irr*100<=hi) pts.push({x:irr*100,y:0,label:'IRR '+(irr*100).toFixed(2)+'%',c:'#16A34A'});
+      pts.push({x:r*100,y:calculateNPV(C0,CFs,r),label:'Cost of capital r = '+(r*100).toFixed(2)+'%',c:'#DC2626'});
+      npvProfileChart=new Chart(canvas.getContext('2d'),{type:'line',data:{datasets:[
+        {label:'NPV',data:xs.map((x,i)=>({x,y:ys[i]})),borderColor:'#2563EB',pointRadius:0,borderWidth:2,tension:0.2},
+        ...pts.map(p=>({label:p.label,data:[{x:p.x,y:p.y}],borderColor:p.c,backgroundColor:p.c,pointRadius:6,showLine:false}))]},
+        options:{responsive:true,maintainAspectRatio:false,parsing:true,scales:{x:{type:'linear',title:{display:true,text:'Discount rate (%)'}},y:{ticks:{callback:v=>formatCurrency(v).replace('NT$ ','')}}},
+        plugins:{tooltip:{callbacks:{label:c=>`${c.dataset.label}: r = ${c.raw.x.toFixed(2)}%, NPV = ${formatCurrency(c.raw.y)}`}}}}});
+    }
+
     function runAnalyzer(){
       const C0=parseFloat(document.getElementById('initial-investment').value)||0;
       const rPct=parseFloat(document.getElementById('discount-rate').value)||0; const r=rPct/100;
@@ -723,11 +770,14 @@ Rules:
         else if(npv<0){decisionText.textContent=`The project is not feasible; recommend rejecting. (NPV < 0, IRR ${formatPercent(irr)} < ${rPct}%)`;decisionCard.classList.add('npv-negative');decision='Reject';}
         else{decisionText.textContent='The project breaks even. (NPV = 0)';decisionCard.classList.add('npv-neutral');decision='Break-even';}
         updateNPVChart(C0,CFs,r);
+        updateNPVDetail(C0,CFs,r,irr);
         state.npv={C0,rPct,CFs,npv,irr,decision};
         document.getElementById('npv-ai-btn').disabled=false;
       } else {
         decisionText.textContent='Please enter a valid initial investment and cash inflows.'; decisionCard.classList.add('npv-neutral');
         if(npvChart) npvChart.destroy();
+        if(npvProfileChart) npvProfileChart.destroy();
+        document.getElementById('npv-table-body').innerHTML='';
         document.getElementById('npv-ai-btn').disabled=true;
         document.getElementById('npv-ai-result').classList.add('hidden');
       }
@@ -798,6 +848,11 @@ Rules:
       document.getElementById('load-example-1').addEventListener('click',()=>{
         document.getElementById('initial-investment').value=100000; document.getElementById('discount-rate').value=10;
         const cfs=[40000,40000,40000]; document.querySelectorAll('#analyzer .cashflow-input').forEach((inp,i)=>inp.value=cfs[i]??''); runAnalyzer();
+      });
+      document.getElementById('load-exercise-1').addEventListener('click',()=>{
+        while(document.querySelectorAll('#analyzer .cashflow-input').length<4) document.getElementById('add-cashflow').click();
+        document.getElementById('initial-investment').value=60000; document.getElementById('discount-rate').value=8;
+        const cfs=[20000,20000,20000,20000]; document.querySelectorAll('#analyzer .cashflow-input').forEach((inp,i)=>inp.value=cfs[i]??''); runAnalyzer();
       });
       document.getElementById('clear-analyzer').addEventListener('click',()=>{
         document.getElementById('initial-investment').value=''; document.getElementById('discount-rate').value='';
