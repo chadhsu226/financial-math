@@ -34,58 +34,137 @@
         .lang-switch{margin-bottom:14px;font-size:.82rem;}
         .lang-switch a{color:#C026D3;text-decoration:none;font-weight:600;}
         .lang-switch a:hover{text-decoration:underline;}
+        .cf-figure{margin:16px 0;padding:12px 10px 8px;background:#fafafa;border:1px solid #e5e5e5;border-radius:8px;}
+        .cf-figure svg{display:block;width:100%;max-width:640px;height:auto;margin:0 auto;}
+        .cf-figure figcaption{text-align:center;font-size:.85em;color:#666;margin-top:6px;}
     </style>
 </head>
 <body>
     <div class="lang-switch"><a href="CH5_lecture_en.html">English →</a></div>
     <div class="banner">
         <div><strong>📊 第5章互動教材已備妥</strong><p>閱讀講義時，可點擊各範例下方的按鈕，在新分頁開啟互動計算機即時驗算。</p></div>
-        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> 開啟完整互動教材</a>
+        <a href="CH5_interactive.html" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> 開啟完整互動教材</a>
     </div>
     <h1>第五章：資本預算與長期投資決策 (Capital Budgeting and Long-Term Investment Decisions)</h1>
     <h2>導言</h2>
-    <p>本章是將財務數學工具應用於實際決策的關鍵。資本預算是企業規劃和管理長期投資專案的過程。我們將運用 NPV 和 IRR 等指標，來評估專案的財務可行性，做出最佳的資源配置決定。</p>
+    <p>企業經常要做「要不要投資」的決定：要不要買一台新設備、蓋一座新廠房、開一家新分店，或推出一條新產品線。這類規劃與評估<strong>長期投資專案</strong>的過程，稱為<strong>資本預算 (Capital Budgeting)</strong>。</p>
+    <p>資本預算決策有三個特點：<strong>金額大</strong>、<strong>影響期間長</strong>、<strong>一旦投入就很難反悔</strong>。更關鍵的是，投資的支出發生在<strong>今天</strong>，回收卻分散在<strong>未來好幾年</strong>。不同時點的錢不能直接相加比較，必須運用第一、二章的<strong>現值</strong>觀念，把未來的現金流量換算到今天。這也正是第三章「資產的價值＝未來現金流量的現值」這個想法，套用到企業的投資專案上。</p>
+    <p>本章的學習路線如下：</p>
+    <ol>
+        <li><strong>5.1</strong>：認識投資專案的現金流量與資本成本，學會畫出專案的現金流量時間線。</li>
+        <li><strong>5.2 淨現值法 (NPV)</strong>：把所有現金流量折現到今天，判斷專案能不能創造價值。</li>
+        <li><strong>5.3 內部報酬率法 (IRR)</strong>：求出專案本身的報酬率，再與資本成本比較。</li>
+        <li><strong>5.4 回收期法</strong>：從「多久能把本錢拿回來」的角度輔助判斷。</li>
+        <li><strong>5.5 NPV 與 IRR 的衝突</strong>：兩個準則意見不同時，應該聽誰的？</li>
+    </ol>
     <hr>
-    <h2>5.1 淨現值法 (Net Present Value, NPV)</h2>
+    <h2>5.1 投資專案的現金流量與資本成本 (Project Cash Flows and the Cost of Capital)</h2>
+    <h3>1. 專案的現金流量 $CF_t$</h3>
+    <p>評估一個投資專案，第一步是把它在每一期帶來的<strong>現金流量 (Cash Flow, CF)</strong> 列出來。以 $CF_t$ 表示第 $t$ 期期末的淨現金流量：</p>
+    <table>
+        <thead><tr><th>時點</th><th>現金流量</th><th>內容</th><th>正負號</th></tr></thead>
+        <tbody>
+            <tr><td>$t=0$（今天）</td><td>期初投資 $CF_0$</td><td>購買設備、裝修、前期費用等</td><td>流出，記為負</td></tr>
+            <tr><td>$t=1, 2, \ldots, n$</td><td>營運期間淨現金流量</td><td>專案帶來的「增加的現金收入」減去「增加的現金支出」</td><td>通常為正</td></tr>
+            <tr><td>$t=n$（期末）</td><td>殘值</td><td>專案結束時設備變賣的收入（若有）</td><td>流入，記為正</td></tr>
+        </tbody>
+    </table>
+    <p class="note">符號慣例與第二章相同：以投資者（公司）的角度，<strong>流入記為正、流出記為負</strong>；除非特別說明，營運期間的現金流量都假設發生在每期<strong>期末</strong>。</p>
+    <h3>2. 資本成本 $r$</h3>
+    <p><strong>資本成本 (Cost of Capital)</strong> 是公司對這個專案要求的<strong>最低報酬率</strong>，也是把未來現金流量折現時使用的折現率 $r$。它代表一種<strong>機會成本</strong>：如果不把錢投入這個專案，而是投資在風險相同的其他機會，可以賺到的報酬率。專案的報酬若連資本成本都達不到，公司不如把錢投到別的地方。</p>
+    <h3>3. 範例 5.1 的情境：烘焙坊要不要買新烤箱？</h3>
+    <p><strong>情境：</strong>小林經營一家烘焙坊，正在考慮花 $100,000$ 元購買一台大型烤箱。有了新烤箱，每天可以多烤一批麵包，扣除麵粉、奶油、電費與包裝等增加的成本後，預估每年年底可以多帶來 $40,000$ 元的淨現金流入。烤箱的使用年限為 $3$ 年，到期後沒有殘值。</p>
+    <p>小林如果不買烤箱，這筆錢可以投入風險相近的其他投資，每年賺 $10\%$，因此他把資本成本設為 $r=10\%$。</p>
+    <p>把情境整理成現金流量：$CF_0 = -100,000$，$CF_1 = CF_2 = CF_3 = 40,000$。畫成時間線如下：</p>
+    <figure class="cf-figure"><svg viewBox="0 0 600 115" role="img" aria-label="圖 5.1　範例 5.1 烘焙坊新烤箱的現金流量時間線（單位：元；負號表示流出）" style="font-family:inherit"><line x1="40" y1="60" x2="540" y2="60" stroke="#333" stroke-width="1.5"/><polygon points="540,55 550,60 540,65" fill="#333"/><text x="562" y="83" font-style="italic" font-size="15" fill="#333">t</text><line x1="90" y1="54" x2="90" y2="66" stroke="#333" stroke-width="1.5"/><text x="90" y="83" text-anchor="middle" font-size="15" fill="#333">0</text><text x="90" y="42" text-anchor="middle" font-size="15" font-weight="600" fill="#DC2626">−100,000</text><line x1="210" y1="54" x2="210" y2="66" stroke="#333" stroke-width="1.5"/><text x="210" y="83" text-anchor="middle" font-size="15" fill="#333">1</text><text x="210" y="42" text-anchor="middle" font-size="15" font-weight="600" fill="#2563EB">+40,000</text><line x1="330" y1="54" x2="330" y2="66" stroke="#333" stroke-width="1.5"/><text x="330" y="83" text-anchor="middle" font-size="15" fill="#333">2</text><text x="330" y="42" text-anchor="middle" font-size="15" font-weight="600" fill="#2563EB">+40,000</text><line x1="450" y1="54" x2="450" y2="66" stroke="#333" stroke-width="1.5"/><text x="450" y="83" text-anchor="middle" font-size="15" fill="#333">3</text><text x="450" y="42" text-anchor="middle" font-size="15" font-weight="600" fill="#2563EB">+40,000</text><text x="90" y="104" text-anchor="middle" font-size="12" fill="#888">（今天）</text></svg><figcaption>圖 5.1　範例 5.1 烘焙坊新烤箱的現金流量時間線（單位：元；負號表示流出）</figcaption></figure>
+    <p class="note">直接加總的話，三年共流入 $120,000$ 元，比投資的 $100,000$ 元多出 $20,000$ 元，看起來好像賺錢。但這三筆錢發生在不同時點，不能直接相加；下一節用 NPV 把它們換算到今天再比較。</p>
+    <hr>
+    <h2>5.2 淨現值法 (Net Present Value, NPV)</h2>
     <h3>核心概念</h3>
-    <p>淨現值法是評估專案可行性的黃金標準，衡量一個專案未來所有現金流入和流出，經過折現後在今天的淨價值。</p>
-    <div class="math-block">$$NPV = \sum_{t=0}^{n} \frac{CF_t}{(1+r)^t}$$</div>
+    <p><strong>淨現值 (NPV)</strong> 是把專案所有現金流量（包含期初投資）以資本成本 $r$ 折現到今天後加總的結果，代表這個專案在今天<strong>為公司增加多少價值</strong>：</p>
+    <div class="math-block">$$NPV = \sum_{t=0}^{n} \frac{CF_t}{(1+r)^t} = CF_0 + \frac{CF_1}{1+r} + \frac{CF_2}{(1+r)^2} + \cdots + \frac{CF_n}{(1+r)^n}$$</div>
+    <p>因為 $CF_0$ 是負的期初投資，NPV 也可以理解為「未來現金流入的現值」減去「期初投資」。NPV 被視為資本預算的<strong>黃金標準</strong>，因為它直接衡量專案為股東創造的財富。</p>
     <h3>1. 淨現值決策準則</h3>
     <ul>
-        <li>若 $NPV > 0$：專案可行，將增加股東財富。</li>
-        <li>若 $NPV < 0$：專案不可行，應予拒絕。</li>
-        <li>若 $NPV = 0$：專案僅能打平成本。</li>
+        <li>若 $NPV > 0$：專案報酬超過資本成本，可行，將增加股東財富。</li>
+        <li>若 $NPV < 0$：專案報酬達不到資本成本，不可行，應予拒絕。</li>
+        <li>若 $NPV = 0$：專案報酬恰好等於資本成本，接受與否沒有差別。</li>
     </ul>
-    <h3>2. 範例演練 5.1：NPV 計算</h3>
-    <p><strong>情境：</strong>初始投資 $\$100,000$ 元，未來三年每年淨流入 $\$40,000$ 元，資本成本 $r=10\%$。</p>
+    <h3>2. 範例演練 5.1：烘焙坊新烤箱的 NPV</h3>
+    <p>延續 5.1 節的情境，以 $r=10\%$ 將每一期現金流量折現：</p>
+    <table>
+        <thead><tr><th>年 $t$</th><th>現金流量 $CF_t$</th><th>折現因子 $1/(1.10)^t$</th><th>現值</th></tr></thead>
+        <tbody>
+            <tr><td>$0$</td><td>$-100,000$</td><td>$1.0000$</td><td>$-100,000.00$</td></tr>
+            <tr><td>$1$</td><td>$40,000$</td><td>$0.9091$</td><td>$36,363.64$</td></tr>
+            <tr><td>$2$</td><td>$40,000$</td><td>$0.8264$</td><td>$33,057.85$</td></tr>
+            <tr><td>$3$</td><td>$40,000$</td><td>$0.7513$</td><td>$30,052.59$</td></tr>
+            <tr><td colspan="3"><strong>合計（NPV）</strong></td><td><strong>$-525.92$</strong></td></tr>
+        </tbody>
+    </table>
     <div class="math-block">$$NPV = -100,000 + \frac{40,000}{1.10} + \frac{40,000}{1.10^2} + \frac{40,000}{1.10^3} \approx -525.92 \text{ 元}$$</div>
-    <p><strong>決策：</strong>由於 $NPV < 0$，該專案不可行，應予拒絕。</p>
+    <p><strong>年金捷徑：</strong>三年的流入金額相同，屬於第二章的普通年金，可以直接用年金現值公式：</p>
+    <div class="math-block">$$NPV = -100,000 + 40,000 \times \left[\frac{1 - (1.10)^{-3}}{0.10}\right] = -100,000 + 99,474.08 \approx -525.92 \text{ 元}$$</div>
+    <p><strong>決策：</strong>$NPV < 0$，不建議購買。三年的流入合計 $120,000$ 元，換算成今天的價值只有 $99,474.08$ 元，比烤箱的價格 $100,000$ 元還少。換句話說，這台烤箱的報酬率略低於小林要求的 $10\%$，把錢投入其他報酬 $10\%$ 的機會會更好。</p>
+    <p class="note">想一想：若預估每年的淨流入提高到 $41,000$ 元，NPV 變為 $41,000 \times 2.4869 - 100,000 \approx 1,960.93$ 元，決策就會反轉成「購買」。NPV 對現金流量的預估很敏感，這也是實務上要謹慎估計現金流量的原因。</p>
 
     <div class="ib">
-        <div class="ib-text"><span>🔢</span>範例 5.1：輸入現金流，即時計算 NPV 並看 AI 決策分析</div>
-        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟 NPV & IRR 分析器</a>
+        <div class="ib-text"><span>🔢</span>範例 5.1：輸入現金流，即時計算 NPV、逐期折現並看 AI 決策分析</div>
+        <a href="CH5_interactive.html#analyzer" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟 NPV & IRR 分析器</a>
     </div>
     <hr>
-    <h2>5.2 內部報酬率法 (Internal Rate of Return, IRR)</h2>
+    <h2>5.3 內部報酬率法 (Internal Rate of Return, IRR)</h2>
     <h3>核心概念</h3>
-    <p>IRR 是指使專案的 NPV 剛好等於零的折現率，代表專案預期可實現的年化回報率。</p>
+    <p>NPV 告訴我們專案「賺多少錢」，但很多經營者更習慣問：「這個投資的<strong>報酬率</strong>是多少？」<strong>內部報酬率 (IRR)</strong> 就是專案本身的年報酬率，定義為<strong>使 NPV 剛好等於零的折現率</strong>：</p>
     <div class="math-block">$$\sum_{t=0}^{n} \frac{CF_t}{(1+IRR)^t} = 0$$</div>
-    <h3>決策準則</h3>
+    <p>「內部」的意思是：IRR 只由專案自己的現金流量決定，和外部的資本成本無關。也可以把 IRR 看成專案的<strong>損益兩平折現率</strong>：資本成本低於 IRR 時專案划算，高於 IRR 時就不划算。</p>
+    <h3>1. 決策準則</h3>
     <ul>
-        <li>若 $IRR > r$（資本成本）：專案可行。</li>
-        <li>若 $IRR < r$（資本成本）：專案不可行。</li>
+        <li>若 $IRR > r$（資本成本）：專案的報酬率超過要求，可行。</li>
+        <li>若 $IRR < r$（資本成本）：專案的報酬率達不到要求，不可行。</li>
     </ul>
-    <h3>範例演練 5.2：IRR 估算與應用</h3>
-    <p>延續範例 5.1，透過試誤法求解：</p>
-    <div class="math-block">$$IRR \approx 9.70\%$$</div>
-    <p><strong>決策：</strong>$IRR=9.70\% < r=10\%$，專案不可行，與 NPV 結論一致。</p>
+    <h3>2. NPV 曲線：IRR 在哪裡？</h3>
+    <p>以範例 5.1 的烤箱為例，用不同的折現率計算 NPV：</p>
+    <table>
+        <thead><tr><th>折現率 $r$</th><th>$0\%$</th><th>$5\%$</th><th>$8\%$</th><th>$9\%$</th><th>$10\%$</th><th>$12\%$</th><th>$15\%$</th></tr></thead>
+        <tbody>
+            <tr><td>NPV（元）</td><td>$20,000.00$</td><td>$8,929.92$</td><td>$3,083.88$</td><td>$1,251.79$</td><td>$-525.92$</td><td>$-3,926.75$</td><td>$-8,671.00$</td></tr>
+        </tbody>
+    </table>
+    <figure class="cf-figure"><svg viewBox="0 0 600 300" role="img" aria-label="圖 5.2　範例 5.1 的 NPV 曲線：NPV 隨折現率上升而下降，與橫軸的交點即為 IRR" style="font-family:inherit"><line x1="70" y1="250.0" x2="560" y2="250.0" stroke="#e5e5e5" stroke-width="1"/><text x="62" y="254.0" text-anchor="end" font-size="12" fill="#666">-15,000</text><line x1="70" y1="217.1" x2="560" y2="217.1" stroke="#e5e5e5" stroke-width="1"/><text x="62" y="221.1" text-anchor="end" font-size="12" fill="#666">-10,000</text><line x1="70" y1="184.3" x2="560" y2="184.3" stroke="#e5e5e5" stroke-width="1"/><text x="62" y="188.3" text-anchor="end" font-size="12" fill="#666">-5,000</text><line x1="70" y1="151.4" x2="560" y2="151.4" stroke="#333" stroke-width="1.5"/><text x="62" y="155.4" text-anchor="end" font-size="12" fill="#666">0</text><line x1="70" y1="118.6" x2="560" y2="118.6" stroke="#e5e5e5" stroke-width="1"/><text x="62" y="122.6" text-anchor="end" font-size="12" fill="#666">5,000</text><line x1="70" y1="85.7" x2="560" y2="85.7" stroke="#e5e5e5" stroke-width="1"/><text x="62" y="89.7" text-anchor="end" font-size="12" fill="#666">10,000</text><line x1="70" y1="52.9" x2="560" y2="52.9" stroke="#e5e5e5" stroke-width="1"/><text x="62" y="56.9" text-anchor="end" font-size="12" fill="#666">15,000</text><line x1="70" y1="20.0" x2="560" y2="20.0" stroke="#e5e5e5" stroke-width="1"/><text x="62" y="24.0" text-anchor="end" font-size="12" fill="#666">20,000</text><line x1="70.0" y1="250" x2="70.0" y2="255" stroke="#333"/><text x="70.0" y="270" text-anchor="middle" font-size="12" fill="#666">0%</text><line x1="192.5" y1="250" x2="192.5" y2="255" stroke="#333"/><text x="192.5" y="270" text-anchor="middle" font-size="12" fill="#666">5%</text><line x1="315.0" y1="250" x2="315.0" y2="255" stroke="#333"/><text x="315.0" y="270" text-anchor="middle" font-size="12" fill="#666">10%</text><line x1="437.5" y1="250" x2="437.5" y2="255" stroke="#333"/><text x="437.5" y="270" text-anchor="middle" font-size="12" fill="#666">15%</text><line x1="560.0" y1="250" x2="560.0" y2="255" stroke="#333"/><text x="560.0" y="270" text-anchor="middle" font-size="12" fill="#666">20%</text><line x1="70" y1="20" x2="70" y2="250" stroke="#333"/><line x1="70" y1="250" x2="560" y2="250" stroke="#333"/><text x="315.0" y="290" text-anchor="middle" font-size="13" fill="#333">折現率 r</text><text x="15" y="14" font-size="13" fill="#333">NPV</text><polyline points="70.0,20.0 74.9,23.1 79.8,26.3 84.7,29.4 89.6,32.5 94.5,35.5 99.4,38.6 104.3,41.6 109.2,44.6 114.1,47.6 119.0,50.5 123.9,53.5 128.8,56.4 133.7,59.3 138.6,62.2 143.5,65.1 148.4,67.9 153.3,70.7 158.2,73.5 163.1,76.3 168.0,79.1 172.9,81.9 177.8,84.6 182.7,87.3 187.6,90.1 192.5,92.7 197.4,95.4 202.3,98.1 207.2,100.7 212.1,103.3 217.0,106.0 221.9,108.5 226.8,111.1 231.7,113.7 236.6,116.2 241.5,118.8 246.4,121.3 251.3,123.8 256.2,126.2 261.1,128.7 266.0,131.2 270.9,133.6 275.8,136.0 280.7,138.4 285.6,140.8 290.5,143.2 295.4,145.6 300.3,147.9 305.2,150.3 310.1,152.6 315.0,154.9 319.9,157.2 324.8,159.5 329.7,161.7 334.6,164.0 339.5,166.2 344.4,168.5 349.3,170.7 354.2,172.9 359.1,175.1 364.0,177.2 368.9,179.4 373.8,181.5 378.7,183.7 383.6,185.8 388.5,187.9 393.4,190.0 398.3,192.1 403.2,194.2 408.1,196.3 413.0,198.3 417.9,200.4 422.8,202.4 427.7,204.4 432.6,206.4 437.5,208.4 442.4,210.4 447.3,212.4 452.2,214.3 457.1,216.3 462.0,218.2 466.9,220.2 471.8,222.1 476.7,224.0 481.6,225.9 486.5,227.8 491.4,229.6 496.3,231.5 501.2,233.4 506.1,235.2 511.0,237.0 515.9,238.9 520.8,240.7 525.7,242.5 530.6,244.3 535.5,246.1 540.4,247.9 545.3,249.6 550.2,251.4 555.1,253.1 560.0,254.9" fill="none" stroke="#2563EB" stroke-width="2.5"/><circle cx="307.7" cy="151.4" r="5" fill="#16A34A"/><text x="297.7" y="175.4" text-anchor="end" font-size="13" font-weight="600" fill="#16A34A">IRR ≈ 9.70%</text><circle cx="315.0" cy="154.9" r="5" fill="#DC2626"/><text x="325.0" y="137.4" font-size="13" font-weight="600" fill="#DC2626">r = 10%, NPV = −525.92</text><circle cx="70.0" cy="20.0" r="4" fill="#2563EB"/><text x="106.8" y="24.6" font-size="12" fill="#2563EB">r = 0%, NPV = 20,000</text></svg><figcaption>圖 5.2　範例 5.1 的 NPV 曲線：NPV 隨折現率上升而下降，與橫軸的交點即為 IRR</figcaption></figure>
+    <p>折現率越高，未來現金流量的現值越小，NPV 就越低。把這些點連起來就是 <strong>NPV 曲線 (NPV Profile)</strong>，曲線和橫軸（$NPV=0$）的交點就是 IRR。$r=0\%$ 時的 NPV 正好是未折現的淨流入 $120,000 - 100,000 = 20,000$ 元。</p>
+    <h3>3. 範例演練 5.2：用試誤法與內插法估算 IRR</h3>
+    <p>IRR 方程式通常無法直接解出，要靠「試誤」找出 NPV 由正轉負的區間，再用<strong>線性內插</strong>估算：</p>
+    <ol>
+        <li><strong>試 $r=9\%$：</strong>$NPV = 40,000 \times \left[\dfrac{1-(1.09)^{-3}}{0.09}\right] - 100,000 \approx 1,251.79 > 0$，表示 IRR 比 $9\%$ 高。</li>
+        <li><strong>試 $r=10\%$：</strong>$NPV \approx -525.92 < 0$，表示 IRR 比 $10\%$ 低。因此 IRR 介於 $9\%$ 與 $10\%$ 之間。</li>
+        <li><strong>線性內插：</strong>NPV 從 $1,251.79$ 降到 $-525.92$，共下降 $1,777.71$；要降到 $0$ 需走完其中的 $1,251.79$：</li>
+    </ol>
+    <div class="math-block">$$IRR \approx 9\% + \frac{1,251.79}{1,251.79 - (-525.92)} \times (10\% - 9\%) \approx 9\% + 0.70\% = 9.70\%$$</div>
+    <p class="note">以 Excel 的 IRR 函數或財務計算機求得的精確值約為 $9.701\%$，與內插結果幾乎相同。內插法是用直線近似彎曲的 NPV 曲線，試誤的兩個利率越接近，估計越準確。</p>
+    <p><strong>IRR 的直覺：</strong>想像小林把 $100,000$ 元存進一個年利率 $9.70\%$ 的帳戶，每年年底提領 $40,000$ 元：</p>
+    <table>
+        <thead><tr><th>年</th><th>年初餘額</th><th>利息（$9.70\%$）</th><th>提領</th><th>年底餘額</th></tr></thead>
+        <tbody>
+            <tr><td>$1$</td><td>$100,000.00$</td><td>$9,701.03$</td><td>$40,000$</td><td>$69,701.03$</td></tr>
+            <tr><td>$2$</td><td>$69,701.03$</td><td>$6,761.71$</td><td>$40,000$</td><td>$36,462.74$</td></tr>
+            <tr><td>$3$</td><td>$36,462.74$</td><td>$3,537.26$</td><td>$40,000$</td><td>$0.00$</td></tr>
+        </tbody>
+    </table>
+    <p>三年後帳戶剛好提領完畢。也就是說，這台烤箱的效果等同於一筆年報酬率 $9.70\%$ 的投資。</p>
+    <p><strong>決策：</strong>$IRR \approx 9.70\% < r = 10\%$，不建議購買，與 NPV 的結論一致。</p>
+    <h3>4. NPV 與 IRR 的關係</h3>
+    <ul>
+        <li>對於「先投入、後回收」的一般專案，NPV 曲線向右下方傾斜，因此 <strong>$IRR > r$ 與 $NPV > 0$ 是同一件事</strong>，兩個準則對單一專案的接受或拒絕會給出相同結論。</li>
+        <li>但在比較<strong>互斥專案</strong>（只能選一個）時，兩者可能意見不同；現金流量正負號多次改變的專案，也可能出現多個 IRR。這些情況留到 5.5 節討論。</li>
+    </ul>
 
     <div class="ib">
-        <div class="ib-text"><span>📊</span>範例 5.2：互動計算機自動計算 IRR，並與資本成本比較</div>
-        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> 開啟 NPV & IRR 分析器</a>
+        <div class="ib-text"><span>📊</span>範例 5.2：互動計算機自動計算 IRR，並畫出 NPV 曲線</div>
+        <a href="CH5_interactive.html#analyzer" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟 NPV & IRR 分析器</a>
     </div>
     <hr>
-    <h2>5.3 資本預算的輔助方法 (Supplementary Methods)</h2>
+    <h2>5.4 資本預算的輔助方法：回收期法 (Payback Methods)</h2>
     <h3>1. 投資回收期法 (Payback Period)</h3>
     <ul>
         <li>衡量收回初始投資成本所需的時間。</li>
@@ -96,21 +175,24 @@
         <li>考慮時間價值，衡量收回投資折現值所需時間。</li>
     </ul>
     <h3>3. 範例演練 5.3：回收期計算</h3>
-    <p><strong>情境：</strong>初始投資 $\$250,000$ 元，資本成本 $r=12\%$，未來四年現金流入分別為 $\$100,000$、$\$120,000$、$\$80,000$、$\$50,000$。</p>
+    <p><strong>情境：</strong>初始投資 $250,000$ 元，資本成本 $r=12\%$，未來四年現金流入分別為 $100,000$、$120,000$、$80,000$、$50,000$。</p>
     <div class="math-block">$$Payback Period = 2 + \frac{30,000}{80,000} = 2.375 \text{ 年}$$</div>
     <div class="math-block">$$Discounted Payback Period \approx 3.255 \text{ 年}$$</div>
 
     <div class="ib">
         <div class="ib-text"><span>⏱️</span>範例 5.3：即時計算普通與折現回收期並對比</div>
-        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟回收期計算機</a>
+        <a href="CH5_interactive.html#payback" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟回收期計算機</a>
     </div>
-    <h3>4. 範例演練 5.4：NPV 與 IRR 衝突案例</h3>
+    <hr>
+    <h2>5.5 NPV 與 IRR 的衝突 (Conflicts Between NPV and IRR)</h2>
+    <p>評估單一專案時，NPV 與 IRR 的結論一致；但在<strong>互斥專案</strong>（只能選一個）之間做選擇時，兩個準則可能給出不同答案。常見原因是兩個專案的<strong>規模不同</strong>，或現金流量的<strong>時間分布不同</strong>。</p>
+    <h3>範例演練 5.4：NPV 與 IRR 衝突案例</h3>
     <p><strong>情境：</strong>資本成本 $r=10\%$，兩個互斥專案：</p>
     <table>
-        <thead><tr><th>專案</th><th>初始投資</th><th>第1年流入</th><th>IRR</th><th>NPV</th></tr></thead>
+        <thead><tr><th>專案</th><th>初始投資（元）</th><th>第1年流入（元）</th><th>IRR</th><th>NPV（元）</th></tr></thead>
         <tbody>
-            <tr><td>S (小)</td><td>$-\$100$</td><td>$\$120$</td><td>$20.00\%$</td><td>$\$9.09$</td></tr>
-            <tr><td>L (大)</td><td>$-\$1,000$</td><td>$\$1,150$</td><td>$15.00\%$</td><td>$\$45.45$</td></tr>
+            <tr><td>S (小)</td><td>$-100$</td><td>$120$</td><td>$20.00\%$</td><td>$9.09$</td></tr>
+            <tr><td>L (大)</td><td>$-1,000$</td><td>$1,150$</td><td>$15.00\%$</td><td>$45.45$</td></tr>
         </tbody>
     </table>
     <div class="decision-box">
@@ -120,25 +202,27 @@
 
     <div class="ib">
         <div class="ib-text"><span>⚖️</span>範例 5.4：輸入兩個互斥專案參數，模擬 NPV vs. IRR 衝突</div>
-        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> 開啟決策衝突模擬器</a>
+        <a href="CH5_interactive.html#conflict" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> 開啟決策衝突模擬器</a>
     </div>
     <hr>
     <h2>綜合演練</h2>
 
     <div class="ib">
         <div class="ib-text"><span>✏️</span>建議先自行計算，再使用互動工具驗算，或使用 AI 動態測驗卷</div>
-        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> 開啟 AI 動態測驗卷</a>
+        <a href="CH5_interactive.html#quiz-generator" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> 開啟 AI 動態測驗卷</a>
     </div>
     <ol>
-        <li>初始投資 $\$250,000$ 元，未來四年流入：$\$100,000$、$\$120,000$、$\$80,000$、$\$50,000$，資本成本 $12\%$。NPV 是多少？</li>
+        <li>某補習班考慮花 $60,000$ 元購買一套線上教學設備，預估未來 $4$ 年每年年底可增加淨現金流入 $20,000$ 元，期末沒有殘值，資本成本為 $8\%$。(a) 請畫出現金流量時間線；(b) 計算 NPV，並判斷是否應購買。</li>
+        <li>承上題，請分別計算折現率 $12\%$ 與 $13\%$ 時的 NPV，再用內插法估算 IRR，並說明 IRR 準則的結論是否與 NPV 一致。</li>
+        <li>初始投資 $50,000$ 元，每年年底淨流入 $15,000$ 元，持續 $5$ 年，IRR 約為多少？（提示：介於 $15\%$ 至 $16\%$）</li>
+        <li>初始投資 $250,000$ 元，未來四年流入：$100,000$、$120,000$、$80,000$、$50,000$ 元，資本成本 $12\%$。NPV 是多少？</li>
         <li>承接上題，投資回收期是多少年？</li>
         <li>請解釋 NPV 和 IRR 的核心差異，並說明衝突時為何優先遵循 NPV 準則？</li>
-        <li>初始投資 $\$50,000$ 元，每年年底淨流入 $\$15,000$ 元，持續 $5$ 年，IRR 約為多少？（提示：介於 $12\%$ 至 $15\%$）</li>
     </ol>
 
     <div class="ib">
         <div class="ib-text"><span>💬</span>還有疑問？到 AI 問答框即時提問本章概念</div>
-        <a href="https://gemini.google.com/share/88c4894dbaec" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> 開啟 AI 概念問答</a>
+        <a href="CH5_interactive.html#ai-chatbox" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> 開啟 AI 概念問答</a>
     </div>
     <hr>
 </body></html>
