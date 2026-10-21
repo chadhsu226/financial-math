@@ -187,6 +187,7 @@
                         <div class="card p-4 bg-orange-50 border-orange-200 mt-4 text-center">
                             <h4 class="font-semibold text-orange-800">Outstanding Balance After Target Period ($k$) ($OLB_k$)</h4>
                             <p id="olb-result" class="text-3xl font-bold text-orange-700 mt-1">N/A</p>
+                            <p id="olb-retro" class="text-xs mt-2 text-stone-600"></p>
                         </div>
                         <div class="flex space-x-2 pt-4">
                             <button id="load-example-4-2" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">Load Example 4.2/4.3</button>
@@ -194,7 +195,9 @@
                         </div>
                         <div id="olb-formula" class="text-sm mt-3 text-stone-700 overflow-x-auto p-2 bg-stone-50 rounded-lg">
                             $$\text{OLB}_k = C \times \left[ \frac{1 - (1+r)^{-(N-k)}}{r} \right]$$
-                            <p class="text-xs mt-2 text-stone-600">The outstanding balance equals the present value of the remaining $N-k$ payments.</p>
+                            <p class="text-xs mt-2 text-stone-600">Prospective method: the outstanding balance equals the present value of the remaining $N-k$ payments.</p>
+                            $$\text{OLB}_k = PV(1+r)^{k} - C \times \left[ \frac{(1+r)^{k} - 1}{r} \right]$$
+                            <p class="text-xs mt-2 text-stone-600">Retrospective method: grow the principal to period $k$ and subtract the future value of the $k$ payments made; it matches the schedule's closing balance at period $k$.</p>
                         </div>
 
                         <!-- AI Feature: Amortization Analysis -->
@@ -453,7 +456,7 @@
 
     // ── Q&A box ──
     const chatHistory=[];
-    const CHAT_SYSTEM_PROMPT=`You are the AI learning assistant for "Financial Mathematics CH4", specializing in answering loan amortization questions, including: calculating the equal periodic payment (C), the amortization table, the outstanding loan balance (OLB), the phenomenon of interest-heavy payments early and principal-heavy payments later, prepayment strategies, and related concepts.
+    const CHAT_SYSTEM_PROMPT=`You are the AI learning assistant for "Financial Mathematics CH4", specializing in answering loan amortization questions, including: calculating the equal periodic payment (C), the amortization table, the outstanding loan balance (OLB) by the prospective method (PV of remaining payments) and the retrospective method (FV of the loan minus FV of payments made), the phenomenon of interest-heavy payments early and principal-heavy payments later, prepayment strategies, and related concepts.
 Rules:
 1. Only answer questions related to CH4 loan amortization.
 2. If a question is out of scope, politely explain that "this is beyond the CH4 scope; please refer to other chapters."
@@ -491,7 +494,7 @@ Rules:
     let currentQuizData = [];
 
     // ★ Modified: added double-backslash escaping instruction
-    const QUIZ_SYSTEM_PROMPT = `You are a university professor of financial management. Please write 10 multiple-choice questions based on "loan repayment and amortization (including loan principal PV, calculating the equal payment C, the principle of the amortization table, the phenomenon of interest-heavy payments early and principal-heavy payments later, and the outstanding loan balance OLB)".
+    const QUIZ_SYSTEM_PROMPT = `You are a university professor of financial management. Please write 10 multiple-choice questions based on "loan repayment and amortization (including loan principal PV, calculating the equal payment C, the principle of the amortization table, the phenomenon of interest-heavy payments early and principal-heavy payments later, and the outstanding loan balance OLB, including the prospective and retrospective methods and the common mistake of subtracting the PV of payments made without growing the result to period k)".
     Please return strictly in JSON array format, with absolutely no other explanatory text or Markdown markup, in the following format:
     [
       {
@@ -672,11 +675,13 @@ Rules:
         const olbDiv=document.getElementById('olb-result');
         tableBody.innerHTML='<tr><td colspan="6" class="p-4 text-center text-stone-500">Please enter loan parameters to generate the amortization schedule...</td></tr>';
         olbDiv.textContent='N/A';
+        document.getElementById('olb-retro').textContent='';
         document.getElementById('amort-ai-btn').disabled=true;
         if(PV_initial<=0||C<=0||N<=0) return;
 
         const OLB=calcOLB(C,r,N,k);
         olbDiv.textContent=formatCurrency(OLB);
+        if(k>0&&k<=N){ const g=Math.pow(1+r,k); const retro=PV_initial*g-(r===0?C*k:C*(g-1)/r); document.getElementById('olb-retro').textContent=`Retrospective: ${formatCurrency(retro)} (differs from prospective by ${formatCurrency(Math.abs(Math.round(retro*100)-Math.round(OLB*100))/100)}, due to rounding of the payment)`; }
 
         tableBody.innerHTML='';
         let bal=PV_initial;
