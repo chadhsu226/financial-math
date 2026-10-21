@@ -187,6 +187,7 @@
                         <div class="card p-4 bg-orange-50 border-orange-200 mt-4 text-center">
                             <h4 class="font-semibold text-orange-800">目標期數 ($k$) 後未償餘額 ($OLB_k$)</h4>
                             <p id="olb-result" class="text-3xl font-bold text-orange-700 mt-1">N/A</p>
+                            <p id="olb-retro" class="text-xs mt-2 text-stone-600"></p>
                         </div>
                         <div class="flex space-x-2 pt-4">
                             <button id="load-example-4-2" class="btn-secondary py-2 px-4 rounded-md text-sm font-semibold w-full">載入範例 4.2/4.3</button>
@@ -194,7 +195,9 @@
                         </div>
                         <div id="olb-formula" class="text-sm mt-3 text-stone-700 overflow-x-auto p-2 bg-stone-50 rounded-lg">
                             $$\text{OLB}_k = C \times \left[ \frac{1 - (1+r)^{-(N-k)}}{r} \right]$$
-                            <p class="text-xs mt-2 text-stone-600">未償餘額等於剩下 $N-k$ 期還款的現值總和。</p>
+                            <p class="text-xs mt-2 text-stone-600">前瞻法：未償餘額等於剩下 $N-k$ 期還款的現值總和。</p>
+                            $$\text{OLB}_k = PV(1+r)^{k} - C \times \left[ \frac{(1+r)^{k} - 1}{r} \right]$$
+                            <p class="text-xs mt-2 text-stone-600">回溯法：本金滾到第 $k$ 期，減去已繳 $k$ 期款項的終值；結果與攤銷表第 $k$ 期期末餘額一致。</p>
                         </div>
 
                         <!-- AI 功能區：攤銷分析 -->
@@ -453,7 +456,7 @@
 
     // ── 問答框 ──
     const chatHistory=[];
-    const CHAT_SYSTEM_PROMPT=`你是「財務數學 CH4」的 AI 學習助理，專門回答貸款攤銷相關問題，包含：等額還款金額(C)的計算、攤銷表(Amortization Table)、未償餘額(OLB)、前期重利息後期重本金現象、提前還款策略等概念。
+    const CHAT_SYSTEM_PROMPT=`你是「財務數學 CH4」的 AI 學習助理，專門回答貸款攤銷相關問題，包含：等額還款金額(C)的計算、攤銷表(Amortization Table)、未償餘額(OLB)（前瞻法：剩餘還款現值；回溯法：本金終值減已繳款項終值）、前期重利息後期重本金現象、提前還款策略等概念。
 規則：
 1. 只回答 CH4 貸款攤銷相關問題。
 2. 若超出範圍，禮貌說明「這超出 CH4 範圍，建議參考其他章節」。
@@ -491,7 +494,7 @@
     let currentQuizData = [];
 
     // ★ 修改：加入雙反斜線跳脫提示
-    const QUIZ_SYSTEM_PROMPT = `你是大學財務管理教授。請根據「分期償還與貸款攤銷（包含貸款本金 PV、等額還款金額 C 的計算、攤銷表原理、前期重利息與後期重本金現象、未償餘額 OLB）」出 10 題單選題。
+    const QUIZ_SYSTEM_PROMPT = `你是大學財務管理教授。請根據「分期償還與貸款攤銷（包含貸款本金 PV、等額還款金額 C 的計算、攤銷表原理、前期重利息與後期重本金現象、未償餘額 OLB 的前瞻法與回溯法，以及「本金減已繳款項現值」須再乘 (1+r)^k 才是第 k 期餘額的常見錯誤）。金額單位一律用「元」」出 10 題單選題。
     請嚴格以 JSON 陣列格式回傳，絕對不要有任何其他文字說明或 Markdown 標記，格式如下：
     [
       {
@@ -672,11 +675,13 @@
         const olbDiv=document.getElementById('olb-result');
         tableBody.innerHTML='<tr><td colspan="6" class="p-4 text-center text-stone-500">請輸入貸款參數以生成攤銷表...</td></tr>';
         olbDiv.textContent='N/A';
+        document.getElementById('olb-retro').textContent='';
         document.getElementById('amort-ai-btn').disabled=true;
         if(PV_initial<=0||C<=0||N<=0) return;
 
         const OLB=calcOLB(C,r,N,k);
         olbDiv.textContent=formatCurrency(OLB);
+        if(k>0&&k<=N){ const g=Math.pow(1+r,k); const retro=PV_initial*g-(r===0?C*k:C*(g-1)/r); document.getElementById('olb-retro').textContent=`回溯法：${formatCurrency(retro)}（與前瞻法差 ${formatCurrency(Math.abs(Math.round(retro*100)-Math.round(OLB*100))/100)}，來自月付金四捨五入）`; }
 
         tableBody.innerHTML='';
         let bal=PV_initial;
