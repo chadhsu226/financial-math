@@ -165,22 +165,89 @@
     </div>
     <hr>
     <h2>5.4 Supplementary Methods: Payback Period</h2>
+    <p>NPV and IRR answer "is this project worth doing?", but managers often also ask, "<strong>How long until we get our money back?</strong>" Payback methods measure a project in time: the faster the money comes back, the sooner it can be reused and the less uncertainty the firm is exposed to.</p>
     <h3>1. Payback Period</h3>
+    <p>The <strong>payback period</strong> is the time it takes for cumulative cash inflows to equal the initial investment. It <strong>ignores</strong> the time value of money.</p>
+    <p><strong>Decision rule:</strong> the firm sets an acceptable cutoff (for example, $3$ years). Accept if the payback period $\le$ the cutoff and reject if it is longer; when comparing projects, shorter is better.</p>
+    <p><strong>Steps:</strong></p>
+    <ol>
+        <li>List each year's cash flow and the <strong>cumulative cash flow</strong> (starting from $-$initial investment and adding year by year).</li>
+        <li>Find the year in which the cumulative cash flow <strong>turns from negative to positive</strong>; the end of the previous year gives the number of full years recovered, $T$.</li>
+        <li>Assuming that year's cash flow arrives <strong>evenly</strong> during the year, compute the fraction:</li>
+    </ol>
+    <div class="math-block">$$\text{Payback} = T + \frac{\text{amount still unrecovered at the end of year } T}{\text{cash inflow in year } T+1}$$</div>
+    <h3>2. Worked Example 5.3 (Part 1): Calculating the Payback Period</h3>
+    <p><strong>Scenario:</strong> A company is considering a project with an initial investment of $250{,}000$ and year-end net cash inflows of $100{,}000$, $120{,}000$, $80{,}000$ and $50{,}000$ over the next four years. Its cost of capital is $r=12\%$, and it requires projects to pay back within $3$ years.</p>
+    <table>
+        <thead><tr><th>Year</th><th>Cash flow</th><th>Cumulative cash flow</th></tr></thead>
+        <tbody>
+            <tr><td>$0$</td><td>$-250{,}000$</td><td>$-250{,}000$</td></tr>
+            <tr><td>$1$</td><td>$100{,}000$</td><td>$-150{,}000$</td></tr>
+            <tr><td>$2$</td><td>$120{,}000$</td><td>$-30{,}000$</td></tr>
+            <tr><td>$3$</td><td>$80{,}000$</td><td>$+50{,}000$</td></tr>
+            <tr><td>$4$</td><td>$50{,}000$</td><td>$+100{,}000$</td></tr>
+        </tbody>
+    </table>
+    <ol>
+        <li>At the end of year $2$ the cumulative cash flow is still $-30{,}000$; by the end of year $3$ it is $+50{,}000$. So payback happens during year $3$, and $T=2$.</li>
+        <li>Year $3$ must recover $30{,}000$ out of a full-year inflow of $80{,}000$, which takes $30{,}000 / 80{,}000 = 0.375$ of a year.</li>
+        <li>In total:</li>
+    </ol>
+    <div class="math-block">$$\text{Payback} = 2 + \frac{30{,}000}{80{,}000} = 2.375 \text{ years}$$</div>
+    <p>$0.375$ of a year is about $0.375 \times 12 = 4.5$ months, so the project pays back in roughly $2$ years and $4.5$ months. Since $2.375 \le 3$, the payback rule accepts it.</p>
+    <p class="note">The fraction relies on the assumption that cash arrives evenly during the year. If the year-3 cash actually arrives only at year-end, the true payback is the end of year $3$.</p>
+    <h3>3. Discounted Payback Period</h3>
+    <p>The payback period adds up money from different years directly, ignoring the time value of money. The <strong>discounted payback period</strong> first discounts each year's cash flow at the cost of capital $r$, then finds when the cumulative <strong>discounted</strong> cash flow turns positive. The steps are the same, using discounted values instead of raw cash flows:</p>
+    <div class="math-block">$$\text{Discounted payback} = T + \frac{\text{discounted amount still unrecovered at the end of year } T}{\text{PV of the cash inflow in year } T+1}$$</div>
+    <h3>4. Worked Example 5.3 (Part 2): Calculating the Discounted Payback Period</h3>
+    <p>For the same project, discount each year at $r=12\%$:</p>
+    <table>
+        <thead><tr><th>Year</th><th>Cash flow</th><th>Discount factor $1/(1.12)^t$</th><th>Discounted value</th><th>Cumulative discounted value</th></tr></thead>
+        <tbody>
+            <tr><td>$0$</td><td>$-250{,}000$</td><td>$1.0000$</td><td>$-250{,}000.00$</td><td>$-250{,}000.00$</td></tr>
+            <tr><td>$1$</td><td>$100{,}000$</td><td>$0.8929$</td><td>$89{,}285.71$</td><td>$-160{,}714.29$</td></tr>
+            <tr><td>$2$</td><td>$120{,}000$</td><td>$0.7972$</td><td>$95{,}663.27$</td><td>$-65{,}051.02$</td></tr>
+            <tr><td>$3$</td><td>$80{,}000$</td><td>$0.7118$</td><td>$56{,}942.42$</td><td>$-8{,}108.60$</td></tr>
+            <tr><td>$4$</td><td>$50{,}000$</td><td>$0.6355$</td><td>$31{,}775.90$</td><td>$+23{,}667.30$</td></tr>
+        </tbody>
+    </table>
+    <ol>
+        <li>The cumulative discounted value is still $-8{,}108.60$ at the end of year $3$ and turns positive in year $4$, so $T=3$.</li>
+        <li>Year $4$ must recover $8{,}108.60$ in discounted terms, and the PV of the year-4 inflow is $31{,}775.90$.</li>
+    </ol>
+    <div class="math-block">$$\text{Discounted payback} = 3 + \frac{8{,}108.60}{31{,}775.90} \approx 3 + 0.255 = 3.255 \text{ years}$$</div>
+    <p>That is about $3$ years and $3$ months ($0.255 \times 12 \approx 3.1$ months).</p>
+    <p class="note">The last cumulative discounted value, $23{,}667.30$, is exactly the project's <strong>NPV</strong> (see Exercise 4). The discounted payback period is the point at which the project's "NPV so far" turns from negative to positive.</p>
+    <h3>5. Comparing the Two Payback Measures</h3>
+    <table>
+        <thead><tr><th>Method</th><th>Result</th><th>Cutoff of $3$ years</th></tr></thead>
+        <tbody>
+            <tr><td>Payback period</td><td>$2.375$ years</td><td>Accept</td></tr>
+            <tr><td>Discounted payback period</td><td>$3.255$ years</td><td>Reject</td></tr>
+        </tbody>
+    </table>
     <ul>
-        <li>Measures how long it takes to recover the initial investment.</li>
-        <li>Drawback: it ignores the time value of money.</li>
+        <li>As long as $r > 0$, every inflow shrinks when discounted, so <strong>the discounted payback period is always longer than the payback period</strong>.</li>
+        <li>With the same cutoff, the two measures can disagree. Here the project's NPV is positive ($23{,}667.30$), yet the discounted payback rule rejects it because the year-4 cash flow falls beyond the cutoff.</li>
     </ul>
-    <h3>2. Discounted Payback Period</h3>
+    <h3>6. Weaknesses and When to Use Payback</h3>
+    <p><strong>The biggest weakness: cash flows after the payback period are ignored.</strong> For example, two projects each cost $100{,}000$, with a cost of capital of $10\%$:</p>
+    <table>
+        <thead><tr><th>Project</th><th>Year 1</th><th>Year 2</th><th>Year 3</th><th>Payback</th><th>NPV ($r=10\%$)</th></tr></thead>
+        <tbody>
+            <tr><td>A</td><td>$50{,}000$</td><td>$50{,}000$</td><td>$0$</td><td>$2$ years</td><td>$-13{,}223.14$</td></tr>
+            <tr><td>B</td><td>$50{,}000$</td><td>$50{,}000$</td><td>$80{,}000$</td><td>$2$ years</td><td>$+46{,}882.04$</td></tr>
+        </tbody>
+    </table>
+    <p>Both pay back in $2$ years, so the payback rule cannot tell them apart; but B has another $80{,}000$ in year $3$ and a far higher NPV, while A's NPV is actually negative.</p>
     <ul>
-        <li>Accounts for the time value of money by measuring how long it takes to recover the discounted value of the investment.</li>
+        <li>The <strong>payback period</strong> also ignores the time value of money; the discounted payback fixes that but still ignores cash flows after payback.</li>
+        <li><strong>The cutoff is subjective</strong> and has no theoretical basis.</li>
+        <li><strong>Strengths:</strong> simple, easy to communicate, and it reflects how fast money comes back (liquidity) and how long it is exposed to uncertainty (risk). It works best as a <strong>supplement</strong> to NPV — for example, for cash-constrained small firms or fast-changing industries.</li>
     </ul>
-    <h3>3. Worked Example 5.3: Calculating the Payback Period</h3>
-    <p><strong>Scenario:</strong> An initial investment of $250{,}000$, cost of capital $r=12\%$, with cash inflows over the next four years of $100{,}000$, $120{,}000$, $80{,}000$, and $50{,}000$.</p>
-    <div class="math-block">$$Payback\ Period = 2 + \frac{30{,}000}{80{,}000} = 2.375 \text{ years}$$</div>
-    <div class="math-block">$$Discounted\ Payback\ Period \approx 3.255 \text{ years}$$</div>
 
     <div class="ib">
-        <div class="ib-text"><span>⏱️</span>Example 5.3: Compute the ordinary and discounted payback periods instantly and compare them</div>
+        <div class="ib-text"><span>⏱️</span>Example 5.3: Compute the payback and discounted payback periods with year-by-year tables, and compare them with a cutoff</div>
         <a href="CH5_interactive_en.html#payback" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Open the payback period calculator</a>
     </div>
     <hr>
