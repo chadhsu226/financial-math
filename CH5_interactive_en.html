@@ -183,6 +183,10 @@
                 <input type="number" id="payback-rate" value="12" class="mt-1 block w-full input-field p-2" />
               </div>
               <div>
+                <label for="payback-cutoff" class="block text-sm font-medium text-stone-700">Payback cutoff (years)</label>
+                <input type="number" id="payback-cutoff" value="3" min="0" step="0.5" class="mt-1 block w-full input-field p-2" />
+              </div>
+              <div>
                 <label class="block text-sm font-medium text-stone-700">Expected Annual Net Cash Inflows</label>
                 <div id="payback-cashflow-inputs" class="mt-1 space-y-2">
                   <input type="number" placeholder="Year 1 cash inflow" value="100000" class="payback-cashflow-input block w-full input-field p-2" />
@@ -201,6 +205,7 @@
               <div class="card p-4 bg-fuchsia-50 border border-fuchsia-200"><h4 class="font-semibold text-stone-600">Payback Period</h4><p id="payback-result" class="text-2xl font-bold text-fuchsia-700 mt-1">0.000 years</p></div>
               <div class="card p-4 bg-fuchsia-50 border border-fuchsia-200"><h4 class="font-semibold text-stone-600">Discounted Payback Period</h4><p id="discounted-payback-result" class="text-2xl font-bold text-fuchsia-700 mt-1">0.000 years</p></div>
             </div>
+            <p id="payback-decision" class="text-sm mt-3 font-semibold text-fuchsia-800"></p>
 
             <!-- AI feature block: Payback -->
             <div class="ai-section">
@@ -705,7 +710,7 @@ Rules:
       let cum=-I,dcum=-I,p=Infinity,dp=Infinity; const r=ratePct/100;
       const table=[{year:0,cashFlow:-I,cumulative:-I,discounted:-I,discountedCumulative:-I}];
       for(let i=0;i<CFs.length;i++){const cf=CFs[i];const prev=cum;cum+=cf;if(cum>=0&&p===Infinity)p=i+(-prev/cf);const dcf=cf/Math.pow(1+r,i+1);const prevd=dcum;dcum+=dcf;if(dcum>=0&&dp===Infinity)dp=i+(-prevd/dcf);table.push({year:i+1,cashFlow:cf,cumulative:cum,discounted:dcf,discountedCumulative:dcum});}
-      return{paybackPeriod:isFinite(p)?p:0,discountedPaybackPeriod:isFinite(dp)?dp:0,table};
+      return{paybackPeriod:isFinite(p)?p:NaN,discountedPaybackPeriod:isFinite(dp)?dp:NaN,table};
     };
 
     // ── Chart ──
@@ -789,8 +794,12 @@ Rules:
       const rate=parseFloat(document.getElementById('payback-rate').value)||0;
       const CFs=Array.from(document.querySelectorAll('#payback .payback-cashflow-input')).map(i=>parseFloat(i.value)||0);
       const res=calculatePayback(investment,CFs,rate);
-      document.getElementById('payback-result').textContent=`${res.paybackPeriod.toFixed(3)} years`;
-      document.getElementById('discounted-payback-result').textContent=`${res.discountedPaybackPeriod.toFixed(3)} years`;
+      const fmtP=v=>isNaN(v)?'Not recovered':`${v.toFixed(3)} years`;
+      document.getElementById('payback-result').textContent=fmtP(res.paybackPeriod);
+      document.getElementById('discounted-payback-result').textContent=fmtP(res.discountedPaybackPeriod);
+      const cut=parseFloat(document.getElementById('payback-cutoff').value);
+      const ok=v=>!isNaN(v)&&v<=cut;
+      document.getElementById('payback-decision').textContent=(investment>0&&cut>0)?`Cutoff ${cut} years: payback ${fmtP(res.paybackPeriod)} → ${ok(res.paybackPeriod)?'accept':'reject'}; discounted payback ${fmtP(res.discountedPaybackPeriod)} → ${ok(res.discountedPaybackPeriod)?'accept':'reject'}`:'';
       const tbody=document.getElementById('payback-table-body'); tbody.innerHTML='';
       if(investment>0){
         const r0=res.table[0]; const tr=document.createElement('tr');
