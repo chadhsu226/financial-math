@@ -40,7 +40,7 @@
     <div class="lang-switch"><a href="CH4_lecture_en.html">English →</a></div>
     <div class="banner">
         <div><strong>📊 第4章互動教材已備妥</strong><p>閱讀講義時，可點擊各範例下方的按鈕，在新分頁開啟互動計算機即時驗算。</p></div>
-        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> 開啟完整互動教材</a>
+        <a href="CH4_interactive.html" target="_blank" class="btn-banner"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> 開啟完整互動教材</a>
     </div>
     <h1>第四章：分期償還與貸款攤銷 (Amortization and Loan Repayment)</h1>
     <h2>導言</h2>
@@ -52,13 +52,13 @@
     <h3>1. 貸款還款金額公式</h3>
     <div class="math-block">$$C = PV_A \times \frac{r}{1 - (1+r)^{-n}}$$</div>
     <h3>2. 範例演練 4.1：房貸月付金計算</h3>
-    <p><strong>情境：</strong>貸款 $\$3,000,000$ 元，年利率 $2.4\%$，每月複利，還款期限 $20$ 年（$240$ 個月）。每個月需償還多少？</p>
+    <p><strong>情境：</strong>貸款 $3,000,000$ 元，年利率 $2.4\%$，每月複利，還款期限 $20$ 年（$240$ 個月）。每個月需償還多少？</p>
     <p>每期利率 $r = 2.4\%/12 = 0.002$，總期數 $n = 240$</p>
     <div class="math-block">$$C = 3,000,000 \times \frac{0.002}{1 - (1.002)^{-240}} \approx 15,751.34 \text{ 元}$$</div>
 
     <div class="ib">
         <div class="ib-text"><span>🏠</span>範例 4.1：輸入貸款參數，即時計算月付金</div>
-        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟還款金額計算機</a>
+        <a href="CH4_interactive.html#payment-calculator" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟還款金額計算機</a>
     </div>
     <hr>
     <h2>4.2 貸款攤銷表 (Amortization Schedule)</h2>
@@ -71,7 +71,7 @@
         <li>期末餘額：$\text{期末餘額}_t = \text{期初餘額}_t - Principal_t$</li>
     </ul>
     <h3>範例演練 4.2：攤銷表前三期</h3>
-    <p>延續範例 4.1：貸款 $\$3,000,000$ 元，月付金 $\$15,751.34$ 元，月利率 $0.002$。</p>
+    <p>延續範例 4.1：貸款 $3,000,000$ 元，月付金 $15,751.34$ 元，月利率 $0.002$。</p>
     <table>
         <thead><tr><th>期數</th><th>期初餘額</th><th>月付金</th><th>當期利息</th><th>償還本金</th><th>期末餘額</th></tr></thead>
         <tbody>
@@ -83,39 +83,67 @@
 
     <div class="ib">
         <div class="ib-text"><span>📋</span>開啟攤銷表，觀察利息/本金比例如何隨時間改變</div>
-        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> 開啟攤銷表分析器</a>
+        <a href="CH4_interactive.html#amortization-analyzer" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg> 開啟攤銷表分析器</a>
     </div>
     <hr>
     <h2>4.3 貸款未償餘額的計算 (Outstanding Loan Balance)</h2>
-    <h3>1. 現值法 (Present Value Method)</h3>
-    <p>第 $k$ 期結束後的未償餘額等於剩下所有 $(n-k)$ 期還款的現值總和：</p>
+    <p>繳款一段時間後，常會想知道「現在還欠銀行多少錢」，例如要提前清償、轉貸或賣屋時。第 $k$ 期繳款後尚未償還的本金，稱為<strong>未償餘額 (Outstanding Loan Balance, OLB)</strong>。計算方法有兩種：往後看的<strong>前瞻法</strong>，以及往前看的<strong>回溯法</strong>。</p>
+    <h3>1. 前瞻法 (Prospective Method)：剩餘還款的現值</h3>
+    <p>第 $k$ 期結束後，借款人還要繳 $(n-k)$ 期，每期 $C$。銀行願意讓你一次結清的金額，就是這些剩餘還款在第 $k$ 期的現值：</p>
     <div class="math-block">$$\text{OLB}_k = C \times \left[ \frac{1 - (1+r)^{-(n-k)}}{r} \right]$$</div>
-    <h3>2. 範例演練 4.3：計算剩餘餘額</h3>
-    <p>延續範例 4.1，在繳款滿 $5$ 年（$k=60$ 期）後，剩餘貸款餘額是多少？</p>
+    <h3>2. 範例演練 4.3：以前瞻法計算剩餘餘額</h3>
+    <p>延續範例 4.1，在繳款滿 $5$ 年（$k=60$ 期）後，剩餘貸款餘額是多少？還剩 $240-60=180$ 期：</p>
     <div class="math-block">$$\text{OLB}_{60} = 15,751.34 \times \left[ \frac{1 - (1.002)^{-180}}{0.002} \right] \approx 2,379,025.69 \text{ 元}$$</div>
-    <p>雖然已繳了 $5$ 年，但只償還了約 $\$620,974.31$ 元本金，體現了貸款初期大部分還款用於支付利息的現象。</p>
+    <p>雖然已繳了 $5$ 年（共 $60 \times 15,751.34 = 945,080.40$ 元），但只償還了約 $620,974.31$ 元本金，其餘都是利息，體現了貸款初期大部分還款用於支付利息的現象。</p>
+    <h3>3. 回溯法 (Retrospective Method)：本金終值減已繳款項終值</h3>
+    <p>也可以往回看：如果完全沒有還錢，本金 $PV$ 滾到第 $k$ 期會變成 $PV(1+r)^k$；但借款人已經繳了 $k$ 期，每期 $C$，這些款項滾到第 $k$ 期的終值是年金終值 $C \times FVA$。兩者相減，就是第 $k$ 期還欠的金額：</p>
+    <div class="math-block">$$\text{OLB}_k = PV(1+r)^k - C \times \left[ \frac{(1+r)^k - 1}{r} \right]$$</div>
+    <p>這正是 4.2 節攤銷表「期初餘額＋利息－還款」一期一期累積下去的結果，所以回溯法算出的餘額會和攤銷表第 $k$ 期的期末餘額一致。</p>
+    <p><strong>為什麼兩種方法相等？</strong>貸款成立時，本金等於全部還款的現值，可以拆成「已繳的 $k$ 期」與「未繳的 $n-k$ 期」兩段：</p>
+    <div class="math-block">$$PV = \sum_{t=1}^{k} \frac{C}{(1+r)^t} + \sum_{t=k+1}^{n} \frac{C}{(1+r)^t}$$</div>
+    <p>等式兩邊同乘 $(1+r)^k$（把所有金額移到第 $k$ 期），再把已繳的部分移到左邊：左邊就是回溯法，右邊就是前瞻法。</p>
+    <h3>4. 範例演練 4.4：以回溯法驗算範例 4.3</h3>
+    <p>同樣是貸款 $3,000,000$ 元、月利率 $0.002$、月付金 $15,751.34$ 元，求 $k=60$ 期後的未償餘額：</p>
+    <ol>
+        <li><strong>本金滾到第 60 期：</strong>$3,000,000 \times (1.002)^{60} \approx 3,382,085.22$ 元</li>
+        <li><strong>已繳 60 期的終值：</strong>$15,751.34 \times \left[\dfrac{(1.002)^{60} - 1}{0.002}\right] \approx 1,003,059.04$ 元</li>
+        <li><strong>相減：</strong>$\text{OLB}_{60} \approx 3,382,085.22 - 1,003,059.04 = 2,379,026.18$ 元</li>
+    </ol>
+    <div class="decision-box">
+        <strong>常見錯誤：</strong>直接用「本金減去已繳款項的現值」：$3,000,000 - 15,751.34 \times \left[\dfrac{1-(1.002)^{-60}}{0.002}\right] \approx 2,110,259.82$ 元。這個數字是換算到<strong>今天（第 0 期）</strong>的價值，不是第 60 期的餘額。兩邊必須換算到同一時點再相減，所以要再乘上 $(1.002)^{60}$：$2,110,259.82 \times (1.002)^{60} \approx 2,379,026.18$ 元。
+    </div>
+    <p class="note">為什麼和範例 4.3 差了 $0.49$ 元？因為月付金被四捨五入成 $15,751.34$ 元。若使用未四捨五入的月付金，兩種方法都得到 $2,379,026.04$ 元。實務上銀行會在最後一期微調還款金額，把這點差額補齊。</p>
+    <h3>5. 兩種方法的比較</h3>
+    <table>
+        <thead><tr><th>方法</th><th>看的方向</th><th>需要的資料</th><th>適用情境</th></tr></thead>
+        <tbody>
+            <tr><td>前瞻法</td><td>往後看：還沒繳的 $n-k$ 期</td><td>$C$、$r$、剩餘期數</td><td>還款條件不變，剩餘期數明確</td></tr>
+            <tr><td>回溯法</td><td>往前看：已經繳的 $k$ 期</td><td>$PV$、$C$、$r$、已繳期數</td><td>與攤銷表對帳、中途曾多繳或少繳、利率曾調整</td></tr>
+        </tbody>
+    </table>
 
     <div class="ib">
-        <div class="ib-text"><span>🔍</span>範例 4.3：查詢任意期數後的剩餘本金（OLB）</div>
-        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟 OLB 餘額分析器</a>
+        <div class="ib-text"><span>🔍</span>範例 4.3、4.4：查詢任意期數後的未償餘額，並比較前瞻法與回溯法</div>
+        <a href="CH4_interactive.html#amortization-analyzer" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 開啟 OLB 餘額分析器</a>
     </div>
     <hr>
     <h2>綜合演練</h2>
 
     <div class="ib">
         <div class="ib-text"><span>✏️</span>建議先自行計算，再使用互動工具驗算，或使用 AI 動態測驗卷</div>
-        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> 開啟 AI 動態測驗卷</a>
+        <a href="CH4_interactive.html#quiz-generator" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> 開啟 AI 動態測驗卷</a>
     </div>
     <ol>
-        <li>企業貸款 $\$1,500,000$ 元，年利率 $4.8\%$，每月複利，還款期 $5$ 年。月付金為多少？第一期利息與本金各為多少？</li>
-        <li>小陳借 $\$800,000$ 元，$10$ 年期，年利率 $6\%$，每年還款一次。年付金為多少？繳完第 $4$ 年後剩餘未償餘額為多少？</li>
+        <li>企業貸款 $1,500,000$ 元，年利率 $4.8\%$，每月複利，還款期 $5$ 年。月付金為多少？第一期利息與本金各為多少？</li>
+        <li>小陳借 $800,000$ 元，$10$ 年期，年利率 $6\%$，每年還款一次。年付金為多少？繳完第 $4$ 年後剩餘未償餘額為多少？請分別用前瞻法與回溯法計算並比較。</li>
         <li>請說明貸款攤銷表的原理，為何等額還款中利息部分會逐漸減少？</li>
-        <li>$\$5,000,000$ 元，$25$ 年期，年利率 $3\%$，每月還款。貸款滿 $10$ 年後總共支付了多少利息？</li>
+        <li>$5,000,000$ 元，$25$ 年期，年利率 $3\%$，每月還款。貸款滿 $10$ 年後總共支付了多少利息？（提示：已付利息＝已繳總額－已還本金）</li>
+        <li>某同學計算範例 4.3 的未償餘額時，寫成 $3,000,000 - 15,751.34 \times \left[\dfrac{1-(1.002)^{-60}}{0.002}\right] \approx 2,110,259.82$ 元。這個做法錯在哪裡？應如何修正？</li>
     </ol>
 
     <div class="ib">
         <div class="ib-text"><span>💬</span>還有疑問？到 AI 問答框即時提問本章概念</div>
-        <a href="https://gemini.google.com/share/46e04850f016" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> 開啟 AI 概念問答</a>
+        <a href="CH4_interactive.html#ai-chatbox" target="_blank" class="btn-ib"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg> 開啟 AI 概念問答</a>
     </div>
     <hr>
 </body></html>
