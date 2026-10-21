@@ -183,6 +183,10 @@
                 <input type="number" id="payback-rate" value="12" class="mt-1 block w-full input-field p-2" />
               </div>
               <div>
+                <label for="payback-cutoff" class="block text-sm font-medium text-stone-700">回收門檻（年）</label>
+                <input type="number" id="payback-cutoff" value="3" min="0" step="0.5" class="mt-1 block w-full input-field p-2" />
+              </div>
+              <div>
                 <label class="block text-sm font-medium text-stone-700">預期年度淨現金流入</label>
                 <div id="payback-cashflow-inputs" class="mt-1 space-y-2">
                   <input type="number" placeholder="第 1 年現金流入" value="100000" class="payback-cashflow-input block w-full input-field p-2" />
@@ -201,6 +205,7 @@
               <div class="card p-4 bg-fuchsia-50 border border-fuchsia-200"><h4 class="font-semibold text-stone-600">投資回收期</h4><p id="payback-result" class="text-2xl font-bold text-fuchsia-700 mt-1">0.000 年</p></div>
               <div class="card p-4 bg-fuchsia-50 border border-fuchsia-200"><h4 class="font-semibold text-stone-600">折現回收期</h4><p id="discounted-payback-result" class="text-2xl font-bold text-fuchsia-700 mt-1">0.000 年</p></div>
             </div>
+            <p id="payback-decision" class="text-sm mt-3 font-semibold text-fuchsia-800"></p>
 
             <!-- AI 功能區：回收期 -->
             <div class="ai-section">
@@ -705,7 +710,7 @@
       let cum=-I,dcum=-I,p=Infinity,dp=Infinity; const r=ratePct/100;
       const table=[{year:0,cashFlow:-I,cumulative:-I,discounted:-I,discountedCumulative:-I}];
       for(let i=0;i<CFs.length;i++){const cf=CFs[i];const prev=cum;cum+=cf;if(cum>=0&&p===Infinity)p=i+(-prev/cf);const dcf=cf/Math.pow(1+r,i+1);const prevd=dcum;dcum+=dcf;if(dcum>=0&&dp===Infinity)dp=i+(-prevd/dcf);table.push({year:i+1,cashFlow:cf,cumulative:cum,discounted:dcf,discountedCumulative:dcum});}
-      return{paybackPeriod:isFinite(p)?p:0,discountedPaybackPeriod:isFinite(dp)?dp:0,table};
+      return{paybackPeriod:isFinite(p)?p:NaN,discountedPaybackPeriod:isFinite(dp)?dp:NaN,table};
     };
 
     // ── 圖表 ──
@@ -789,8 +794,12 @@
       const rate=parseFloat(document.getElementById('payback-rate').value)||0;
       const CFs=Array.from(document.querySelectorAll('#payback .payback-cashflow-input')).map(i=>parseFloat(i.value)||0);
       const res=calculatePayback(investment,CFs,rate);
-      document.getElementById('payback-result').textContent=`${res.paybackPeriod.toFixed(3)} 年`;
-      document.getElementById('discounted-payback-result').textContent=`${res.discountedPaybackPeriod.toFixed(3)} 年`;
+      const fmtP=v=>isNaN(v)?'期限內未回收':`${v.toFixed(3)} 年`;
+      document.getElementById('payback-result').textContent=fmtP(res.paybackPeriod);
+      document.getElementById('discounted-payback-result').textContent=fmtP(res.discountedPaybackPeriod);
+      const cut=parseFloat(document.getElementById('payback-cutoff').value);
+      const ok=v=>!isNaN(v)&&v<=cut;
+      document.getElementById('payback-decision').textContent=(investment>0&&cut>0)?`門檻 ${cut} 年：投資回收期 ${fmtP(res.paybackPeriod)} → ${ok(res.paybackPeriod)?'接受':'拒絕'}；折現回收期 ${fmtP(res.discountedPaybackPeriod)} → ${ok(res.discountedPaybackPeriod)?'接受':'拒絕'}`:'';
       const tbody=document.getElementById('payback-table-body'); tbody.innerHTML='';
       if(investment>0){
         const r0=res.table[0]; const tr=document.createElement('tr');
